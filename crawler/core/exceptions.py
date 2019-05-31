@@ -27,6 +27,8 @@ class DetailParseDoNotExists(Exception):
 class SpiderError(Exception):
     pass
 
+class ParseResultNone(Exception):
+    pass
 
 if __name__ == '__main__':
     # raise SpecNameDoNotExists

@@ -1,22 +1,21 @@
 # import asyncio
 import json
 import os
-import random, importlib, inspect
 import sys
 import traceback
-
+from core.mongo_db import MongoDb
 import requests
 
 from config import REDIS_TASK_URI, ROOT_PATH
 from core.func import load_module
 from core.exceptions import *
 from extractor.handel import EXTRACT_LIST, EXTRACT_RESUME
-
+from extractor.mongo_update_keyword import mongo_ur
 import logging
 
 SPIDERS_MAPS = load_module(os.path.join(ROOT_PATH, 'spiders'), 'cp_')
 print(EXTRACT_LIST, EXTRACT_RESUME)
-
+MT_cp = MongoDb("aizhaopin", "position_infos")  # [company_infos, position_infos]
 
 class Run:
     def __init__(self, site):
@@ -60,52 +59,52 @@ class Run:
 
         :param site:
         :param type:
-        :param res: 要解析的内容
+        :param res: {"site":"boss", "content":"<html></html>", "resume_info": curr_task}
         :param curr_task: 当前任务信息
         :param failed: 是否是之前失败的任务
         :return:
         """
         l = self.logger
-
+        _res = {"site": site, "content": res, "resume_info": curr_task}
         if type == 1:
             list_parser = EXTRACT_LIST.get(site, None)
             if not list_parser:
                 raise ListParseDoNotExists(f'site: {self.site} has no corresponding list parser.')
             try:
-                detail = list_parser().parser(res)
-                raise Exception
-                if not detail:
-                    l.info(f"site: {site} list parse res: None") #TODO 其实解析失败不返回None
-                    print(f"site: {site} list parse res: None") #TODO 其实解析失败不返回None
-                    return
+                detail = list_parser().parser(_res)
                 detail_list = detail['resume_list']
                 current_page = detail['current_page']
                 last_page = detail['last_page']
                 for one in detail_list:
+                    hash_key = one.get("hashed_key", 0)
+                    if hash_key in bulong:  # todo 布隆list过滤
+                        continue
                     data ={
                         'type': 2,
                         'site': site,
                         'origin_task': curr_task,
                         'list_task': one
                     }
-                    data = {'task': json.dumps(data)}
-                    res = self.apply_task(action='push', task=data)
-                    if res['code'] == 0:
-                        l.info(f'has pushed site: {site} {str(data)}')
+                    task_data = {'task': json.dumps(data)}
+                    push_res = self.apply_task(action='push', task=task_data)
+                    if push_res['code'] == 0:
+                        l.info(f'has pushed site: {site} {str(task_data)}')
+                    else:
+                        l.info(f'pushed site wrong: {site} {str(task_data)} \n wrong code {push_res["code"]}')
                 if last_page > current_page:
                     _curr_task = curr_task
                     _curr_task['page'] += 1
                     _curr_task['origin_task'] = curr_task
                     _curr_task['type'] = 3
-                    data = {'task': json.dumps(_curr_task)}
+                    task_data = {'task': json.dumps(_curr_task)}
                     if not failed:
                         # 不是失败队列过来的任务,解决失败一直翻页问题
-                        self.apply_task(action='push', task=data)
+                        self.apply_task(action='push', task=task_data)
             except Exception as e:
                 _curr_task = curr_task
                 _curr_task['type'] = 4
-                data = {'task': json.dumps(_curr_task)}
-                self.apply_task(action='push', task=data)
+                task_data = {'task': json.dumps(_curr_task)}
+                self.apply_task(action='push', task=task_data)
                 l.warning(f'parse list error: {e.__context__}, tb: {traceback.format_exc()}')
 
         elif type == 2:
@@ -113,7 +112,7 @@ class Run:
             if not detail_parser:
                 raise DetailParseDoNotExists(f'site: {self.site} has no corresponding detail parser.')
             try:
-                detail = detail_parser().auto_html_to_dict(res)
+                detail = detail_parser().auto_html_to_dict(_res)
                 if not detail:
                     l.info(f"site: {site} detail parse res: None")
                     _curr_task = curr_task
@@ -122,7 +121,11 @@ class Run:
                     self.apply_task(action='push', task=data)
                     l.info(f"has pushed site: {site} to type5 queue, task: {str(_curr_task)}")
                     return
-                # todo  insert mongo
+                # todo insert mongo
+                # resume计算去重
+                mongo_ur(detail)  # todo 测试一下
+
+
             except Exception as e:
                 _curr_task = curr_task
                 _curr_task['type'] = 5  # type2 解析失败放回失败队列
