@@ -3,7 +3,7 @@ import inspect
 import os
 import socket
 import requests
-from spiders.base import Base
+from .base import Base
 from config import ROOT_PATH
 
 
@@ -23,8 +23,10 @@ def is_online_server(host):
     return False
 
 
-def load_module(module_path, prefix):
+def load_module(module_path, file_path, prefix):
     """
+    module_path: 模块路径    foo.boo
+    file_path: 导入文件的绝对路径作为基准 C:/user/a.py
     :return: 动态加载spider文件夹下的以sp_开头的模块
     """
 
@@ -41,13 +43,15 @@ def load_module(module_path, prefix):
                 return obj
         return False
 
-    module_name = '.'.join(module_path.split(os.sep)[len(ROOT_PATH.split(os.sep)):]) # 模块目录
-    files = [i for i in os.listdir(module_path) if i.startswith(prefix)]
-    modules = {get_site_name(i): importlib.import_module('{}.{}'.format(module_name, i.split('.py')[0]))
+    base_path = os.path.dirname(file_path)
+    base_path = base_path.replace('\\', '/')  # windows可能一个路径中两种斜杠，统一
+
+    module_file_path = os.path.join(base_path, os.sep.join(module_path.split('.')))
+    files = [i for i in os.listdir(module_file_path) if i.startswith(prefix)]
+    modules = {get_site_name(i): importlib.import_module('{}.{}'.format(module_path, i.split('.py')[0]))
                for i in files}
     spiders_dicts = {k: getattr(v, '__dict__') for k, v in modules.items()}
     return {k: i for k, v in spiders_dicts.items() for i in v.values() if valid(i)}
-
 
 
 if __name__ == '__main__':

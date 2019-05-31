@@ -1,7 +1,7 @@
 import hashlib
 import json
 from lxml import etree
-from spiders.base import Base
+from core.base import Base
 
 
 class ListToUrl(Base):

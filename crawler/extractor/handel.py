@@ -1,11 +1,8 @@
 import os
 from core.func import load_module
 
-
-EXTRACT_LIST = load_module(os.path.join(os.path.dirname(__file__), "lists"), "List_")
-EXTRACT_RESUME = load_module(os.path.join(os.path.dirname(__file__), "resumes"), "Resume_")
-
-
+EXTRACT_LIST = load_module('lists', __file__, "List_")
+EXTRACT_RESUME = load_module("resumes", __file__, "Resume_")
 
 if __name__ == '__main__':
     print(EXTRACT_LIST)
