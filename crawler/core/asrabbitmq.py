@@ -10,16 +10,18 @@ try:
     from online_config import MQ
 except:
     MQ = {
-        'host': "127.0.0.1",
+        'host': "192.168.170.132",
     }
+
+
 
 
 class MqSession(object):
     def __init__(self):
         try:
-            self.credentials = pika.PlainCredentials(username='spider', password='spider')
+            self.credentials = pika.PlainCredentials(username='guest', password='guest')
             self.connection = pika.BlockingConnection(
-                pika.ConnectionParameters(**MQ, credentials=self.credentials, socket_timeout=20, heartbeat_interval=0))
+                pika.ConnectionParameters(**MQ, credentials=self.credentials, socket_timeout=20, heartbeat=0))
             self.channel = self.connection.channel()
             self.channel.basic_qos(prefetch_count=1)
         except Exception as e:
@@ -79,7 +81,7 @@ class AsyncMqSession:
     def __init__(self):
         self.executor = ThreadPoolExecutor(max_workers=1)  # pika is NOT thread-safe
         self.loop = asyncio.get_event_loop()
-        self.session = await self.loop.run_in_executor(self.executor, self._init_session)  # type: MqSession
+        self.session = self.loop.run_in_executor(self.executor, self._init_session)  # type: MqSession
 
     async def __aenter__(self):
         return self
@@ -129,9 +131,9 @@ def test_async():
     async def main():
         body = '1pe0sa12'
         async with  AsyncMqSession() as session:
-            await session.put('subscribe-queue', body)
+            await session.put('mqmq', body)
             print('put')
-            _tag, _body = await session.get('subscribe-queue')
+            _tag, _body = await session.get('mqmq')
             print('get', _body)
             await session.ack(_tag)
             print('ack')
