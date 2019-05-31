@@ -1,7 +1,7 @@
 import redis
 
-import BloomfilterOnRedis
-from config import *
+from . import BloomfilterOnRedis
+from .config import *
 
 
 def bloom_filter_from_defaults(redis_url):

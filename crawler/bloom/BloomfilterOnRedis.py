@@ -1,5 +1,5 @@
 import hashlib
-from config import BIT_SIZE
+from .config import BIT_SIZE
 
 
 class SimpleHash(object):

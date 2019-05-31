@@ -10,18 +10,26 @@ from config import REDIS_TASK_URI, ROOT_PATH
 from core.func import load_module
 from core.exceptions import *
 from extractor.handel import EXTRACT_LIST, EXTRACT_RESUME
-from extractor.mongo_update_keyword import mongo_ur
+from extractor.mongo_operate import mongo_ur
+from bloom.connection import BFR as bfr
+
 import logging
 
 SPIDERS_MAPS = load_module(os.path.join(ROOT_PATH, 'spiders'), 'cp_')
-print(EXTRACT_LIST, EXTRACT_RESUME)
-MT_cp = MongoDb("aizhaopin", "position_infos")  # [company_infos, position_infos]
+
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
+
 
 class Run:
     def __init__(self, site):
         self.site = site
+
         self.logger = logging
-        pass
+
+        self.logger.info(f'loaded list parser: {str(EXTRACT_LIST)}')
+        self.logger.info(f'loaded detail parser: {str(EXTRACT_RESUME)}')
+        self.logger.info(f'loaded spider: {str(SPIDERS_MAPS)}')
 
     def apply_task(self, action="get", site=None, task=None):
         '''
@@ -34,23 +42,28 @@ class Run:
         :return:
         '''
         l = self.logger
+
+        retry_times = 8
         if action.lower() == 'get':
-            try:
-                res = requests.get(REDIS_TASK_URI, params={'site': site}, timeout=10).json()
-                print(res)
-                if res['code'] == 0:
-                    return json.loads(res['task'])
-            except Exception as e:
-                l.warning(f'apply task error: {e.__context__}, tb: {traceback.format_exc()}')
-            return None
+            for _ in range(retry_times):
+                try:
+                    res = requests.get(REDIS_TASK_URI, params={'site': site}, timeout=10).json()
+                    if res['code'] == 0:
+                        return json.loads(res['task'])
+                    return None
+                except Exception as e:
+                    l.warning(f'apply task error: {e.__context__}, tb: {traceback.format_exc()}')
+            raise ApplyRequestError('apply task request error.')
         elif action.lower() == 'push':
-            try:
-                print('*'*10, task)
-                res = requests.post(REDIS_TASK_URI, data=task, timeout=10).json()
-                if res['code'] == 0:
-                    l.info(f'push task: {str(task)} to queue success.')
-            except Exception as e:
-                l.warning(f'push task error: {e.__context__}, tb: {traceback.format_exc()}')
+            for _ in range(retry_times):
+                try:
+                    res = requests.post(REDIS_TASK_URI, data=task, timeout=10).json()
+                    if res['code'] == 0:
+                        l.info(f'push task: {str(task)} to queue success.')
+                    return
+                except Exception as e:
+                    l.warning(f'push task error: {e.__context__}, tb: {traceback.format_exc()}')
+            raise ApplyRequestError('push task request error.')
         else:
             raise ApplyActionError(f'task action: {action} error..')
 
@@ -77,9 +90,10 @@ class Run:
                 last_page = detail['last_page']
                 for one in detail_list:
                     hash_key = one.get("hashed_key", 0)
-                    if hash_key in bulong:  # todo 布隆list过滤
+                    if bfr.is_exists(hash_key):  # todo 布隆list过滤
+                        l.info(f"site: {site} task has crawled before, skip. task: {str(one)}")
                         continue
-                    data ={
+                    data = {
                         'type': 2,
                         'site': site,
                         'origin_task': curr_task,
@@ -134,7 +148,6 @@ class Run:
                 l.info(f"has pushed site: {site} to type5 queue, task: {str(_curr_task)}")
                 l.warning(f'parse detail task error: {e.__context__}, tb: {traceback.format_exc()}')
 
-
     def run(self):
         l = self.logger
         if self.site not in SPIDERS_MAPS:
@@ -171,13 +184,16 @@ class Run:
                         self.parser(site, type, res, one_task, failed=False)
                     else:
                         raise ApplyTypeError(f'apply task type: {type} not in [1,2,3,4,5]!')
-                # sys.exit()
+                sys.exit()
 
             except (ListParseDoNotExists, DetailParseDoNotExists, ApplyTypeError, ApplyActionError, ApplySiteError):
                 l.error('fatal error, exit...')
                 sys.exit()
             except SpiderError:
                 l.error('spider error, exit...')
+                sys.exit()
+            except ApplyRequestError:
+                l.error('apply task request error, exit...')
                 sys.exit()
             except Exception as e:
                 l.warning(f'main run loop error: {e.__context__}, tb: {traceback.format_exc()}')
