@@ -7,6 +7,7 @@ import requests
 
 from config import PROXY_URL
 from core.logger import Logger
+from core.base import Base
 
 
 def try_catch(pid):
@@ -32,9 +33,6 @@ def try_catch(pid):
 
     return debug
 
-
-class Base:
-    pass
 
 
 class SpiderBase(Base):

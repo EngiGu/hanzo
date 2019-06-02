@@ -51,7 +51,7 @@ class BaseExtract(object):
     }
     """
 
-    def __init__(self, doc):
+    def __init__(self, doc=None):
         """初始化参数"""
 
         if doc:

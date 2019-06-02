@@ -1,0 +1,22 @@
+# extractor config
+
+
+
+
+# rabbitmq
+RABBITMQ_HOST = '192.168.48.129'
+RABBITMQ_PORT = 5672
+RABBITMQ_USER = 'admin'
+RABBITMQ_PWD = 'admin'
+RABBITMQ_EXCHANGE = 'spider'
+QUEUE = 'mqmq'
+
+
+# redis
+REDIS_HOST = '192.168.48.129'
+REDIS_PORT = 6379
+REDIS_DB = 1
+
+# mongo
+MONGODB_HOST = "mongodb://aizhaopin:aizhaopin%402017@dds-2ze05f9b880291d41.mongodb.rds.aliyuncs.com:3717, dds-2ze05f9b880291d42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-4570175"
+

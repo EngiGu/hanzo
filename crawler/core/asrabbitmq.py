@@ -10,7 +10,7 @@ try:
     from online_config import MQ
 except:
     MQ = {
-        'host': "192.168.170.132",
+        'host': "192.168.48.129",
     }
 
 
@@ -19,7 +19,7 @@ except:
 class MqSession(object):
     def __init__(self):
         try:
-            self.credentials = pika.PlainCredentials(username='guest', password='guest')
+            self.credentials = pika.PlainCredentials(username='admin', password='admin')
             self.connection = pika.BlockingConnection(
                 pika.ConnectionParameters(**MQ, credentials=self.credentials, socket_timeout=20, heartbeat=0))
             self.channel = self.connection.channel()
@@ -38,6 +38,7 @@ class MqSession(object):
     def get(self, queue):
         try:
             for method_frame, properties, body in self.channel.consume(queue):
+                print(method_frame, properties, body)
                 return method_frame.delivery_tag, body
         except Exception as e:
             logging.warning('', exc_info=True, stack_info=True)
@@ -117,9 +118,9 @@ def test():
     body = '1pe0sa12'
     session = MqSession()
     print('init')
-    session.put('subscribe-queue', body)
+    session.put('mqmq', body)
     print('put')
-    _tag, _body = session.get('subscribe-queue')
+    _tag, _body = session.get('mqmq')
     print('get', _body)
     session.ack(_tag)
     print('ack')
@@ -156,6 +157,7 @@ def clean_queue(name):
 if __name__ == '__main__':
     # test()
     test_async()
-    # test_data()
+    # test
+    # data()
     # clean_queue('extract-result-queue')
     pass

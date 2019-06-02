@@ -11,13 +11,6 @@ redis_pool = aredis.ConnectionPool(
 )
 
 
-def redis_cli():
-    return redis.StrictRedis(
-        connection_pool=redis_pool,
-        decode_responses=True,  # 自动解码
-    )
-
-
 def aredis_cli():
     return aredis.StrictRedis(
         connection_pool=redis_pool,
@@ -40,7 +33,7 @@ class TaskModel():
     def get_slot(self):
         return int(time.time() * 1000) % 3
 
-    async def push(self,semaphore, type, value):
+    async def push(self, semaphore, type, value):
         print(value)
         async with semaphore:
             if type == 1:

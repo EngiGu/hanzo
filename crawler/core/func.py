@@ -4,7 +4,7 @@ import os
 import socket
 import requests
 from .base import Base
-from config import ROOT_PATH
+# from config import ROOT_PATH
 
 
 def SynResolve(host):

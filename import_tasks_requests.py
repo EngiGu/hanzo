@@ -13,6 +13,7 @@ async def push(i):
             'page': i,
             'site': 'dajie',
             'type': 1,
+            # 'type': 2,
             'keyword': 'xxxxxxxxxxxxx'
             # 'url': 'yyyyyyy'
         })
@@ -24,7 +25,7 @@ async def push(i):
 
 
 loop = asyncio.get_event_loop()
-task = [asyncio.ensure_future(push(i)) for i in range(1000)]
+task = [asyncio.ensure_future(push(i)) for i in range(100)]
 start = time.time()
 loop.run_until_complete(asyncio.wait(task))
 endtime = time.time()-start

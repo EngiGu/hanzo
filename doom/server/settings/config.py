@@ -29,7 +29,7 @@ def load_config():
     define("RABBIT_MQ_PORT", default=5672)
 
     # Redis 配置
-    define("REDIS_HOST", default="192.168.170.132")  # 胡正电脑的redis地址
+    define("REDIS_HOST", default="192.168.48.129")  # 胡正电脑的redis地址
     define("REDIS_PORT", default=6379)
     define("REDIS_DB", default=1)
     define("REDIS_NAMESPACE", default="task")
