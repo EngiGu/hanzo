@@ -1,7 +1,7 @@
 import hashlib
 import json
 from lxml import etree
-from spiders.base import Base
+from core.base import Base
 
 
 class ListToUrl(Base):
@@ -13,7 +13,11 @@ class ListToUrl(Base):
 
     def parser(self, page):
         """数据为html格式"""
-        return None
+        return        {
+            "resume_list": [{'url': 'tests_url', 'hashed_key': '823hhjjkkjdffdsgd'}],
+            "current_page": 1,
+            "last_page": 10
+        }
         tree = etree.HTML(page)
         result = tree.xpath('//div[@class="job-list"]//li')[0]
         resumes = []

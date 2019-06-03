@@ -1,10 +1,11 @@
+
 #! /usr/bin/env python3
 # coding=utf-8
 
 from .resume_base import BaseExtract
 import time
 import re
-from spiders.base import Base
+from core.base import Base
 
 
 class HtmlToDict(BaseExtract, Base):

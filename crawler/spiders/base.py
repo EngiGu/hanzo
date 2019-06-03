@@ -6,44 +6,48 @@ import time
 import requests
 
 from config import PROXY_URL
-from core.logger import Logger
+# from core.logger import Logger
+from core.base import Base
+import logging
 
 
-def try_catch(pid):
-    def debug(func):
-        # @functools.wraps(func)
-        def wrapper(*args, **kwargs):
-            pid = os.getpid()
-            print(pid)
-            l = args[0].l
-            func_name = func.__qualname__
-            # l.info("enter {}()".format(func_name))
-            l.info('{} pid:{} key: {}, await 7s for page content'.format(func_name, pid, args[-1]))
-            # print(*args)
-            # for i in dir(func):
-            #     print('func.' + i + ' ---- ', eval('func.' + i))
-            try:
-                return func(*args, **kwargs)
-            except Exception as e:
-                l.info('{} pid:{} error ===>>> {}'.format(func_name, pid, str(e)))
-            l.info('{} key: {}, crawl end...'.format(func_name, args[-1]))
-
-        return wrapper
-
-    return debug
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
 
-class Base:
-    pass
+
+# def try_catch(pid):
+#     def debug(func):
+#         # @functools.wraps(func)
+#         def wrapper(*args, **kwargs):
+#             pid = os.getpid()
+#             print(pid)
+#             l = args[0].l
+#             func_name = func.__qualname__
+#             # l.info("enter {}()".format(func_name))
+#             l.info('{} pid:{} key: {}, await 7s for page content'.format(func_name, pid, args[-1]))
+#             # print(*args)
+#             # for i in dir(func):
+#             #     print('func.' + i + ' ---- ', eval('func.' + i))
+#             try:
+#                 return func(*args, **kwargs)
+#             except Exception as e:
+#                 l.info('{} pid:{} error ===>>> {}'.format(func_name, pid, str(e)))
+#             l.info('{} key: {}, crawl end...'.format(func_name, args[-1]))
+#
+#         return wrapper
+#
+#     return debug
+
 
 
 class SpiderBase(Base):
     selenium = False
     name = 'base'
 
-    def __init__(self):
+    def __init__(self, logger=None):
         # self.name = 'base'
-        self.l = Logger(self.name)
+        self.l = logger if logger else logging
         self.driver = None
         self.pid = os.getpid()
         self.s = requests.session()

@@ -13,6 +13,9 @@ class ApplySiteError(ApplyTask):
 class ApplyTypeError(ApplyTask):
     pass
 
+class ApplyRequestError(ApplyTask):
+    pass
+
 
 class SpiderDoNotExists(Exception):
     pass
