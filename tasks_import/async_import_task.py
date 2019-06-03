@@ -11,23 +11,11 @@ redis_pool = aredis.ConnectionPool(
     db=1
 )
 
-
-# def redis_cli():
-#     return redis.StrictRedis(
-#         connection_pool=redis_pool,
-#         decode_responses=True,  # 自动解码
-#     )
-
-
 def aredis_cli():
     return aredis.StrictRedis(
         connection_pool=redis_pool,
         decode_responses=True,  # 自动解码
     )
-
-
-TYPE1_NUM = 3
-
 
 class TaskModel():
     def __init__(self, *args, **kwargs):
@@ -45,16 +33,22 @@ if __name__ == '__main__':
 
 
     def company():
-        with open(file, 'r', encoding='utf-8') as f:
-            while True:
-                line = f.readline()
-                if not line:
-                    break
-                yield line.strip()
 
+        city_code = range(1, 359)
+        finance_status = range(1, 9)
+        industry_status = [24, 25, 26, 27, 28, 29, 31, 32, 33, 34, 35, 38, 41, 43, 45, 47, 48, 49] + list(
+            range(15793, 15804))
+        scale_status = range(1, 7)
+
+        for city in city_code:
+            for finance in finance_status:
+                for industry in industry_status:
+                    for scale in scale_status:
+                        key_word = "{}-{}-{}-{}".format(city, finance, industry, scale)
+                        yield key_word
 
     def gene(to_fill):
-        task = {'page': 1, 'site': 'dajie', 'type': 1, 'keyword': to_fill}
+        task = {'page': 1, 'site': 'lagou', 'type': 1, 'keyword': to_fill}
         return json.dumps(task, ensure_ascii=False)
 
 
