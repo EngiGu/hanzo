@@ -9,20 +9,22 @@ from config import *
 from core.func import load_module
 from core.exceptions import *
 from core.rabbitmq import MqSession
+from core.logger import Logger
 
 import logging
 
 SPIDERS_MAPS = load_module('spiders', __file__, 'cp_')
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
-
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
+#
 
 class Run:
-    def __init__(self, site):
+    def __init__(self, site, st_flag=100):
         self.site = site
 
-        self.logger = logging
+        # self.logger = logging
+        self.logger = Logger(f'run_{site}_{st_flag}')
         self.mq = MqSession(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE)
 
         # self.logger.info(f'loaded list parser: {str(EXTRACT_LIST)}')
@@ -173,14 +175,14 @@ class Run:
                     if not type:
                         raise ApplyTypeError('apply task has no type!')
 
-                    c = SPIDERS_MAPS[self.site]()
+                    c = SPIDERS_MAPS[self.site](self.logger)
 
                     if type in [1, 3, 4]:
                         try:
 
                             res = c.query_list_page(one_task['keyword'], one_task['page'])
-                            res = """html test!!!!
-                            """
+                            # res = """html test!!!!
+                            # """
                             print('res:', res)
                         except Exception as e:
                             l.error(f'spider query_list_page error: {e.__context__}, tb: {traceback.format_exc()}')
@@ -193,8 +195,8 @@ class Run:
                     elif type in [2, 5]:
                         try:
                             res = c.query_detail_page(one_task['url'])
-                            res = """html test type2 !!!!
-                                                        """
+                            # res = """html test type2 !!!!
+                            #                             """
                             print('res:', res)
                         except Exception as e:
                             l.error(f'spider query_detail_page error: {e.__context__}, tb: {traceback.format_exc()}')

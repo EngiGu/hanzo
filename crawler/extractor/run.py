@@ -7,7 +7,7 @@ import multiprocessing
 
 from handlers import handler  # 放前面先把core包环境路径加上
 from core.rabbitmq import AsMqSession as AsMq
-from core.asredis import AsRedis as AsRe
+# from core.asredis import AsRedis as AsRe
 from config import *
 
 print(QUEUE)

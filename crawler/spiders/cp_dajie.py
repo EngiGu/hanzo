@@ -3,6 +3,7 @@ import random
 
 from lxml import etree
 from lxml.etree import HTML
+import logging
 
 try:
     from .base import *
@@ -10,11 +11,17 @@ except:
     from base import *
 
 
-class DaJie(Base):
+logging.basicConfig(level=logging.INFO,
+                    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
+
+
+class DaJie(SpiderBase):
     name = 'dajie'
 
-    def __init__(self):
-        super(DaJie, self).__init__()
+    def __init__(self, logger=None):
+        super(DaJie, self).__init__(logger)
+
+
         # self.url = 'https://www.brfaka.com/orderquery?order_id={}'
 
     def query_list_page(self, key, page_to_go):
