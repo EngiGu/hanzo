@@ -2,9 +2,10 @@ import json
 import os
 import random
 
-from lxml import etree
-from lxml.etree import HTML
-import logging
+# from lxml import etree
+# from lxml.etree import HTML
+# import logging
+from core.base import Base
 
 try:
     from .base import *
@@ -16,7 +17,7 @@ except:
 #                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
 
-class DaJie(SpiderBase):
+class DaJie(SpiderBase, Base):
     name = 'dajie'
 
     def __init__(self, logger=None):
@@ -28,7 +29,7 @@ class DaJie(SpiderBase):
         l.info(f"get key: {str(key)}, page: {page_to_go}")
 
         if isinstance(key, str):
-            key = json.loads(key)
+            key = eval(key)
 
         url = 'https://www.dajie.com/corp/index-pa1-ci{}-po{}-kw/'.format(key['cid'], key['caid'])
         l.info(f"open list page: {url}")
