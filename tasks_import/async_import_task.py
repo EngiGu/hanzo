@@ -26,8 +26,6 @@ def aredis_cli():
     )
 
 
-TYPE1_NUM = 3
-
 
 class TaskModel():
     def __init__(self, *args, **kwargs):
