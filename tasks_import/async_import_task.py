@@ -41,6 +41,7 @@ class TaskModel():
 if __name__ == '__main__':
 
     file = 'key_dajie.list'
+    site = 'dajie'
 
 
     def company():
