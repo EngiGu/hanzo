@@ -1,4 +1,3 @@
-
 #! /usr/bin/env python3
 # coding=utf-8
 
@@ -58,15 +57,7 @@ class HtmlToDict(BaseExtract, Base):
         self.develops.append(develop)
         self.id = self.create_hash_id(self.full_name, self.origin_url, str(self.source))
         self.logo = tree.xpath('//img[@class="bigELogo"]/@src')[0] if tree.xpath('//img[@class="bigELogo"]/@src') else ""
-        return
-
-    def auto_html_to_dict(self, html_doc=None, debug=False):
-        self.doc = html_doc
-        self.debug = debug
-        return None
-
-        if self.load_html(page_source=self.doc['html']):
-            return {
+        self.resume = {
                 "id": self.id,  # 字符串
                 "full_name": self.full_name,  # 字符串
                 "short_name": self.short_name,  # 字符串
@@ -85,6 +76,17 @@ class HtmlToDict(BaseExtract, Base):
                 "productions": self.productions,
                 "cxos": self.cxos
             }
+        jx_resume_id = self.set_jx_resume_id(self.resume)  # 获取jx_resume_id
+        self.resume["jx_resume_id"] = jx_resume_id
+        return
+
+    def auto_html_to_dict(self, html_doc=None, debug=False):
+        self.debug = debug
+        site = html_doc.get("site")
+        self.content = html_doc.get("content", "")
+        if self.load_html(page_source=self.content):
+            self.resume_info()  # 调核心解析函数
+            return self.resume
         else:
             return None
 

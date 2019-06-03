@@ -89,6 +89,7 @@ class SpiderBase():
         func = func_dict.get(method, None)
         if not func:
             raise Exception('method:{} error'.format(method))
+        
         try:
             kwargs.pop('verify')
         except:

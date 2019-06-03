@@ -1,6 +1,10 @@
 # extractor config
 
 
+SITE_SOURCE_MAP = {
+    "lagou": 201,
+    "job51": 205
+}
 
 
 # rabbitmq
