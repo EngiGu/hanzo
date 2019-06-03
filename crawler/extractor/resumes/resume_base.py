@@ -56,6 +56,7 @@ class BaseExtract(object):
 
         if doc:
             # doc 内容{}
+            # print(doc)
             self.update_time_unix = 0
             self.doc = doc
             self.tree = None
@@ -86,16 +87,23 @@ class BaseExtract(object):
         "spider_info":"{}"
         }
         """
+        print("load html")
         if page_source is None:
+            print()
             page_source = self.doc  # 传入的文件为HTML
+            print(self.doc)
         if page_source is None:
+            print(f"page_source is none")
             return False
         if self.debug:
             print("page_source is :{}".format(page_source))
         try:
             self.tree = etree.HTML(page_source)
+            print(self.tree)
         except Exception as e:
+            print(e)
             return False
+        return True
 
     def create_hash_id(self, name, url='', source='100'):
         """生成id"""
