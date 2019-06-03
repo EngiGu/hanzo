@@ -2,7 +2,7 @@
 # coding=utf-8
 import hashlib
 
-from resume_base import BaseExtract
+from .resume_base import BaseExtract
 import time
 import re
 from core.base import Base
