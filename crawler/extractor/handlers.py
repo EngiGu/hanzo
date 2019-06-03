@@ -111,7 +111,7 @@ async def handler(msg: dict):
                 return
             # todo insert mongo
             # resume计算去重
-            detail['jx_resume_id'] = cal_jx_resume_id(detail)
+            detail['jx_resume_id'] = str(cal_jx_resume_id(detail))
             mongo_ur(detail)  # todo 测试一下
 
         except Exception as e:
