@@ -3,6 +3,7 @@ import random
 
 import logging
 import requests
+from core.base import Base
 
 try:
     from .base import *
@@ -15,9 +16,8 @@ except:
 
 import logging
 
-class LaGou(SpiderBase):
+class LaGou(SpiderBase, Base):
     name = 'lagou'
-
 
 
     def __init__(self, logger=None):
