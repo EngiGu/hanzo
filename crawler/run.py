@@ -153,12 +153,13 @@ class Run:
             content = content.decode('utf-8')
         elif isinstance(content, dict):
             content = json.dumps(content, ensure_ascii=False)
-        msg = {"site": site, "type": type, "content": content, "curr_task": curr_task}
-        msg = json.dumps(msg, ensure_ascii=False)
-        st = time.time()
-        self.mq.put(QUEUE, msg)
-        self.logger.info(f"push crawl content(len: {len(content)}) to rabbitmq cost"
-                         f" {(time.time() - st) * 1000:.3f} ms.")
+        if content:
+            msg = {"site": site, "type": type, "content": content, "curr_task": curr_task}
+            msg = json.dumps(msg, ensure_ascii=False)
+            st = time.time()
+            self.mq.put(QUEUE, msg)
+            self.logger.info(f"push crawl content(len: {len(content)}) to rabbitmq cost"
+                             f" {(time.time() - st) * 1000:.3f} ms.")
 
     def run(self):
         l = self.logger
@@ -226,7 +227,9 @@ class Run:
 
 if __name__ == '__main__':
     print(SPIDERS_MAPS)
-    site = 'dajie'
+    site = sys.argv[1]
+    if site not in SPIDERS_MAPS:
+        raise SpiderDoNotExists(f"no site's spider found!")
 
     r = Run(site)
     r.run()

@@ -17,6 +17,8 @@ def aredis_cli():
         decode_responses=True,  # 自动解码
     )
 
+
+
 class TaskModel():
     def __init__(self, *args, **kwargs):
         self.redis_client = aredis_cli()
