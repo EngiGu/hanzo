@@ -5,7 +5,7 @@ from .resume_base import BaseExtract
 import time
 import re
 from core.base import Base
-
+from config import SITE_SOURCE_MAP
 
 class HtmlToDict(BaseExtract, Base):
 
@@ -83,6 +83,11 @@ class HtmlToDict(BaseExtract, Base):
     def auto_html_to_dict(self, html_doc=None, debug=False):
         self.debug = debug
         site = html_doc.get("site")
+        # SITE_SOURCE_MAP = {
+        #     "lagou": 201,
+        #     "job51": 205
+        # }
+        self.source = SITE_SOURCE_MAP.get(site)
         self.content = html_doc.get("content", "")
         if self.load_html(page_source=self.content):
             self.resume_info()  # 调核心解析函数

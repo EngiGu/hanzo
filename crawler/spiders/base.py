@@ -73,7 +73,7 @@ class SpiderBase():
                 self.change_proxy_times += 1
                 return proxies
             except Exception as e:
-                l.warn(f"query: {self.proxy_api}, get proxy error, sleep 5s and try again.... {str(e)}")
+                l.warning(f"query: {self.proxy_api}, get proxy error, sleep 5s and try again.... {str(e)}")
                 time.sleep(5)
         # 代理api挂掉
         raise Exception(f"failed to ge proxy after {self.retry_get_proxy_times} times....")
@@ -89,7 +89,6 @@ class SpiderBase():
         func = func_dict.get(method, None)
         if not func:
             raise Exception('method:{} error'.format(method))
-
         try:
             kwargs.pop('verify')
         except:
@@ -109,7 +108,7 @@ class SpiderBase():
                 return res
             except Exception as e:
                 self.proxy_fa += 1
-                l.warn(f"query page error, sleep 5s and try again.... {str(e)}")
+                l.warning(f"query page error, sleep 5s and try again.... {str(e)}")
                 time.sleep(5)
 
         raise Exception(f"failed to get page response after {self.retry_send_request_times} times....")
