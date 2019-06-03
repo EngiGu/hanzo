@@ -11,7 +11,7 @@ from core.exceptions import *
 from core.rabbitmq import MqSession
 from core.logger import Logger
 
-import logging
+# import logging
 
 SPIDERS_MAPS = load_module('spiders', __file__, 'cp_')
 

@@ -11,8 +11,8 @@ except:
     from base import *
 
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
 
 class DaJie(SpiderBase):
@@ -21,10 +21,8 @@ class DaJie(SpiderBase):
     def __init__(self, logger=None):
         super(DaJie, self).__init__(logger)
 
-
-        # self.url = 'https://www.brfaka.com/orderquery?order_id={}'
-
     def query_list_page(self, key, page_to_go):
+
         pass
 
     def query_detail_page(self, url):

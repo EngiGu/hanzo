@@ -30,7 +30,7 @@ async def handler(msg: dict):
         if not list_parser:
             raise ListParseDoNotExists(f'site: {site} has no corresponding list parser.')
         try:
-            detail = list_parser().parser(_res)
+            detail = list_parser().parser(msg['content'])
             detail_list = detail['resume_list']
             current_page = detail['current_page']
             last_page = detail['last_page']
