@@ -68,6 +68,7 @@ async def main_loop():
                 await mq.ack(tag)
 
             sys.stderr.flush()
+            sys.exit()
 
 
 def run():
