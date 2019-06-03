@@ -2,9 +2,9 @@ import json
 import os
 import random
 
-from lxml import etree
-from lxml.etree import HTML
-import logging
+# from lxml import etree
+# from lxml.etree import HTML
+# import logging
 from core.base import Base
 
 try:

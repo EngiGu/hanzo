@@ -7,12 +7,12 @@ import requests
 
 from config import PROXY_URL
 # from core.logger import Logger
-from core.base import Base
-import logging
-
-
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
+# from core.base import Base
+# import logging
+#
+#
+# logging.basicConfig(level=logging.INFO,
+#                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
 
 
