@@ -5,6 +5,7 @@ import random
 from lxml import etree
 from lxml.etree import HTML
 import logging
+from core.base import Base
 
 try:
     from .base import *
@@ -16,7 +17,7 @@ except:
 #                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
 
-class DaJie(SpiderBase):
+class DaJie(SpiderBase, Base):
     name = 'dajie'
 
     def __init__(self, logger=None):

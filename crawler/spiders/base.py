@@ -41,7 +41,7 @@ logging.basicConfig(level=logging.INFO,
 
 
 
-class SpiderBase(Base):
+class SpiderBase():
     selenium = False
     name = 'base'
 
