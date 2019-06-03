@@ -95,6 +95,9 @@ class SpiderBase():
         except:
             pass
 
+        if kwargs.get('timeout', None):
+            kwargs['timeout'] = 30
+
         for _ in range(self.retry_send_request_times):
             proxies = self.get_proxy()
             kwargs['proxies'] = proxies
