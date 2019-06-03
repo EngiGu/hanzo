@@ -226,7 +226,9 @@ class Run:
 
 if __name__ == '__main__':
     print(SPIDERS_MAPS)
-    site = 'dajie'
+    site = sys.argv[1]
+    if site not in SPIDERS_MAPS:
+        raise SpiderDoNotExists(f"no site's spider found!")
 
     r = Run(site)
     r.run()
