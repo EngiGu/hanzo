@@ -53,13 +53,14 @@ async def main_loop():
                 'type': msg['type'],
                 'curr_task': msg['curr_task'],
             }, ensure_ascii=False)
-            print('msg:', msg)
+            # print('msg:', msg)
             print('task_summary:', task_summary)
             try:
                 logging.info('get: %s', task_summary)
                 await handler(msg)
 
             except:
+                logging.info(f"error msg: {str(msg)}")
                 logging.warning('nack: %s', task_summary, exc_info=True, stack_info=True)
                 await mq.nack(tag, requeue=False)
 
