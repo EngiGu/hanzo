@@ -88,7 +88,7 @@ class LaGou(SpiderBase, Base):
             #     "state": 2403
             # }
             if (res.status_code == 200):
-                if "success" in res.text:
+                if "result" in res.text:
                     self.l.info("search success !!!")
                     return res.text
                 elif "操作太频繁" in res.text:
@@ -99,7 +99,8 @@ class LaGou(SpiderBase, Base):
                     continue
                 else:
                     self.l.info("公司的搜索页面有问题")
-                    time.sleep(3)
+                    self.proxy_fa = 10
+                    self.proxy = {}
                     continue
             else:
                 self.l.error(f"response status_code is wrong:{res.status_code}")
