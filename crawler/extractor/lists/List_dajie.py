@@ -26,14 +26,16 @@ class ListToUrl(Base):
                 "current_page": 1,
                 "last_page": 1
             }
-        print(page)
+        # print(page)
         tree = etree.HTML(page)
         result = tree.xpath('//div[@class="listBox"]/ul/li')
         # print(len(result))
-        curr_page = tree.xpath('//div[@class="paging"]/span[@class="current"]/text()')[0]
+        curr_page = tree.xpath('//div[@class="paging"]/span[@class="current"]/text()')
+        curr_page = curr_page[0] if curr_page else '1'
         curr_page = int(curr_page)
         # print(curr_page)
         total_page = tree.xpath('//div[@class="paging"]/a[@class="next"]/preceding-sibling::a[1]/text()')[0]
+        total_page = total_page[0] if total_page else '1'
         total_page = int(total_page)
         # print(total_page)
         # sys.exit()
