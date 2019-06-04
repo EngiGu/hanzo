@@ -20,12 +20,13 @@ class ListToUrl(Base):
     def parser(self, page):
         """数据为html格式"""
 
-        if '抱歉，暂时没有找到符合条件的公司' in page:
+        if '没有找到符合条件的公司' in page:
             return {
                 "resume_list": [],
                 "current_page": 1,
                 "last_page": 1
             }
+        print(page)
         tree = etree.HTML(page)
         result = tree.xpath('//div[@class="listBox"]/ul/li')
         # print(len(result))
