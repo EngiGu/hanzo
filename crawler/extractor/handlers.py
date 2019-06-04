@@ -71,6 +71,7 @@ async def handler(msg: dict):
                 }, ensure_ascii=False)
                 await ards.push('%s_2' % site, data)
                 l.info(f'site: {site} has generated new type2 task: {data}, pushed successfully.')
+            l.info(f"site: {site} page: {current_page} -> {last_page}")
             if last_page > current_page:
                 next_page_task = deepcopy(msg['curr_task'])
                 _curr_task = deepcopy(msg['curr_task'])
