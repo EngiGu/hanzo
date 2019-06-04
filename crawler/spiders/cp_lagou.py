@@ -156,8 +156,8 @@ class LaGou(SpiderBase, Base):
                     continue
                 else:
                     l.info("公司的搜索页面有问题")
-                    l.info(f"res is:{response.text}")
-                    time.sleep(3)
+                    self.proxy_fa = 10
+                    self.proxy = {}
                     continue
             else:
                 l.error(f"response status_code is wrong:{response.status_code}")

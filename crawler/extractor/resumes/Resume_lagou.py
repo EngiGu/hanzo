@@ -1,7 +1,10 @@
 #! /usr/bin/env python3
 # coding=utf-8
 
-from .resume_base import BaseExtract
+try:
+    from .resume_base import BaseExtract
+except:
+    from resume_base import BaseExtract
 import time
 import re
 from core.base import Base
@@ -18,7 +21,6 @@ class HtmlToDict(BaseExtract, Base):
     # 2/14
     def resume_info(self):
         """独立的解析函数"""
-        print("start resume info")
         tree = self.tree
         company_busness_info = tree.xpath('//*[@id="companyInfoData"]/text()')
         if not company_busness_info:
@@ -127,9 +129,6 @@ class HtmlToDict(BaseExtract, Base):
                 "productions": self.productions,
                 "cxos": self.cxos
             }
-        jx_resume_id = self.set_jx_resume_id(deepcopy(self.resume))  # 获取jx_resume_id
-        self.resume["jx_resume_id"] = jx_resume_id
-        return
 
     def auto_html_to_dict(self, html_doc=None, debug=False):
         self.debug = debug
