@@ -167,9 +167,11 @@ class Run:
         if self.site not in SPIDERS_MAPS:
             raise SpiderDoNotExists(f'site: {self.site} has no corresponding crawler.')
 
-        spiders_obj_maps = {
-            k: SPIDERS_MAPS[k](self.logger) for k, v in SPIDERS_MAPS.items()
-        }
+        # spiders_obj_maps = {
+        #     k: SPIDERS_MAPS[k](self.logger) for k, v in SPIDERS_MAPS.items()
+        # }
+        #
+        c = SPIDERS_MAPS[self.site](self.logger)
 
         while True:
             try:
@@ -181,7 +183,7 @@ class Run:
                     if not type:
                         raise ApplyTypeError('apply task has no type!')
 
-                    c = spiders_obj_maps[self.site]
+                    # c = spiders_obj_maps[self.site]
 
                     if type in [1, 3, 4]:
                         try:
