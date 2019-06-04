@@ -15,6 +15,7 @@ from core.logger import Logger
 
 SPIDERS_MAPS = load_module('spiders', __file__, 'cp_')
 
+
 # logging.basicConfig(level=logging.INFO,
 #                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 #
@@ -28,7 +29,7 @@ class Run:
 
         self.logger = Logger(f'{site}/run_{site}_{st_flag}')
         if not os.path.exists(os.path.join(ROOT_PATH, f'logs/{site}')):
-            os.mkdir(os.path.join(ROOT_PATH, f'logs/{site}')) # 创建site日志目录
+            os.mkdir(os.path.join(ROOT_PATH, f'logs/{site}'))  # 创建site日志目录
         self.logger.info(f'loaded spiders: {str(SPIDERS_MAPS)}')
 
     def apply_task(self, action="get", site=None, task=None):
@@ -166,6 +167,10 @@ class Run:
         if self.site not in SPIDERS_MAPS:
             raise SpiderDoNotExists(f'site: {self.site} has no corresponding crawler.')
 
+        spiders_obj_maps = {
+            k: SPIDERS_MAPS[k](self.logger) for k, v in SPIDERS_MAPS.items()
+        }
+
         while True:
             try:
                 one_task = self.apply_task(action='get', site=self.site)
@@ -176,7 +181,7 @@ class Run:
                     if not type:
                         raise ApplyTypeError('apply task has no type!')
 
-                    c = SPIDERS_MAPS[self.site](self.logger)
+                    c = spiders_obj_maps[self.site]
 
                     if type in [1, 3, 4]:
                         try:
@@ -230,6 +235,7 @@ class Run:
 
 if __name__ == '__main__':
     from multiprocessing import Process
+
     print(SPIDERS_MAPS)
     site = sys.argv[1]
     if site not in SPIDERS_MAPS:
@@ -238,7 +244,7 @@ if __name__ == '__main__':
     st_flag = 100
     p_list = []
     for i in range(NUM_PER_MACHINE):
-        p =  Process(target=Run(site=site, st_flag=st_flag+i).run, name=f'Process-{site}-{st_flag+i}')
+        p = Process(target=Run(site=site, st_flag=st_flag + i).run, name=f'Process-{site}-{st_flag+i}')
         p.start()
         p_list.append(p)
         time.sleep(30)

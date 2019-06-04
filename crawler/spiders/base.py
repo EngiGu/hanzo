@@ -6,39 +6,6 @@ import logging
 import requests
 
 from config import PROXY_URL
-# from core.logger import Logger
-# from core.base import Base
-# import logging
-#
-#
-# logging.basicConfig(level=logging.INFO,
-#                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
-
-
-
-# def try_catch(pid):
-#     def debug(func):
-#         # @functools.wraps(func)
-#         def wrapper(*args, **kwargs):
-#             pid = os.getpid()
-#             print(pid)
-#             l = args[0].l
-#             func_name = func.__qualname__
-#             # l.info("enter {}()".format(func_name))
-#             l.info('{} pid:{} key: {}, await 7s for page content'.format(func_name, pid, args[-1]))
-#             # print(*args)
-#             # for i in dir(func):
-#             #     print('func.' + i + ' ---- ', eval('func.' + i))
-#             try:
-#                 return func(*args, **kwargs)
-#             except Exception as e:
-#                 l.info('{} pid:{} error ===>>> {}'.format(func_name, pid, str(e)))
-#             l.info('{} key: {}, crawl end...'.format(func_name, args[-1]))
-#
-#         return wrapper
-#
-#     return debug
-
 
 
 class SpiderBase():
@@ -63,6 +30,7 @@ class SpiderBase():
         l = self.l
         if self.proxy and self.proxy_fa < 3:
             return self.proxy
+
         for _ in range(self.retry_get_proxy_times):
             try:
                 l.info(f"start get proxy...")
@@ -90,7 +58,7 @@ class SpiderBase():
         func = func_dict.get(method, None)
         if not func:
             raise Exception('method:{} error'.format(method))
-        
+
         try:
             kwargs.pop('verify')
         except:
