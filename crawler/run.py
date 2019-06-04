@@ -226,10 +226,19 @@ class Run:
 
 
 if __name__ == '__main__':
+    from multiprocessing import Process
     print(SPIDERS_MAPS)
     site = sys.argv[1]
     if site not in SPIDERS_MAPS:
         raise SpiderDoNotExists(f"no site's spider found!")
 
-    r = Run(site)
-    r.run()
+    st_flag = 100
+    p_list = []
+    for i in range(NUM_PER_MACHINE):
+        p =  Process(target=Run(site=site, st_flag=st_flag+i).run, name=f'Process-{site}-{st_flag+i}')
+        p.start()
+        p_list.append(p)
+        time.sleep(30)
+
+    for p in p_list:
+        p.join()
