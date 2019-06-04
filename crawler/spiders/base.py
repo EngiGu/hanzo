@@ -107,6 +107,7 @@ class SpiderBase():
                 f'current: {proxies["http"]}')
             try:
                 res = func(**kwargs)
+                self.proxy_fa = 0
                 return res
             except Exception as e:
                 self.proxy_fa += 1
