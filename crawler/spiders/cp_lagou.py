@@ -64,8 +64,12 @@ class LaGou(SpiderBase, Base):
         }
         # retry_times = 10
         retry_times = 0
-        frequence_time = 0
+        error_time = 0
         while True:
+            if error_time >= 5:
+                self.l.info("no result with 10 times retry")
+                error_time = 0
+                self.proxy= {}  # 重新获取代理
             if retry_times >= 20:
                 self.l.info("no result with 10 times retry")
                 break
@@ -93,14 +97,14 @@ class LaGou(SpiderBase, Base):
                     time.sleep(1)
                     return res.text
                 elif "操作太频繁" in res.text:
-                    self.l.info(f"操作太频繁:{frequence_time}")
+                    self.l.info(f"操作太频繁:{error_time}")
                     # 直接更换代理
-                    self.proxy_fa += 1
+                    error_time += 1
                     time.sleep(2)
                     continue
                 else:
                     self.l.info("公司的搜索页面有问题")
-                    self.proxy_fa += 1
+                    error_time += 1
                     time.sleep(2)
                     continue
             else:
@@ -134,7 +138,12 @@ class LaGou(SpiderBase, Base):
         }
 
         retry_times = 0
+        error_time = 0
         while True:
+            if error_time >= 5:
+                self.l.info("no result with 10 times retry")
+                error_time = 0
+                self.proxy= {}  # 重新获取代理
             if retry_times >= 20:
                 self.l.info("no result with 10 times retry")
                 break
@@ -158,7 +167,8 @@ class LaGou(SpiderBase, Base):
                     continue
                 else:
                     l.info("公司的搜索页面有问题")
-                    self.proxy_fa += 1
+                    error_time += 1
+                    time.sleep(2)
                     continue
             else:
                 l.error(f"response status_code is wrong:{response.status_code}")
