@@ -25,7 +25,7 @@ class Run:
 
         # self.logger = logging
         self.mq = MqSession(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE)
-        
+
         self.logger = Logger(f'run_{site}_{st_flag}')
         if not os.path.exists(os.path.join(ROOT_PATH, f'logs/{site}')):
             os.mkdir(os.path.join(ROOT_PATH, f'logs/{site}')) # 创建site日志目录
@@ -184,7 +184,7 @@ class Run:
                             res = c.query_list_page(one_task['keyword'], one_task['page'])
                             # res = """html test!!!!
                             # """
-                            print('res:', res)
+                            # print('res:', res)
                         except Exception as e:
                             l.error(f'spider query_list_page error: {e.__context__}, tb: {traceback.format_exc()}')
                             raise SpiderError('query_list_page error')
@@ -198,7 +198,7 @@ class Run:
                             res = c.query_detail_page(one_task['url'])
                             # res = """html test type2 !!!!
                             #                             """
-                            print('res:', res)
+                            # print('res:', res)
                         except Exception as e:
                             l.error(f'spider query_detail_page error: {e.__context__}, tb: {traceback.format_exc()}')
                             raise SpiderError('query_detail_page error')
