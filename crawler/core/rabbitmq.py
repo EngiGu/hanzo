@@ -43,7 +43,7 @@ class MqSession(object, metaclass=Singleton):
                 credentials=self.credentials,
                 blocked_connection_timeout=2,  # 设置2秒超时，避免阻塞
                 port=self.port,
-                heartbeat=30  # 心跳时间
+                heartbeat=60  # 心跳时间
             ))
             self.channel = self.connection.channel()
             self.channel.basic_qos(prefetch_count=1)
@@ -51,7 +51,7 @@ class MqSession(object, metaclass=Singleton):
             logging.exception(e)
             return
 
-    def _put(self, queue, body, priority=0, expiration=None):
+    def _put(self, queue, body, priority=0):
         self.channel.basic_publish(
             exchange=self.exchange,
             routing_key=queue,
@@ -59,7 +59,7 @@ class MqSession(object, metaclass=Singleton):
             properties=pika.BasicProperties(
                 delivery_mode=2,  # 2=消息持久话
                 priority=priority,
-                expiration=expiration and str(expiration) or None,
+                # expiration=expiration and str(expiration) or None,
             ),
         )
 

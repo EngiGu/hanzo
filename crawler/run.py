@@ -26,7 +26,7 @@ class Run:
         # self.logger = logging
         self.mq = MqSession(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE)
 
-        self.logger = Logger(f'run_{site}_{st_flag}')
+        self.logger = Logger(f'{site}/run_{site}_{st_flag}')
         if not os.path.exists(os.path.join(ROOT_PATH, f'logs/{site}')):
             os.mkdir(os.path.join(ROOT_PATH, f'logs/{site}')) # 创建site日志目录
         self.logger.info(f'loaded spiders: {str(SPIDERS_MAPS)}')
