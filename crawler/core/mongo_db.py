@@ -9,7 +9,7 @@ class MongoDb():
 
     def __init__(self, dbs, collections):
         """初始化的时候确定数据库以及表"""
-        self.conn = MongoClient(MONGODB_HOST)    #connect to mongodb
+        self.conn = MongoClient(MONGODB_HOST, connect=False)    #connect to mongodb
         self.db = self.conn[dbs]  # 使用脉脉数据库
         self.collection = self.db[collections]
         self.logger = logging
