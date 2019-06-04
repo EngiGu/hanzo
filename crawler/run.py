@@ -24,11 +24,11 @@ class Run:
         self.site = site
 
         # self.logger = logging
-        self.logger = Logger(f'run_{site}_{st_flag}')
         self.mq = MqSession(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE)
-
-        # self.logger.info(f'loaded list parser: {str(EXTRACT_LIST)}')
-        # self.logger.info(f'loaded detail parser: {str(EXTRACT_RESUME)}')
+        
+        self.logger = Logger(f'run_{site}_{st_flag}')
+        if not os.path.exists(os.path.join(ROOT_PATH, f'logs/{site}')):
+            os.mkdir(os.path.join(ROOT_PATH, f'logs/{site}')) # 创建site日志目录
         self.logger.info(f'loaded spiders: {str(SPIDERS_MAPS)}')
 
     def apply_task(self, action="get", site=None, task=None):
