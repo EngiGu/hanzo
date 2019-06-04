@@ -209,7 +209,7 @@ class Run:
 
                     else:
                         raise ApplyTypeError(f'apply task type: {type} not in [1,2,3,4,5]!')
-                sys.exit()
+                # sys.exit()
 
             except (ListParseDoNotExists, DetailParseDoNotExists, ApplyTypeError, ApplyActionError, ApplySiteError):
                 l.error('fatal error, exit...')
