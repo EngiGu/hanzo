@@ -18,6 +18,13 @@ class HtmlToDict(BaseExtract, Base):
         # 2013-08-15 16:20:48
         return int(time.mktime(time.strptime(str_time, "%Y-%m-%d %H:%M:%S")))
 
+    def reset_style(self, res):
+        """去掉html标签 保证换行符"""
+        # json格式的换成str
+        resumes = re.sub(r'<br\s*/>','\n', res)
+        resumes = re.sub(r'<.*?>',"", resumes)
+        return resumes
+
     # 2/14
     def resume_info(self):
         """独立的解析函数"""
@@ -67,7 +74,7 @@ class HtmlToDict(BaseExtract, Base):
         tag = res.get("labels", [])
         self.tag = tag if tag else ""
         introduce = res["introduction"].get("companyProfile", "")
-        self.introduce = introduce.replace("\n", "").strip() if introduce else ""
+        self.introduce = self.reset_style(introduce) if introduce else ""
         if company_id:
             original_url = f"https://www.lagou.com/gongsi/{company_id}.html"
         else:
@@ -90,6 +97,7 @@ class HtmlToDict(BaseExtract, Base):
             for pro in production_list:
                 production = {}  # 置空
                 production["desc"] = re.sub(r"<.*?>","", pro.get("productprofile", "")).replace("\n", "").strip()
+                production["desc"] = self.reset_style(production["desc"])
                 production["name"] = pro.get("product", "")
                 production["pic"] = ("https://www.lagou.com/" + pro.get("productpicurl", "")) if pro.get("productpicurl", "") else ""
                 production["tags"] = pro.get("producttype", [])  # boss暂无标签
@@ -105,7 +113,7 @@ class HtmlToDict(BaseExtract, Base):
                 cxos["cxo_name"] = ele.get("name", "")
                 cxos["cxo_position"] = ele.get("position", "")
                 cxos["cxo_pic_url"] = ("https://www.lagou.com/" + ele.get("photo", "")) if ele.get("photo", "") else ""
-                cxos["cxo_desc"] = ele.get("remark", "").replace("\n", "").replace("\r", "").strip()  # boss暂无标签
+                cxos["cxo_desc"] = self.reset_style(ele.get("remark", ""))  # boss暂无标签
                 cxos["cxo_tag"] = []  # 暂无tag
                 cxos["create_time"] = 0  # 暂无创建时间
                 cxos["update_time"] = int(time.time())  # 更新时间
@@ -117,7 +125,7 @@ class HtmlToDict(BaseExtract, Base):
                 "industry": self.industry,  # 字符串
                 "found_time": self.found_time,  # 字符串2019-01-01
                 "type": self.type,  #todo  字符串or map
-                "introduce": self.introduce,
+                "introduce": self.reset_style(self.introduce),
                 "tag": self.tag,  # 标签
                 "url": self.url,  # 公司主页
                 "origin_url": self.origin_url,  # 原始网页
