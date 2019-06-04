@@ -51,7 +51,7 @@ class MqSession(object, metaclass=Singleton):
             logging.exception(e)
             return
 
-    def _put(self, queue, body, priority=0):
+    def _put(self, queue, body, priority=0, expiration=None):
         self.channel.basic_publish(
             exchange=self.exchange,
             routing_key=queue,
