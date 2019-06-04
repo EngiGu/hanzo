@@ -22,6 +22,7 @@ class DaJie(SpiderBase, Base):
 
     def __init__(self, logger=None):
         super(DaJie, self).__init__(logger)
+        self.proxy_request_delay = 3
 
     def query_list_page(self, key, page_to_go):
         # key {'provice': '重庆', 'pid': 500000, 'city': '重庆', 'cid': 500000, 'cate': '计算机软件', 'caid': 3104}
@@ -51,7 +52,7 @@ class DaJie(SpiderBase, Base):
                 l.info(f'current query detail page failed, try another time...')
                 continue
             conn = res.content.decode()
-            l.info(f'get list success, len:{len(conn)}')
+            l.info(f'{"*"*5} get list success, len:{len(conn)} {"*"*5}')
             return conn
         return ''
 
@@ -78,7 +79,7 @@ class DaJie(SpiderBase, Base):
                 l.info(f'current query detail page failed, try another time...')
                 continue
             conn = res.content.decode()
-            l.info(f'get detail success, len:{len(conn)}')
+            l.info(f'{"*"*5} get detail success, len:{len(conn)} {"*"*5}')
             return conn
         return ''
 
