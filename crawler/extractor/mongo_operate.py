@@ -28,8 +28,8 @@ def company_update_func(resume):
 
 
 def mongo_ur(resume: dict):
-    print('*'*5, resume)
-    return
+    # print('*'*5, resume)
+    # return
     source = resume.get("source", None)
 
     if source in range(200, 300):
