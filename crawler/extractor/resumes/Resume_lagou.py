@@ -142,6 +142,8 @@ class HtmlToDict(BaseExtract, Base):
         self.debug = debug
         site = html_doc.get("site")
         self.source = SITE_SOURCE_MAP.get(site)
+        if not self.source:
+            raise Exception('config.py has not source on site: {}'.format(site))
         self.content = html_doc.get("content", "")
         if self.load_html(page_source=self.content):
             self.resume_info()  # 调核心解析函数

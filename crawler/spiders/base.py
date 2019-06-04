@@ -2,43 +2,10 @@ import datetime
 import os
 import sys
 import time
-
+import logging
 import requests
 
 from config import PROXY_URL
-# from core.logger import Logger
-# from core.base import Base
-# import logging
-#
-#
-# logging.basicConfig(level=logging.INFO,
-#                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
-
-
-
-# def try_catch(pid):
-#     def debug(func):
-#         # @functools.wraps(func)
-#         def wrapper(*args, **kwargs):
-#             pid = os.getpid()
-#             print(pid)
-#             l = args[0].l
-#             func_name = func.__qualname__
-#             # l.info("enter {}()".format(func_name))
-#             l.info('{} pid:{} key: {}, await 7s for page content'.format(func_name, pid, args[-1]))
-#             # print(*args)
-#             # for i in dir(func):
-#             #     print('func.' + i + ' ---- ', eval('func.' + i))
-#             try:
-#                 return func(*args, **kwargs)
-#             except Exception as e:
-#                 l.info('{} pid:{} error ===>>> {}'.format(func_name, pid, str(e)))
-#             l.info('{} key: {}, crawl end...'.format(func_name, args[-1]))
-#
-#         return wrapper
-#
-#     return debug
-
 
 
 class SpiderBase():
@@ -57,11 +24,13 @@ class SpiderBase():
         self.retry_get_proxy_times = 20
         self.retry_send_request_times = 20
         self.proxy_api = PROXY_URL
+        self.proxy_request_delay = 5
 
     def get_proxy(self):
         l = self.l
         if self.proxy and self.proxy_fa < 3:
             return self.proxy
+
         for _ in range(self.retry_get_proxy_times):
             try:
                 l.info(f"start get proxy...")
@@ -89,28 +58,31 @@ class SpiderBase():
         func = func_dict.get(method, None)
         if not func:
             raise Exception('method:{} error'.format(method))
-        
+
         try:
             kwargs.pop('verify')
         except:
             pass
 
-        if kwargs.get('timeout', None):
+        if not kwargs.get('timeout', None):
             kwargs['timeout'] = 30
 
         for _ in range(self.retry_send_request_times):
             proxies = self.get_proxy()
             kwargs['proxies'] = proxies
             l.info(
-                f'{self.name}:{self.pid} -> query: {_+1}, change proxy times: {self.change_proxy_times}, proxy failed times: {self.proxy_fa}, '
-                f'current proxy: {str(proxies).replace(" ", "")}')
+                f'{self.name} pid:{self.pid} -> retry: {_+1}, change: {self.change_proxy_times}, failed: {self.proxy_fa}, '
+                f'current: {proxies["http"]}')
             try:
                 res = func(**kwargs)
+                self.proxy_fa = 0
                 return res
             except Exception as e:
                 self.proxy_fa += 1
-                l.warning(f"query page error, sleep 5s and try again.... {str(e)}")
-                time.sleep(5)
+                l.warning(f"request error: {e.__context__}")
+                if self.proxy_request_delay:
+                    l.info(f"send request sleep {self.proxy_request_delay}s.")
+                    time.sleep(self.proxy_request_delay)
 
         raise Exception(f"failed to get page response after {self.retry_send_request_times} times....")
 

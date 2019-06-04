@@ -41,9 +41,9 @@ class MqSession(object, metaclass=Singleton):
             self.connection = pika.BlockingConnection(pika.ConnectionParameters(
                 host=self.host,
                 credentials=self.credentials,
-                blocked_connection_timeout=2,  # 设置2秒超时，避免阻塞
+                # blocked_connection_timeout=2,  # 设置2秒超/时，避免阻塞
                 port=self.port,
-                heartbeat=30  # 心跳时间
+                heartbeat=200  # 心跳时间
             ))
             self.channel = self.connection.channel()
             self.channel.basic_qos(prefetch_count=1)
@@ -56,19 +56,19 @@ class MqSession(object, metaclass=Singleton):
             exchange=self.exchange,
             routing_key=queue,
             body=body,
-            properties=pika.BasicProperties(
-                delivery_mode=2,  # 2=消息持久话
-                priority=priority,
-                expiration=expiration and str(expiration) or None,
-            ),
+            # properties=pika.BasicProperties(
+            #     delivery_mode=2,  # 2=消息持久话
+            #     priority=priority,
+            #     # expiration=expiration and str(expiration) or None,
+            # ),
         )
 
     def put(self, queue, body, priority=0, expiration=None):
         try:
             self._put(queue, body, priority, expiration)
-        except (ConnectionClosed, ChannelClosed) as e:
+        except (ConnectionClosed, ChannelClosed, FileNotFoundError) as e:
             logging.warning("reconnect and push msg: {} to queue: {}".format(body, queue))
-            self.connection.close()
+            # self.connection.close()
             self.connect()
             self._put(queue, body, priority, expiration)
         except Exception as e:
