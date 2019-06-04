@@ -57,14 +57,3 @@ if __name__ == '__main__':
     endtime = time.time() - start
     print(endtime)
     loop.close()
-
-
-    loop = asyncio.get_event_loop()
-    t = TaskModel().push
-    semaphore = asyncio.Semaphore(500)
-    task = [asyncio.ensure_future(t(semaphore, site ,type=1, value=gene(i))) for i in company()]
-    start = time.time()
-    loop.run_until_complete(asyncio.wait(task))
-    endtime = time.time() - start
-    print(endtime)
-    loop.close()
