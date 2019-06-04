@@ -24,7 +24,7 @@ if not SAVE_LOG:
 else:
     def Logger(set_name=None):
         format = '%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s'
-        logger = logging.getLogger("{}.log".format(set_name + str(int(time.time() * 1000))))
+        logger = logging.getLogger("logs/{}.log".format(set_name))
         format_str = logging.Formatter(format)  # 设置日志格式
         logger.setLevel(maps.get(LEVEL))  # 设置日志级别
         sh = logging.StreamHandler()  # 往屏幕上输出

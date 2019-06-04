@@ -2,7 +2,7 @@ import datetime
 import os
 import sys
 import time
-
+import logging
 import requests
 
 from config import PROXY_URL
@@ -102,14 +102,14 @@ class SpiderBase():
             proxies = self.get_proxy()
             kwargs['proxies'] = proxies
             l.info(
-                f'{self.name}:{self.pid} -> query: {_+1}, change proxy times: {self.change_proxy_times}, proxy failed times: {self.proxy_fa}, '
+                f'{self.name} pid:{self.pid} -> query: {_+1}, change proxy times: {self.change_proxy_times}, proxy failed times: {self.proxy_fa}, '
                 f'current proxy: {str(proxies).replace(" ", "")}')
             try:
                 res = func(**kwargs)
                 return res
             except Exception as e:
                 self.proxy_fa += 1
-                l.warning(f"query page error, sleep 5s and try again.... {str(e)}")
+                l.warning(f"query page error, sleep 5s and try again.... {e.__context__}")
                 time.sleep(5)
 
         raise Exception(f"failed to get page response after {self.retry_send_request_times} times....")
