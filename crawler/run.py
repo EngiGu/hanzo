@@ -221,7 +221,7 @@ class Run:
                 l.error('apply task request error, exit...')
                 sys.exit()
             except KeyboardInterrupt:
-                l.info('ctrl+c interrupt, exit...')
+                l.info('main run loop ctrl+c interrupt, exit...')
                 sys.exit()
             except Exception as e:
                 l.warning(f'main run loop error: {e.__context__}, tb: {traceback.format_exc()}')
