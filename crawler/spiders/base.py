@@ -110,8 +110,8 @@ class SpiderBase():
             except Exception as e:
                 self.proxy_fa += 1
                 l.warning(f"request error: {e.__context__}")
-                l.info(f"send request sleep 5s.")
-                time.sleep(5)
+                # l.info(f"send request sleep 5s.")
+                # time.sleep(5)
 
         raise Exception(f"failed to get page response after {self.retry_send_request_times} times....")
 
