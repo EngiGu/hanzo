@@ -69,7 +69,7 @@ async def main_loop():
                 await mq.ack(tag)
 
             sys.stderr.flush()
-            sys.exit()
+            # sys.exit()
 
 
 def run():
@@ -82,13 +82,13 @@ def run():
 
 
 if __name__ == '__main__':
-    # handle_process = []
-    # for i in range(1):
-    #     p = multiprocessing.Process(target=run)
-    #     handle_process.append(p)
-    # for p in handle_process:
-    #     p.start()
-    # for p in handle_process:
-    #     p.join()
-    run()
-    pass
+    handle_process = []
+    for i in range(10):
+        p = multiprocessing.Process(target=run)
+        handle_process.append(p)
+    for p in handle_process:
+        p.start()
+    for p in handle_process:
+        p.join()
+    # run()
+    # pass
