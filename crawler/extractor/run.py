@@ -10,30 +10,12 @@ from core.rabbitmq import AsMqSession as AsMq
 # from core.asredis import AsRedis as AsRe
 from config import *
 
-print(QUEUE)
+# print(QUEUE)
 
-logging.basicConfig(level=logging.INFO,
-                    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
-
-
-# async def invalid_message_handler(msg, db_pool):
-#     print('invalid message, %s' % msg)
-#     await update_query_dispatch_status(db_pool, msg['url_sign'], 'parse_error')
-
-# CRAWLER_MESSAGE_DISPATCH_KEY_MAP = {
-#     'reversed': invalid_message_handler,
-#     'lists': lists.handler,
-#     'resumes': resumes.handler,
-# }
-# CRAWLER_MESSAGE_DISPATCH_INDEX_MAP = {
-#     CRAWLER_MESSAGE_TYPE_MAP[key]: handler
-#     for key, handler in CRAWLER_MESSAGE_DISPATCH_KEY_MAP.items()
-# }
-
-# BASE_DIR = os.path.dirname(__file__)
-# DUMMY_DATA = os.path.join(BASE_DIR, 'dummy_interface/web_crawler_queue.json')
-
-# ards = AsRe(REDIS_HOST, REDIS_PORT, REDIS_DB)
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s'
+)
 
 
 async def main_loop():
@@ -90,5 +72,3 @@ if __name__ == '__main__':
         p.start()
     for p in handle_process:
         p.join()
-    # run()
-    # pass
