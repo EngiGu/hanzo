@@ -96,7 +96,7 @@ class SpiderBase():
         except:
             pass
 
-        if kwargs.get('timeout', None):
+        if not kwargs.get('timeout', None):
             kwargs['timeout'] = 30
 
         for _ in range(self.retry_send_request_times):
@@ -106,9 +106,7 @@ class SpiderBase():
                 f'{self.name} pid:{self.pid} -> retry: {_+1}, change: {self.change_proxy_times}, failed: {self.proxy_fa}, '
                 f'current: {proxies["http"]}')
             try:
-                self.l.info(f"start send request")
                 res = func(**kwargs)
-                self.l.info(f"end send request")
                 return res
             except Exception as e:
                 self.proxy_fa += 1
