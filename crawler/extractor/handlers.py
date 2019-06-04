@@ -54,7 +54,7 @@ async def handler(msg: dict):
             detail = list_parser().parser(msg['content'])
             detail_list = detail['resume_list']
             if not detail['resume_list']:
-                l.info(f"list parse resume_list is empty list.")
+                l.info(f"site: {site} list parse resume_list is empty list.")
             current_page = detail['current_page']
             last_page = detail['last_page']
             for one in detail_list:
