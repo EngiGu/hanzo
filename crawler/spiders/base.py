@@ -57,6 +57,7 @@ class SpiderBase():
         self.retry_get_proxy_times = 20
         self.retry_send_request_times = 20
         self.proxy_api = PROXY_URL
+        self.proxy_request_delay = 5
 
     def get_proxy(self):
         l = self.l
@@ -110,8 +111,9 @@ class SpiderBase():
             except Exception as e:
                 self.proxy_fa += 1
                 l.warning(f"request error: {e.__context__}")
-                # l.info(f"send request sleep 5s.")
-                # time.sleep(5)
+                if self.proxy_request_delay:
+                    l.info(f"send request sleep {self.proxy_request_delay}s.")
+                    time.sleep(self.proxy_request_delay)
 
         raise Exception(f"failed to get page response after {self.retry_send_request_times} times....")
 
