@@ -21,6 +21,11 @@ REDIS_HOST = '10.0.0.48'
 REDIS_PORT = 6379
 REDIS_DB = 1
 
+# count_redis
+C_REDIS_HOST = '10.0.0.48'
+C_REDIS_PORT = 6379
+C_REDIS_DB = 2
+
 # mongo
 MONGODB_HOST = "mongodb://aizhaopin:aizhaopin%402017@dds-2ze05f9b880291d41.mongodb.rds.aliyuncs.com:3717, dds-2ze05f9b880291d42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-4570175"
 
