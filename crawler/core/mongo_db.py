@@ -25,7 +25,7 @@ class MongoDb():
 
         if type==1:
             # 只查找一个
-            doc = self.collection.find_one(no_cursor_timeout = True)
+            doc = self.collection.find_one(query, no_cursor_timeout = True)
             if not doc:
                 self.logger.info(f"search result is None")
                 return None
