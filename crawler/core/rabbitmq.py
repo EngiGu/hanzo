@@ -43,7 +43,7 @@ class MqSession(object, metaclass=Singleton):
                 credentials=self.credentials,
                 blocked_connection_timeout=2,  # 设置2秒超时，避免阻塞
                 port=self.port,
-                heartbeat=60  # 心跳时间
+                heartbeat=200  # 心跳时间
             ))
             self.channel = self.connection.channel()
             self.channel.basic_qos(prefetch_count=1)
@@ -56,11 +56,11 @@ class MqSession(object, metaclass=Singleton):
             exchange=self.exchange,
             routing_key=queue,
             body=body,
-            properties=pika.BasicProperties(
-                delivery_mode=2,  # 2=消息持久话
-                priority=priority,
-                # expiration=expiration and str(expiration) or None,
-            ),
+            # properties=pika.BasicProperties(
+            #     delivery_mode=2,  # 2=消息持久话
+            #     priority=priority,
+            #     # expiration=expiration and str(expiration) or None,
+            # ),
         )
 
     def put(self, queue, body, priority=0, expiration=None):
