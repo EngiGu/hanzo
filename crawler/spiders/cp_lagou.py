@@ -90,17 +90,18 @@ class LaGou(SpiderBase, Base):
             if (res.status_code == 200):
                 if "result" in res.text:
                     self.l.info("search success !!!")
+                    time.sleep(1)
                     return res.text
                 elif "操作太频繁" in res.text:
                     self.l.info(f"操作太频繁:{frequence_time}")
                     # 直接更换代理
-                    self.proxy_fa = 10
-                    self.proxy = {}
+                    self.proxy_fa += 1
+                    time.sleep(2)
                     continue
                 else:
                     self.l.info("公司的搜索页面有问题")
-                    self.proxy_fa = 10
-                    self.proxy = {}
+                    self.proxy_fa += 1
+                    time.sleep(2)
                     continue
             else:
                 self.l.error(f"response status_code is wrong:{res.status_code}")
@@ -147,6 +148,7 @@ class LaGou(SpiderBase, Base):
             if (response.status_code == 200):
                 if "公司主页" in response.text:
                     l.info("search success !!!")
+                    time.sleep(1)
                     return response.text
                 elif ("封禁" in response.text) or ("请按住滑块，拖动到最右边" in response.text) or ("存在异常访问行为" in response.text):
                     l.info(f"ip被封禁了")
@@ -156,8 +158,7 @@ class LaGou(SpiderBase, Base):
                     continue
                 else:
                     l.info("公司的搜索页面有问题")
-                    self.proxy_fa = 10
-                    self.proxy = {}
+                    self.proxy_fa += 1
                     continue
             else:
                 l.error(f"response status_code is wrong:{response.status_code}")
