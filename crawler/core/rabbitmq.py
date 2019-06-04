@@ -66,7 +66,7 @@ class MqSession(object, metaclass=Singleton):
     def put(self, queue, body, priority=0, expiration=None):
         try:
             self._put(queue, body, priority, expiration)
-        except (ConnectionClosed, ChannelClosed) as e:
+        except (ConnectionClosed, ChannelClosed, FileNotFoundError) as e:
             logging.warning("reconnect and push msg: {} to queue: {}".format(body, queue))
             self.connection.close()
             self.connect()
