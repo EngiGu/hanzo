@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <!--<link rel="stylesheet" href="main.css">-->
+    <style>
+        .body {
+    text-align: center;}
+
+    .show_table {
+    /* border: solid 1px black; */
+    text-align: center;
+    margin: 0 auto;
+    }
+
+    .title {
+    text-align: center;
+    }
+/* tr {
+    border: solid 1px black;
+} */
+
+    td {
+    display: inline-block;
+    border: solid 1px black;
+    margin: 0 0 0 0 ;
+    width: 100px;
+    }
+
+    </style>
+</head>
+<body>
+
+
+    <div class="task">
+        <div class="title">
+            <h3>任务统计</h3>
+        </div>
+
+        <div class="task_detile">
+            <table class="show_table">
+
+            <tr>
+                <td>任务</td>
+                <td>list导入</td>
+                <td>resume解析</td>
+                <td>list翻页</td>
+                <td>list错误</td>
+                <td>resume错误</td>
+            </tr>
+
+            {% for site, detile in res.tasks.items() %}
+            <tr>
+                <td>{{ site }}</td>
+                {% for d in detile %}
+                    <td>{{ d }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </table>
+        </div>
+
+    </div>
+    
+    <div class="title">
+        <h3>爬虫数据展示</h3>
+    </div>
+
+    <div calss="body">
+        <table class="show_table">
+
+            <tr>
+                <td>爬虫</td>
+                {% for datetime in res.datatime_list %}
+                    <td>{{ datetime }}</td>
+                {% endfor %}
+                <td>总量</td>
+            </tr>
+            
+            {% for site, detile in res.data.items() %}
+            <tr>
+                <td>{{ site }}</td>
+                {% for d in detile %}
+                <td>{{ d }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+
+
+
+</body>
+</html>

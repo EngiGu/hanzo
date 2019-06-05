@@ -1,8 +1,3 @@
-import os
-import random
-
-import logging
-import requests
 from core.base import Base
 
 try:
@@ -10,11 +5,6 @@ try:
 except:
     from base import *
 
-
-# logging.basicConfig(level=logging.INFO,
-#                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
-
-import logging
 
 class LaGou(SpiderBase, Base):
     name = 'lagou'
@@ -64,8 +54,12 @@ class LaGou(SpiderBase, Base):
         }
         # retry_times = 10
         retry_times = 0
-        frequence_time = 0
+        error_time = 0
         while True:
+            if error_time >= 5:
+                self.l.info("no result with 10 times retry")
+                error_time = 0
+                self.proxy= {}  # 重新获取代理
             if retry_times >= 20:
                 self.l.info("no result with 10 times retry")
                 break
@@ -81,26 +75,22 @@ class LaGou(SpiderBase, Base):
                 res = self.send_request("post", **args)
             except Exception as e:
                 continue
-            # {
-            #     "status": false,
-            #     "msg": "您操作太频繁,请稍后再访问",
-            #     "clientIp": "221.234.157.165",
-            #     "state": 2403
-            # }
+
             if (res.status_code == 200):
                 if "result" in res.text:
                     self.l.info("search success !!!")
+                    time.sleep(1)
                     return res.text
                 elif "操作太频繁" in res.text:
-                    self.l.info(f"操作太频繁:{frequence_time}")
+                    self.l.info(f"操作太频繁:{error_time}")
                     # 直接更换代理
-                    self.proxy_fa = 10
-                    self.proxy = {}
+                    error_time += 1
+                    time.sleep(2)
                     continue
                 else:
                     self.l.info("公司的搜索页面有问题")
-                    self.proxy_fa = 10
-                    self.proxy = {}
+                    error_time += 1
+                    time.sleep(2)
                     continue
             else:
                 self.l.error(f"response status_code is wrong:{res.status_code}")
@@ -109,7 +99,6 @@ class LaGou(SpiderBase, Base):
                 self.proxy = {}
                 continue
         return ""
-
 
 
     def query_detail_page(self, url):
@@ -133,7 +122,12 @@ class LaGou(SpiderBase, Base):
         }
 
         retry_times = 0
+        error_time = 0
         while True:
+            if error_time >= 5:
+                self.l.info("no result with 10 times retry")
+                error_time = 0
+                self.proxy= {}  # 重新获取代理
             if retry_times >= 20:
                 self.l.info("no result with 10 times retry")
                 break
@@ -147,6 +141,7 @@ class LaGou(SpiderBase, Base):
             if (response.status_code == 200):
                 if "公司主页" in response.text:
                     l.info("search success !!!")
+                    time.sleep(1)
                     return response.text
                 elif ("封禁" in response.text) or ("请按住滑块，拖动到最右边" in response.text) or ("存在异常访问行为" in response.text):
                     l.info(f"ip被封禁了")
@@ -156,8 +151,8 @@ class LaGou(SpiderBase, Base):
                     continue
                 else:
                     l.info("公司的搜索页面有问题")
-                    self.proxy_fa = 10
-                    self.proxy = {}
+                    error_time += 1
+                    time.sleep(2)
                     continue
             else:
                 l.error(f"response status_code is wrong:{response.status_code}")
