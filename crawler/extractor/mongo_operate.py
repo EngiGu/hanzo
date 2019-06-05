@@ -20,6 +20,7 @@ def resume_develop(resume):
 
 def company_update_func(resume):
     res = MT_cp.search({"jx_resume_id": resume["jx_resume_id"]})
+    st = time.time()
     if not res:
         MT_cp.update({"jx_resume_id": resume["jx_resume_id"]}, resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
@@ -40,7 +41,7 @@ def company_update_func(resume):
         MT_cp.update({"jx_resume_id": resume["jx_resume_id"]}, resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
         logging.info(f"updated jx_resume_id: {resume['jx_resume_id']}")
-
+    logging.info(f"jx_resume_id: {resume['jx_resume_id']} mongo operate cost {(time.time() - st) * 1000:.3f} ms.")
 
 
 def mongo_ur(resume: dict):
