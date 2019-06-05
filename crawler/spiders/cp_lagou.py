@@ -1,8 +1,3 @@
-import os
-import random
-
-import logging
-import requests
 from core.base import Base
 
 try:
@@ -10,11 +5,6 @@ try:
 except:
     from base import *
 
-
-# logging.basicConfig(level=logging.INFO,
-#                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
-
-import logging
 
 class LaGou(SpiderBase, Base):
     name = 'lagou'
@@ -85,12 +75,7 @@ class LaGou(SpiderBase, Base):
                 res = self.send_request("post", **args)
             except Exception as e:
                 continue
-            # {
-            #     "status": false,
-            #     "msg": "您操作太频繁,请稍后再访问",
-            #     "clientIp": "221.234.157.165",
-            #     "state": 2403
-            # }
+
             if (res.status_code == 200):
                 if "result" in res.text:
                     self.l.info("search success !!!")
@@ -114,7 +99,6 @@ class LaGou(SpiderBase, Base):
                 self.proxy = {}
                 continue
         return ""
-
 
 
     def query_detail_page(self, url):
