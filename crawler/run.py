@@ -217,6 +217,10 @@ class Run:
                     else:
                         raise ApplyTypeError(f'apply task type: {type} not in [1,2,3,4,5]!')
                 # sys.exit()
+                else:
+                    # 延时5s 是为了防止取太快爬虫挂掉
+                    l.info(f'get task None, sleep 5s.')
+                    time.sleep(5)
 
             except (ListParseDoNotExists, DetailParseDoNotExists, ApplyTypeError, ApplyActionError, ApplySiteError):
                 l.error('fatal error, exit...')
