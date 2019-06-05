@@ -209,6 +209,8 @@ class DaJie(SpiderBase, Base):
                 self.proxy = {}  # 换ip
                 continue
             l.info(f'{"*"*5}  get job detail success, len:{len(conn)} {"*"*5}')
+            print(conn)
+            sys.exit()
             return conn
         return ''
 
