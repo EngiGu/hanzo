@@ -101,7 +101,7 @@ class DaJie(SpiderBase, Base):
     def _login(self):
         l = self.l
         option = ChromeOptions()
-        # option.add_argument('-headless')
+        option.add_argument('-headless')
         option.add_argument('--no-sandbox')
         option.add_experimental_option('excludeSwitches', ['enable-automation'])
         driver = Chrome(options=option, executable_path='/home/hr58/chromedriver')
