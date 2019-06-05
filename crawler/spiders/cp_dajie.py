@@ -32,7 +32,7 @@ class DaJie(SpiderBase, Base):
         if isinstance(key, str):
             key = eval(key)
 
-        url = 'https://www.dajie.com/corp/index-pa1-ci{}-po{}-kw/'.format(key['cid'], key['caid'])
+        url = f"https://www.dajie.com/corp/index-pa{page_to_go}-ci{key['cid']}-po{key['caid']}-kw/"
         l.info(f"open list page: {url}")
         retry_time = 15
         # time.sleep(6)
