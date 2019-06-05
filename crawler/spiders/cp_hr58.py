@@ -103,7 +103,7 @@ class DaJie(SpiderBase, Base):
         option = ChromeOptions()
         # option.add_argument('-headless')
         option.add_experimental_option('excludeSwitches', ['enable-automation'])
-        driver = Chrome(options=option)
+        driver = Chrome(options=option, executable_path='/home/ubuntu/chromedriver')
         self.driver = driver
 
         driver.get('https://passport.58.com/login')
