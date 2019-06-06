@@ -747,8 +747,8 @@ class HtmlToDict(BaseExtract, Base):
             job_exp_list, last_job_exp = self.job_experience()
 
             return {
-                "_id": self.doc['_id'],
-                "jx_resume_id": str(self.doc['_id']),
+                # "_id": self.doc['_id'],
+                # "jx_resume_id": str(self.doc['_id']),
                 "resume_source": self.resume_source(),
                 "active_info": self.active_info(),
                 "profile": self.profile(),
