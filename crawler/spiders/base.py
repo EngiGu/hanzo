@@ -12,7 +12,7 @@ class SpiderBase():
     selenium = False
     name = 'base'
 
-    def __init__(self, logger=None):
+    def __init__(self, logger=None, st_flag=None):
         # self.name = 'base'
         self.l = logger if logger else logging
         self.driver = None

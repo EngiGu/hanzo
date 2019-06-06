@@ -15,6 +15,7 @@ import re
 from fontTools.ttLib import TTFont
 
 from core.base import Base
+from config import ROOT_PATH
 
 try:
     from .base import *
@@ -32,8 +33,8 @@ class DaJie(SpiderBase, Base):
     name = 'dajie'
     selenium = True
 
-    def __init__(self, logger=None):
-        super(DaJie, self).__init__(logger)
+    def __init__(self, logger=None, st_flag=None):
+        super(DaJie, self).__init__(logger, st_flag)
         self.proxy_request_delay = 3
         self.yima = Yima(username="fbfbfbfb", password="jianxun1302", project_id=159, project_name=u"58同城")
         self.raw = {'届': 'e04fd81cb8c88283509d5341a5239d27', '陈': 'a7cce2d2e218b52730631d09ec7e2ed9',
@@ -73,7 +74,22 @@ class DaJie(SpiderBase, Base):
         self.driver = None
         self.cookies = None
         self.call_login_times = 0
+        self.uid = st_flag
+        self.first = True
         self.login()
+
+
+    def check_is_login(self):
+        url = 'https://employer.58.com/resumesearch'
+        kwargs = {
+            'url': url
+        }
+        res = self.send_request(method='get', **kwargs)
+        if '<title>用户登录-58同城</title>' in res.content.decode():
+            return False
+        return True
+
+
 
     def login(self):
         l =  self.l
@@ -82,20 +98,41 @@ class DaJie(SpiderBase, Base):
             l.info(f"login be called: {self.call_login_times}, exit...")
             sys.exit()
 
-        if not self.cookies:
-            for _ in range(10):
-                l.info(f"no cookies, starting {_+1}/10 login...")
-                cookies =  self._login()
-                if cookies:
-                    self.cookies = cookies
-                    self.s.cookies = requests.utils.cookiejar_from_dict(cookies)
-                    return
-                try:
-                    self.driver.quit()
-                except:
-                    pass
-            l.error(f"after 10 retry, failed to login, exit....")
-            sys.exit()
+        cookies_path = os.path.join(ROOT_PATH, 'cookies')
+        if not os.path.exists(cookies_path):
+            os.makedirs(cookies_path)
+
+        cookies_name =  f'cookies_{self.uid}'
+        # if not os.path.exists(cookies_name):
+
+        if self.first:
+            if os.path.exists(cookies_name):
+                self.first = False
+                with open(os.path.join(cookies_path, cookies_name), 'r') as f:
+                    cookies = f.read().strip()
+                    l.info(f'loaded local cookies: {cookies}')
+                    self.s.headers['cookie'] = cookies
+                if self.check_is_login():
+                    l.info(f'local cookies useful, login success...')
+                    return True
+
+        # login with selenium
+        for _ in range(10):
+            l.info(f"no cookies, starting {_+1}/10 login...")
+            cookie_str =  self._login()
+            if cookie_str:
+                self.s.headers['cookie'] = cookie_str
+                # self.cookies = cookies
+                # self.s.cookies = requests.utils.cookiejar_from_dict(cookies)
+                with open(os.path.join(cookies_path, cookies_name), 'w') as f:
+                    f.write(str(cookie_str))
+                return
+            try:
+                self.driver.quit()
+            except:
+                pass
+        l.error(f"after 10 retry, failed to login, exit....")
+        sys.exit()
 
 
     def _login(self):
@@ -151,14 +188,16 @@ class DaJie(SpiderBase, Base):
             l.error(f"login failed, current url: {driver.current_url}")
             return False
 
-        driver.find_elements_by_xpath('/html/body/div[6]/div[1]/div[2]')[0].click()
-        time.sleep(5)
-        driver.find_elements_by_xpath('/html/body/div[2]/div[2]/div/div[3]/div[2]/ul/li[1]/div[1]/div[3]/p[1]/span[1]')[
-            0].click()
-        # cookie_str = driver.execute_script('return document.cookie')
-        cookies = {i['name']: i['value'] for i in driver.get_cookies()}
+        # driver.find_elements_by_xpath('/html/body/div[6]/div[1]/div[2]')[0].click()
+        # time.sleep(5)
+        # driver.find_elements_by_xpath('/html/body/div[2]/div[2]/div/div[3]/div[2]/ul/li[1]/div[1]/div[3]/p[1]/span[1]')[
+        #     0].click()
+        cookie_str = driver.execute_script('return document.cookie')
+        # cookies = {i['name']: i['value'] for i in driver.get_cookies()}
+        self.l.info(f"get cookies: {cookie_str}")
         driver.quit()
-        return cookies
+        # return cookies
+        return cookie_str
 
     def gene_jq_name(self):
         _1 = (str(random.random()) + str(random.random())).replace('0.', '')[3:24]

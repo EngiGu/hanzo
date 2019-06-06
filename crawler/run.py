@@ -171,7 +171,7 @@ class Run:
         #     k: SPIDERS_MAPS[k](self.logger) for k, v in SPIDERS_MAPS.items()
         # }
         #
-        c = SPIDERS_MAPS[self.site](self.logger)
+        c = SPIDERS_MAPS[self.site](self.logger, st_flag)
 
         while True:
             try:
