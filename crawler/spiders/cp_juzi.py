@@ -1,9 +1,33 @@
 from core.base import Base
-
+import time
+import requests
+import json
 try:
     from .base import *
 except:
     from base import *
+
+
+def check(func):
+    def wapper(self, *args, **kwargs):
+        max_retry_times = 5  # 请求失败后重试次数
+        retry_times = 0
+        while True:
+            if max_retry_times <= retry_times:
+                break
+            type, response = func(self, *args, **kwargs)
+            if response.status_code == 200:
+                res = response.text.encode('utf-8').decode('unicode_escape').replace("\\", "")
+                return res
+            else:
+                self.l.info(f"site:{type} is false")
+                self.l.info(response.status_code)
+                retry_times += 1
+                self.login()
+                self.l.info(f"当前重试次数为{retry_times}")
+            time.sleep(2)
+        return False
+    return wapper
 
 
 class JuZi(SpiderBase, Base):
@@ -11,143 +35,70 @@ class JuZi(SpiderBase, Base):
 
     def __init__(self, logger=None):
         super(JuZi, self).__init__(logger)
-
-
+        self.token = ""
+        self.login()
 
     def query_list_page(self, key, page_to_go):
+        pass
 
+    def login(self):
         headers = {
-            'Origin': 'https://www.lagou.com',
-            'X-Anit-Forge-Code': '0',
+            'Origin': 'https://www.itjuzi.com',
             'Accept-Encoding': 'gzip, deflate, br',
             'Accept-Language': 'zh-CN,zh;q=0.9',
+            'CURLOPT_FOLLOWLOCATION': 'true',
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
-            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
-            'Accept': 'application/json, text/javascript, */*; q=0.01',
-            'Referer': 'https://www.lagou.com/gongsi/',
-            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Type': 'application/json;charset=UTF-8',
+            'Accept': 'application/json, text/plain, */*',
+            'Referer': 'https://www.itjuzi.com/login?url=%2Fcompany',
             'Connection': 'keep-alive',
-            'X-Anit-Forge-Token': 'None',
         }
+        data = '{"account":"13929224780","password":"yangwei"}'
+        response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data)
+        res = response.text.encode('utf-8').decode('unicode_escape').replace("\\", "")
+        if res:
+            res_t = json.loads(res)
+            self.token = res_t.get("data").get("token")
+            self.l.info("login success")
+        else:
+            raise Exception("login failed!")
+        return response
 
-        data = {
-            'first': 'false',
-            'pn': str(page_to_go),
-            'sortField': '0',
-            'havemark': '0'
+    @check
+    def get_info(self, id ,type_str):
+
+        headers = {
+            'Accept': 'application/json, text/plain, */*',
+            'Referer': 'https://www.itjuzi.com/company/34629354',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
+            'CURLOPT_FOLLOWLOCATION': 'true'
         }
-        # retry_times = 10
-        retry_times = 0
-        error_time = 0
-        while True:
-            if error_time >= 5:
-                self.l.info("no result with 10 times retry")
-                error_time = 0
-                self.proxy= {}  # 重新获取代理
-            if retry_times >= 20:
-                self.l.info("no result with 10 times retry")
-                break
-            try:
-                args = {
-                    "url": f'https://www.lagou.com/gongsi/{key}.json',
-                    "headers": headers,
-                    "data": data
-                }
-                retry_times += 1
-                self.s.cookies = requests.utils.cookiejar_from_dict({})  # 置空cookies
-                self.open_search_home()
-                res = self.send_request("post", **args)
-            except Exception as e:
-                continue
-
-            if (res.status_code == 200):
-                if "result" in res.text:
-                    self.l.info("search success !!!")
-                    time.sleep(1)
-                    return res.text
-                elif "操作太频繁" in res.text:
-                    self.l.info(f"操作太频繁:{error_time}")
-                    # 直接更换代理
-                    error_time += 1
-                    time.sleep(2)
-                    continue
-                else:
-                    self.l.info("公司的搜索页面有问题")
-                    error_time += 1
-                    time.sleep(2)
-                    continue
-            else:
-                self.l.error(f"response status_code is wrong:{res.status_code}")
-                # 直接更换代理
-                self.proxy_fa = 10
-                self.proxy = {}
-                continue
-        return ""
-
+        params = (
+            ('type', type_str),
+        )
+        if type_str == "commerce":
+            headers["Authorization"] = self.token
+            response = requests.get(f'https://www.itjuzi.com/api/companies/{id}/commerce', headers=headers, timeout=20)
+        else:
+            response = requests.get(f'https://www.itjuzi.com/api/companies/{id}', headers=headers, params=params, timeout=20)
+        return type_str, response
 
     def query_detail_page(self, url):
         l = self.l
-
-        headers = {
-            'Connection': 'keep-alive',
-            'Cache-Control': 'max-age=0',
-            'Upgrade-Insecure-Requests': '1',
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Accept-Language': 'zh-CN,zh;q=0.9',
-        }
-
-        # response = self.session.get(url, headers=headers, timeout=30)
-
-        args = {
-            "url": url,
-            "headers": headers
-        }
-
-        retry_times = 0
-        error_time = 0
-        while True:
-            if error_time >= 5:
-                self.l.info("no result with 10 times retry")
-                error_time = 0
-                self.proxy= {}  # 重新获取代理
-            if retry_times >= 20:
-                self.l.info("no result with 10 times retry")
-                break
-            try:
-                retry_times += 1
-                self.s.cookies = requests.utils.cookiejar_from_dict({})  # 重置cookies
-                self.open_search_home()
-                response = self.send_request("get", **args)
-            except Exception as e:
-                continue
-            if (response.status_code == 200):
-                if "公司主页" in response.text:
-                    l.info("search success !!!")
-                    time.sleep(1)
-                    return response.text
-                elif ("封禁" in response.text) or ("请按住滑块，拖动到最右边" in response.text) or ("存在异常访问行为" in response.text):
-                    l.info(f"ip被封禁了")
-                    # 直接更换代理
-                    self.proxy_fa = 10
-                    self.proxy = {}
-                    continue
-                else:
-                    l.info("公司的搜索页面有问题")
-                    error_time += 1
-                    time.sleep(2)
-                    continue
-            else:
-                l.error(f"response status_code is wrong:{response.status_code}")
-                # 直接更换代理
-                self.proxy_fa = 10
-                self.proxy = {}
-                continue
-        return ""
+        self.l.info(f"now is :https://www.itjuzi.com/company/{url}")
+        result = {}
+        for type in ["basic", "contact", "person", "commerce"]:  # "basic", "contact", "person",
+            res = self.get_info(url, type)
+            if res:
+                result[type] = res
+        return result
 
 
 if __name__ == '__main__':
     # l = DaJie()
     # l.run(['112233'])
-    pass
+    a = JuZi()
+    for id in range(1,5):
+        res = a.query_detail_page(id)
+        print(res)
+        time.sleep(5)
