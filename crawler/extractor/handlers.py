@@ -26,6 +26,8 @@ def cal_jx_resume_id(resume):
             pop_list = ["id", "develops", "office_cities", "tag", "cxos", "productions", "introduce", "logo"]
         elif 90 < resume['source'] < 200:
             pop_list = ['id', 'introduce', 'create_time', 'update_time', 'tag']
+        elif resume['source'] == 22:
+            pop_list = ['id', 'introduce', 'create_time', 'update_time', 'tag']
         else:
             raise Exception('source: %r is invailed.' % resume['source'])
         for key in pop_list:

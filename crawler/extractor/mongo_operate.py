@@ -11,12 +11,13 @@ from copy import deepcopy
 MT_cp = MongoDb("aizhaopin", "company_infos")
 cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
-def resume_develop(resume):
 
+def resume_develop(resume):
     hashed_key = hashlib.md5(
         json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')).hexdigest()[8:-8]
     hashed_id = int(hashed_key, 16)
     return hashed_id
+
 
 def company_update_func(resume):
     res = MT_cp.search({"jx_resume_id": resume["jx_resume_id"]})
@@ -44,6 +45,10 @@ def company_update_func(resume):
     logging.info(f"jx_resume_id: {resume['jx_resume_id']} mongo operate cost {(time.time() - st):.3f} s.")
 
 
+def hr58_update(resume):
+    logging.info(f"hr58 update: {str(resume)}")
+
+
 def mongo_ur(resume: dict):
     # print('*'*5, resume)
     # return
@@ -51,6 +56,8 @@ def mongo_ur(resume: dict):
 
     if source in range(200, 300):
         company_update_func(resume)
+    elif source == 22:
+        hr58_update(resume)
     else:
         raise Exception(f"source num: {source} wrong: {resume}")
 

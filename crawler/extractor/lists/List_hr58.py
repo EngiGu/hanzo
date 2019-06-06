@@ -20,38 +20,27 @@ class ListToUrl(Base):
     def parser(self, page):
         """数据为html格式"""
 
-        if '没有找到符合条件的公司' in page:
-            return {
-                "resume_list": [],
-                "current_page": 1,
-                "last_page": 1
-            }
-        # print(page)
-        tree = etree.HTML(page)
-        result = tree.xpath('//div[@class="listBox"]/ul/li')
-        # print(len(result))
-        curr_page = tree.xpath('//div[@class="paging"]/span[@class="current"]/text()')
-        curr_page = curr_page[0] if curr_page else '1'
-        curr_page = int(curr_page)
-        # print(curr_page)
-        total_page = tree.xpath('//div[@class="paging"]/a[@class="next"]/preceding-sibling::a[1]/text()')
-        total_page = total_page[0] if total_page else '1'
-        total_page = int(total_page)
-        # print(total_page)
-        # sys.exit()
+        tree = json.loads(page)
+        # base_url = 'http://www.rencaiaaa.com/rdetail/searchRencaiDetail.do?' \
+        #              'ext={ext}&resumeType={resumetype}&rid={rid}' \
+        #              '&updateDate={date}&updateDateFlag={flag}'
+        resume_list = tree["data"].get("resumeList", [])
+        current_page = int(tree.get("pageindex", "1"))
+        last_page = round(int(tree["data"].get("count", "0")) / 50)
+
         resumes = []
-        for one in result:
+        for res in resume_list:
             resume = {}
-            resume['company'] = one.xpath('.//p[@class="job-name"]//a/text()')
-            resume['company'] = self.first(resume['company'])
-            resume['url'] = one.xpath('.//p[@class="job-name"]/span[@class="attention"]/@data-corp-id')
-            resume['url'] = 'https://www.dajie.com/corp/%s/index/intro' % self.first(resume['url'])
+            resume['resume_id'] = res.get("resumeID", "")
+            resume['url'] = res.get("url", "")
+            if len(resume['url']):
+                resume['url'] = "https:" + resume['url']
             resume["hashed_key"] = self.get_hashkey(resume)
             resumes.append(resume)
         result = {
             "resume_list": resumes,
-            "current_page": curr_page,
-            "last_page": total_page
+            "current_page": current_page,
+            "last_page": last_page,
         }
         return result
 
