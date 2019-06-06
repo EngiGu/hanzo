@@ -4,7 +4,7 @@
 SITE_SOURCE_MAP = {
     "lagou": 201,
     "dajie": 208,
-    "hr58": 21
+    "hr58": 22
 }
 
 

@@ -15,6 +15,7 @@ import re
 from fontTools.ttLib import TTFont
 
 from core.base import Base
+from config import ROOT_PATH
 
 try:
     from .base import *
@@ -32,8 +33,8 @@ class DaJie(SpiderBase, Base):
     name = 'dajie'
     selenium = True
 
-    def __init__(self, logger=None):
-        super(DaJie, self).__init__(logger)
+    def __init__(self, logger=None, st_flag=None):
+        super(DaJie, self).__init__(logger, st_flag)
         self.proxy_request_delay = 3
         self.yima = Yima(username="fbfbfbfb", password="jianxun1302", project_id=159, project_name=u"58同城")
         self.raw = {'届': 'e04fd81cb8c88283509d5341a5239d27', '陈': 'a7cce2d2e218b52730631d09ec7e2ed9',
@@ -64,7 +65,7 @@ class DaJie(SpiderBase, Base):
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9,it;q=0.8',
             'cache-control': 'no-cache',
-            'cookie': 'commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; id58=c5/njVzAJMoIAfoXA3VlAg==; 58tj_uuid=329c9551-6862-43d4-9fbe-4cd1ed969770; als=0; xxzl_deviceid=cp3Mvh7aF0HWvoYmymkjF8hlRJrKFfKVoLB%2BJeerMqgmiahmSXbkf35ND%2BYmMc9Z; wmda_uuid=57aa741ccc8947f8344a4d1bd77f9113; wmda_new_uuid=1; gr_user_id=5d8d983a-96d9-431d-b81f-185f802c5695; mcity=wh; mcityName=%E6%AD%A6%E6%B1%89; nearCity=%5B%7B%22cityName%22%3A%22%E6%AD%A6%E6%B1%89%22%2C%22city%22%3A%22wh%22%7D%5D; Hm_lvt_5a7a7bfd6e7dfd9438b9023d5a6a4a96=1556098240; cookieuid1=mgjwFVzALL4ODHp9A1s4Ag==; scancat=13915; sessionid=383656a6-92ab-4066-941b-099d2c6c4900; www58com="UserID=43101834184718&UserName=tvxxvc"; 58cooper="userid=43101834184718&username=tvxxvc"; 58uname=tvxxvc; wmda_visited_projects=%3B1731916484865%3B6333604277682%3B2286118353409%3B3381039819650%3B4200524323842%3B4785068453378%3B7790950805815; vip=vipusertype%3D11%26vipuserpline%3D0%26v%3D1%26vipkey%3Dec4ce014365e10286fbb2df23a66a9e9%26masteruserid%3D43101834184718; showOrder=1; 58home=wh; city=wh; xxzl_smartid=5bde2f5023f300d952dd88072029498f; showPTTip=1; ljrzfc=1; bProtectShowed=true; ppStore_fingerprint=860F18A32617495B64C24011EAA3E9CC3C5F76C9BF0DD291%EF%BC%BF1558506851172; PPU="UID=43101834184718&UN=tvxxvc&TT=e13a4bf2f4521dae3d1754a63cdbaea3&PBODY=Ijs-FeB5pqUGFjC_dvgy__My-X5njoSfX_0M8aTKhv2JC4MeBf8p5cc_mb92bCHdTf4_qgb9aasiprisDMEbdHmIp98yUjIoazfWWe_KNMZAwxAcFQMtF-408hmVeIbeLadxwOurffgp-ze6xncDSrafaMzZJWDBpOaaudGiftc&VER=1"; new_uv=40; utm_source=; spm=; init_refer=https%253A%252F%252Femployer.58.com%252Fresumesearch%253FPGTID%253D0d000000-0000-08f1-e2b6-e3b666dda683%2526ClickID%253D29; wmda_session_id_1731916484865=1558515004760-927f44cb-ed8f-a5b0; new_session=0',
+            'cookie': 'commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; id58=c5/njVzAJMoIAfoXA3VlAg==; 58tj_uuid=329c9551-6862-43d4-9fbe-4cd1ed969770; als=0; xxzl_deviceid=cp3Mvh7aF0HWvoYmymkjF8hlRJrKFfKVoLB%2BJeerMqgmiahmSXbkf35ND%2BYmMc9Z; wmda_uuid=57aa741ccc8947f8344a4d1bd77f9113; wmda_new_uuid=1; gr_user_id=5d8d983a-96d9-431d-b81f-185f802c5695; mcity=wh; mcityName=%E6%AD%A6%E6%B1%89; nearCity=%5B%7B%22cityName%22%3A%22%E6%AD%A6%E6%B1%89%22%2C%22city%22%3A%22wh%22%7D%5D; Hm_lvt_5a7a7bfd6e7dfd9438b9023d5a6a4a96=1556098240; cookieuid1=mgjwFVzALL4ODHp9A1s4Ag==; sessionid=383656a6-92ab-4066-941b-099d2c6c4900; wmda_visited_projects=%3B1731916484865%3B6333604277682%3B2286118353409%3B3381039819650%3B4200524323842%3B4785068453378%3B7790950805815; showOrder=1; 58home=wh; city=wh; __utma=253535702.405960827.1559098468.1559098468.1559098468.1; __utmc=253535702; __utmz=253535702.1559098468.1.1.utmcsr=wh.58.com|utmccn=(referral)|utmcmd=referral|utmcct=/job/; hots=%5B%7B%22d%22%3A0%2C%22s1%22%3A%22%E6%AD%A6%E6%B1%89%E4%BA%BA%E7%91%9E%E4%BA%BA%E5%8A%9B%E8%B5%84%E6%BA%90%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%EF%BC%88%E9%A6%99%E8%8D%89%E6%8B%9B%E8%81%98%EF%BC%89%22%2C%22s2%22%3A%22%22%2C%22n%22%3A%22sou%22%7D%5D; ppStore_fingerprint=860F18A32617495B64C24011EAA3E9CC3C5F76C9BF0DD291%EF%BC%BF1559715349682; xxzl_smartid=3ea03942f455c5e049f95aea1abd1d85; showStatus=headClick; show_zcm_banner=true; Hm_lvt_a3013634de7e7a5d307653e15a0584cf=1559718761; Hm_lpvt_a3013634de7e7a5d307653e15a0584cf=1559718761; param8616=1; param8716kop=1; showPTTip=1; ljrzfc=1; isSmartSortTipShowed=true; new_uv=51; utm_source=; spm=; init_refer=; PPU="UID=41113863915285&UN=w3xrm9&TT=c7a7042b3fb4d74d3f2c54d34ee417a1&PBODY=IufQA_5WIZW9TzuX5mtiCDssj7L_GzmrCxgoepOHacfFvYx3z3ixgSC0WNSVfGkGm7FXKxdg0nx42zTMZXvg568E--Ijfk6inzOI66rsfTMnqpfpV3pH6DqQW7Lr06t7mdlMVs9nnDPl9dYdbDSjnGRbvKb6mjYUg-VTZ1McM3A&VER=1"; www58com="UserID=41113863915285&UserName=w3xrm9"; 58cooper="userid=41113863915285&username=w3xrm9"; 58uname=w3xrm9; new_session=0; wmda_session_id_1731916484865=1559800982391-9fb804d6-5c10-c3e8',
             'pragma': 'no-cache',
             'referer': 'https://employer.58.com/resumesearch?PGTID=0d000000-0000-0f7d-5880-bbccd08216eb&ClickID=104',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
@@ -73,7 +74,22 @@ class DaJie(SpiderBase, Base):
         self.driver = None
         self.cookies = None
         self.call_login_times = 0
-        self.login()
+        self.uid = st_flag
+        self.first = True
+        # self.login()
+
+
+    def check_is_login(self):
+        url = 'https://employer.58.com/resumesearch'
+        kwargs = {
+            'url': url
+        }
+        res = self.send_request(method='get', **kwargs)
+        if '<title>用户登录-58同城</title>' in res.content.decode():
+            return False
+        return True
+
+
 
     def login(self):
         l =  self.l
@@ -82,20 +98,41 @@ class DaJie(SpiderBase, Base):
             l.info(f"login be called: {self.call_login_times}, exit...")
             sys.exit()
 
-        if not self.cookies:
-            for _ in range(10):
-                l.info(f"no cookies, starting {_+1}/10 login...")
-                cookies =  self._login()
-                if cookies:
-                    self.cookies = cookies
-                    self.s.cookies = requests.utils.cookiejar_from_dict(cookies)
-                    return
-                try:
-                    self.driver.quit()
-                except:
-                    pass
-            l.error(f"after 10 retry, failed to login, exit....")
-            sys.exit()
+        cookies_path = os.path.join(ROOT_PATH, 'cookies')
+        if not os.path.exists(cookies_path):
+            os.makedirs(cookies_path)
+
+        cookies_name =  f'cookies_{self.uid}'
+        # if not os.path.exists(cookies_name):
+
+        if self.first:
+            if os.path.exists(cookies_name):
+                self.first = False
+                with open(os.path.join(cookies_path, cookies_name), 'r') as f:
+                    cookies = f.read().strip()
+                    l.info(f'loaded local cookies: {cookies}')
+                    self.s.headers['cookie'] = cookies
+                if self.check_is_login():
+                    l.info(f'local cookies useful, login success...')
+                    return True
+
+        # login with selenium
+        for _ in range(10):
+            l.info(f"no cookies, starting {_+1}/10 login...")
+            cookie_str =  self._login()
+            if cookie_str:
+                self.s.headers['cookie'] = cookie_str
+                # self.cookies = cookies
+                # self.s.cookies = requests.utils.cookiejar_from_dict(cookies)
+                with open(os.path.join(cookies_path, cookies_name), 'w') as f:
+                    f.write(str(cookie_str))
+                return
+            try:
+                self.driver.quit()
+            except:
+                pass
+        l.error(f"after 10 retry, failed to login, exit....")
+        sys.exit()
 
 
     def _login(self):
@@ -120,8 +157,13 @@ class DaJie(SpiderBase, Base):
         for character in phonenum:
             ele.send_keys(character)
             time.sleep(0.1)
+        driver.save_screenshot('./c_phone.png')
 
-        driver.find_elements_by_xpath('/html/body/div[1]/div[1]/div[3]/div[3]/div[1]/span')[0].click()
+        # 点击发送验证码
+        # driver.find_elements_by_xpath('/html/body/div[1]/div[1]/div[3]/div[3]/div[1]/span')[0].click()
+        driver.find_element_by_class_name('getcode').click()
+        time.sleep(1.1)
+        driver.save_screenshot('./send_sms.png')
 
         code = self.yima.get_message(phone=phonenum)
         l.info(f"get code: {code}")
@@ -140,20 +182,24 @@ class DaJie(SpiderBase, Base):
         time.sleep(5)
         driver.get('https://employer.58.com/resumesearch?PGTID=0d000000-0000-02bf-9f94-8c7003dc986f&ClickID=29')
         time.sleep(10)
+        driver.save_screenshot('./login.png')
+
+        self.yima.release_num(phonenum)
+
         if 'employer.58.com/resumesearch' not in driver.current_url:
             l.error(f"login failed, current url: {driver.current_url}")
             return False
 
-        self.yima.release_num(phonenum)
-
-        driver.find_elements_by_xpath('/html/body/div[6]/div[1]/div[2]')[0].click()
-        time.sleep(5)
-        driver.find_elements_by_xpath('/html/body/div[2]/div[2]/div/div[3]/div[2]/ul/li[1]/div[1]/div[3]/p[1]/span[1]')[
-            0].click()
-        # cookie_str = driver.execute_script('return document.cookie')
-        cookies = {i['name']: i['value'] for i in driver.get_cookies()}
+        # driver.find_elements_by_xpath('/html/body/div[6]/div[1]/div[2]')[0].click()
+        # time.sleep(5)
+        # driver.find_elements_by_xpath('/html/body/div[2]/div[2]/div/div[3]/div[2]/ul/li[1]/div[1]/div[3]/p[1]/span[1]')[
+        #     0].click()
+        cookie_str = driver.execute_script('return document.cookie')
+        # cookies = {i['name']: i['value'] for i in driver.get_cookies()}
+        self.l.info(f"get cookies: {cookie_str}")
         driver.quit()
-        return cookies
+        # return cookies
+        return cookie_str
 
     def gene_jq_name(self):
         _1 = (str(random.random()) + str(random.random())).replace('0.', '')[3:24]
@@ -210,8 +256,8 @@ class DaJie(SpiderBase, Base):
                 self.proxy = {}  # 换ip
                 continue
             l.info(f'{"*"*5}  get job detail success, len:{len(conn)} {"*"*5}')
-            print(conn)
-            sys.exit()
+            # print(conn)
+            # sys.exit()
             return conn
         return ''
 
