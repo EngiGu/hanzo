@@ -144,11 +144,12 @@ class DaJie(SpiderBase, Base):
         driver.get('https://employer.58.com/resumesearch?PGTID=0d000000-0000-02bf-9f94-8c7003dc986f&ClickID=29')
         time.sleep(10)
         driver.save_screenshot('./login.png')
+
+        self.yima.release_num(phonenum)
+
         if 'employer.58.com/resumesearch' not in driver.current_url:
             l.error(f"login failed, current url: {driver.current_url}")
             return False
-
-        self.yima.release_num(phonenum)
 
         driver.find_elements_by_xpath('/html/body/div[6]/div[1]/div[2]')[0].click()
         time.sleep(5)
