@@ -62,9 +62,10 @@ async def handler(msg: dict):
             for one in detail_list:
                 l.info(f"site: {site} parse list one res: {str(one)} ")
                 hash_key = one.get("hashed_key", 0)
-                if bfr.is_exists(str(hash_key)):  # todo 布隆list过滤
-                    l.info(f"site: {site} task has crawled before, skip. task: {str(one)}")
-                    continue
+                if site not in ['hr58']:
+                    if bfr.is_exists(str(hash_key)):  # todo 布隆list过滤
+                        l.info(f"site: {site} task has crawled before, skip. task: {str(one)}")
+                        continue
                 data = json.dumps({
                     'type': 2,
                     'site': site,

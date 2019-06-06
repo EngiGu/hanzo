@@ -76,6 +76,7 @@ class DaJie(SpiderBase, Base):
         self.call_login_times = 0
         self.uid = st_flag
         self.first = True
+        self.need_login_times = 0
         # self.login()
 
 

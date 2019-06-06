@@ -46,6 +46,7 @@ def company_update_func(resume):
 
 
 def hr58_update(resume):
+    resume['_id'] = resume['jx_resume_id']
     logging.info(f"hr58 update: {str(resume)}")
 
 
