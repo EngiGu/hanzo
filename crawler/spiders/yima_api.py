@@ -123,7 +123,7 @@ class Yima():
             logging.info("get message:{}".format(text))
             try:
                 print('yanzhengmaz;',text)
-                m = re.findall(r'\d{4,}', text)[0]
+                m = re.findall(r'\d{6}', text)[0]
             except:
                 logging.info("extract message failed, retry...")
                 continue
