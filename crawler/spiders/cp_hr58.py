@@ -120,8 +120,11 @@ class DaJie(SpiderBase, Base):
         for character in phonenum:
             ele.send_keys(character)
             time.sleep(0.1)
+        driver.save_screenshot('./c_phone.png')
 
+        # 点击发送验证码
         driver.find_elements_by_xpath('/html/body/div[1]/div[1]/div[3]/div[3]/div[1]/span')[0].click()
+        driver.save_screenshot('./send_sms.png')
 
         code = self.yima.get_message(phone=phonenum)
         l.info(f"get code: {code}")
@@ -140,6 +143,7 @@ class DaJie(SpiderBase, Base):
         time.sleep(5)
         driver.get('https://employer.58.com/resumesearch?PGTID=0d000000-0000-02bf-9f94-8c7003dc986f&ClickID=29')
         time.sleep(10)
+        driver.save_screenshot('./login.png')
         if 'employer.58.com/resumesearch' not in driver.current_url:
             l.error(f"login failed, current url: {driver.current_url}")
             return False
