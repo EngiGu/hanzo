@@ -29,8 +29,8 @@ class HtmlToDict(BaseExtract, Base):
 
 
     def load_html(self, page_source=None):
-        if page_source is None:
-            page_source = self.doc['html']  # 传入的文件为HTML
+        # if page_source is None:
+        #     page_source = self.doc['html']  # 传入的文件为HTML
         if page_source is None:
             return False
         # "+++"
@@ -688,7 +688,7 @@ class HtmlToDict(BaseExtract, Base):
 
 
     def crawler_info(self):  # 14/14
-        doc = self.doc
+        # doc = self.doc
 
         return {
             "keyword": [],
