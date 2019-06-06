@@ -160,7 +160,9 @@ class DaJie(SpiderBase, Base):
         driver.save_screenshot('./c_phone.png')
 
         # 点击发送验证码
-        driver.find_elements_by_xpath('/html/body/div[1]/div[1]/div[3]/div[3]/div[1]/span')[0].click()
+        # driver.find_elements_by_xpath('/html/body/div[1]/div[1]/div[3]/div[3]/div[1]/span')[0].click()
+        driver.find_element_by_class_name('getcode').click()
+        time.sleep(1.1)
         driver.save_screenshot('./send_sms.png')
 
         code = self.yima.get_message(phone=phonenum)
