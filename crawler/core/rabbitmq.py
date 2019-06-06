@@ -1,4 +1,5 @@
 import asyncio
+import time
 
 import pika
 from pika.exceptions import ChannelClosed, ConnectionClosed
@@ -33,6 +34,7 @@ class MqSession(object, metaclass=Singleton):
         self.user = user
         self.pwd = pwd
         self.exchange = exchange
+        self.st = time.time()
         self.connect()
 
     def connect(self):
@@ -64,6 +66,12 @@ class MqSession(object, metaclass=Singleton):
         )
 
     def put(self, queue, body, priority=0, expiration=None):
+        now = time.time()
+        if now - self.st > 3 * 60:
+            self.reconnect()
+            self.st = now
+            logging.info(f"single push up to 3min, reconnect...")
+            
         try:
             self._put(queue, body, priority, expiration)
         except (ConnectionClosed, ChannelClosed, FileNotFoundError) as e:
@@ -97,8 +105,15 @@ class MqSession(object, metaclass=Singleton):
     def close(self):
         # 使用单例模式之后，不用每次都创建连接，所以就不用真实的关闭连接了
         # 在程序退出的时候自动的关闭连接
-        # self.connection.close()
+        self.connection.close()
         pass
+
+    def reconnect(self):
+        try:
+            self.connection.close()
+        except:
+            pass
+        self.connect()
 
 
 class AsMqSession(object, metaclass=Singleton):
