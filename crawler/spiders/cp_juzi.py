@@ -1,3 +1,5 @@
+import random
+
 from core.base import Base
 import time
 import requests
@@ -93,6 +95,7 @@ class JuZi(SpiderBase, Base):
         self.l.info(f"now is :https://www.itjuzi.com/company/{url}")
         result = {}
         for type in ["basic", "contact", "person", "commerce"]:  # "basic", "contact", "person",
+            time.sleep(random.randint(1,3)*0.1)
             res = self.get_info(url, type)
             if res:
                 res = res.replace("\r\n", "").replace("\n\t", "").replace("\t", "").replace("\n", "")
@@ -107,6 +110,7 @@ class JuZi(SpiderBase, Base):
                     print(new_res)
                     result[type] = json.loads(new_res)
         new_res = json.dumps(result, ensure_ascii=False)
+        time.sleep(random.randint(3,8))
         return new_res
 
 
