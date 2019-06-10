@@ -95,6 +95,7 @@ class BaseExtract(object):
             print("page_source is :{}".format(page_source))
         try:
             self.tree = etree.HTML(page_source)
+            self.page_souce = page_source
         except Exception as e:
             print(e)
             return False
