@@ -2,6 +2,7 @@ from core.base import Base
 import time
 import requests
 import json
+import re
 try:
     from .base import *
 except:
@@ -24,7 +25,7 @@ def check(func):
                 self.l.info(response.status_code)
                 retry_times += 1
                 self.login()
-                self.l.info(f"当前重试次数为{retry_times}")
+                self.l.info(f"now retry counts :{retry_times}")
             time.sleep(2)
         return False
     return wapper
@@ -53,7 +54,7 @@ class JuZi(SpiderBase, Base):
             'Referer': 'https://www.itjuzi.com/login?url=%2Fcompany',
             'Connection': 'keep-alive',
         }
-        data = '{"account":"13929224780","password":"yangwei"}'
+        data = '{"account":"15948430604","password":"jianxun123"}'
         response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data)
         res = response.text.encode('utf-8').decode('unicode_escape').replace("\\", "")
         if res:
@@ -83,6 +84,10 @@ class JuZi(SpiderBase, Base):
             response = requests.get(f'https://www.itjuzi.com/api/companies/{id}', headers=headers, params=params, timeout=20)
         return type_str, response
 
+    def remove_xa0(self, _str):
+        move = dict.fromkeys((ord(c) for c in "\xa0"))
+        return _str.translate(move).strip()
+
     def query_detail_page(self, url):
         l = self.l
         self.l.info(f"now is :https://www.itjuzi.com/company/{url}")
@@ -90,15 +95,27 @@ class JuZi(SpiderBase, Base):
         for type in ["basic", "contact", "person", "commerce"]:  # "basic", "contact", "person",
             res = self.get_info(url, type)
             if res:
-                result[type] = res
-        return result
+                res = res.replace("\r\n", "").replace("\n\t", "").replace("\t", "").replace("\n", "")
+                new_res = re.sub(r'<.*?>', "", res)
+                try:
+                    result[type] = json.loads(self.remove_xa0(new_res))
+                except Exception as e:
+                    print(e)
+                    print(res)
+                    print("************")
+                    new_res = re.sub(r'<.*?"', "", new_res)
+                    print(new_res)
+                    result[type] = json.loads(new_res)
+        new_res = json.dumps(result, ensure_ascii=False)
+        return new_res
 
 
 if __name__ == '__main__':
-    # l = DaJie()
-    # l.run(['112233'])
     a = JuZi()
-    for id in range(1,5):
+    for id in range(1,1000):
         res = a.query_detail_page(id)
-        print(res)
-        time.sleep(5)
+        # print(res)
+        print(f"success: {id}")
+        time.sleep(1)
+        with open(f"{id}.text", mode="w", encoding="utf-8") as f:
+            f.write(res)

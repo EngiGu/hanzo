@@ -125,6 +125,7 @@ class BaseExtract(object):
         :param scale_str:
         :return:
         """
+        scale_str = scale_str.replace(" ", "")
         if "以上" in scale_str:
             scale_from = re.findall(r'\d+', scale_str)[0] if re.findall(r'\d+', scale_str) else 0
             scale_to = scale_from
