@@ -87,6 +87,8 @@ class YinGuo(SpiderBase, Base):
             tmp = json.loads(conn_json['data'])
             tmp['company']['count'] = self.decrypt(tmp['company']['count'])
             tmp['inst']['count'] = self.decrypt(tmp['inst']['count'])
+            print('len c:', tmp['company']['count'], len(tmp['company']['count']))
+            print('len i:', tmp['company']['count'], len(tmp['company']['count']))
             conn_json['data'] = json.dumps(tmp, ensure_ascii=False)
 
             conn = json.dumps(conn_json, ensure_ascii=False)
