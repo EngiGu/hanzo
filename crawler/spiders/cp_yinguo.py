@@ -72,6 +72,7 @@ class DaJie(SpiderBase, Base):
             conn_json['index'] = int(page_to_go)
             conn = json.dumps(conn_json, ensure_ascii=False)
             l.info(f'{"*"*5} get list success, len:{len(conn)} {"*"*5}')
+            sys.exit()
             return conn
         return ''
 

@@ -157,6 +157,8 @@ class HtmlToDict(BaseExtract, Base):
             # print(one['invest_organ'])
             develops.append(one)
 
+        develops.reverse()
+
         cxos = [
             {
                 "cxo_name": self.remove_xa0(i.xpath('string(./td[2])')),
@@ -224,7 +226,7 @@ class HtmlToDict(BaseExtract, Base):
 
 
 def main():
-    with open('./tmp/yinguo_3.html', mode='r+', encoding="utf-8") as f:
+    with open('./tmp/yinguo_1.html', mode='r+', encoding="utf-8") as f:
         info = f.read()
     # print(info)
     h = HtmlToDict()

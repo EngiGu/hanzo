@@ -5,7 +5,8 @@ SITE_SOURCE_MAP = {
     "lagou": 201,
     "dajie": 208,
     "hr58": 22,
-    "juzi": 209
+    "juzi": 209,
+    'yinguo':211
 }
 
 
