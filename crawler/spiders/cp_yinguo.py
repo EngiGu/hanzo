@@ -34,7 +34,7 @@ class YinGuo(SpiderBase, Base):
         b_text = base64.b64decode(b_text)
         aes_cipher = AES.new(key, mode)
         b_plaintext = aes_cipher.decrypt(b_text)
-        s_plaintext = bytes.decode(b_plaintext)
+        s_plaintext = b_plaintext.decode()
         return s_plaintext.strip()
 
     def query_list_page(self, key, page_to_go):
