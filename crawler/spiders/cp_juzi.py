@@ -1,3 +1,5 @@
+import random
+
 from core.base import Base
 import time
 import requests
@@ -35,7 +37,7 @@ class JuZi(SpiderBase, Base):
     name = 'juzi'
 
     def __init__(self, logger=None):
-        super(JuZi, self).__init__(logger)
+        super(JuZi, self).__init__(logger, st_flag=None)
         self.token = ""
         self.login()
 
@@ -56,7 +58,7 @@ class JuZi(SpiderBase, Base):
         }
         data = '{"account":"15948430604","password":"jianxun123"}'
         response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data)
-        res = response.text.encode('utf-8').decode('unicode_escape').replace("\\", "")
+        res = response.text.encode('utf-8').decode('unicode_escape')
         if res:
             res_t = json.loads(res)
             self.token = res_t.get("data").get("token")
@@ -93,6 +95,7 @@ class JuZi(SpiderBase, Base):
         self.l.info(f"now is :https://www.itjuzi.com/company/{url}")
         result = {}
         for type in ["basic", "contact", "person", "commerce"]:  # "basic", "contact", "person",
+            time.sleep(random.randint(1,3)*0.1)
             res = self.get_info(url, type)
             if res:
                 res = res.replace("\r\n", "").replace("\n\t", "").replace("\t", "").replace("\n", "")
@@ -107,6 +110,7 @@ class JuZi(SpiderBase, Base):
                     print(new_res)
                     result[type] = json.loads(new_res)
         new_res = json.dumps(result, ensure_ascii=False)
+        time.sleep(random.randint(3,8))
         return new_res
 
 
