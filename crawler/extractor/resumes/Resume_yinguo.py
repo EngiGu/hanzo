@@ -80,7 +80,7 @@ class HtmlToDict(BaseExtract, Base):
         return _str.translate(move).strip()
 
     # def shareholders_is_null(self, _str):
-    #     return f
+    #     return '' if _str == ''
 
     # 2/14
     def resume_info(self):
@@ -157,6 +157,8 @@ class HtmlToDict(BaseExtract, Base):
             # print(one['invest_organ'])
             develops.append(one)
 
+        develops.reverse()
+
         cxos = [
             {
                 "cxo_name": self.remove_xa0(i.xpath('string(./td[2])')),
@@ -173,8 +175,8 @@ class HtmlToDict(BaseExtract, Base):
         shareholders = [
             {
                 "name": self.remove_xa0(i.xpath('string(./td[1])')),
-                "money": self.remove_xa0(i.xpath('string(./td[2])')),
-                "prencent": self.remove_xa0(i.xpath('string(./td[3])')),
+                "money": self.remove_xa0(i.xpath('string(./td[2])')).replace('--', ''),
+                "prencent": self.remove_xa0(i.xpath('string(./td[3])')).replace('--', ''),
                 "type": "",
                 "create_time": 0,
                 "update_time": now_stmp
@@ -209,22 +211,22 @@ class HtmlToDict(BaseExtract, Base):
             "shareholders": shareholders
         }
 
-        def auto_html_to_dict(self, html_doc=None, debug=False):
-            self.debug = debug
-            site = html_doc.get("site")
-            self.source = SITE_SOURCE_MAP.get(site)
-            if not self.source:
-                raise Exception('config.py has not source on site: {}'.format(site))
-            self.content = html_doc.get("content", "")
-            if self.load_html(page_source=self.content):
-                self.resume_info()  # 调核心解析函数
-                return self.resume
-            else:
-                return None
+    def auto_html_to_dict(self, html_doc=None, debug=False):
+        self.debug = debug
+        site = html_doc.get("site")
+        self.source = SITE_SOURCE_MAP.get(site)
+        if not self.source:
+            raise Exception('config.py has not source on site: {}'.format(site))
+        self.content = html_doc.get("content", "")
+        if self.load_html(page_source=self.content):
+            self.resume_info()  # 调核心解析函数
+            return self.resume
+        else:
+            return None
 
 
 def main():
-    with open('./tmp/yinguo_3.html', mode='r+', encoding="utf-8") as f:
+    with open('./tmp/yinguo_2.html', mode='r+', encoding="utf-8") as f:
         info = f.read()
     # print(info)
     h = HtmlToDict()

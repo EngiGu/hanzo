@@ -18,13 +18,17 @@ logging.basicConfig(
 )
 
 
-async def main_loop():
+async def main_loop(mode):
     """
     rabbitmq  消息格式：Str '{"site": "cccc", "type: 1, "content": "content.....", "curr_task": "yyyyy"}'
     """
     async with AsMq(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE) as mq:
+        queue = QUEUE if mode == 'online' else TEST_QUEUE
+        logging.info('*' * 20)
+        logging.info(f"run mode: {mode}, rabbitmq queue: {queue}")
+        logging.info('*' * 20)
         while True:
-            tag, msg = await mq.get(QUEUE)
+            tag, msg = await mq.get(queue)
             if isinstance(msg, bytes):
                 msg = msg.decode('utf8')
             msg = json.loads(msg)
@@ -39,7 +43,7 @@ async def main_loop():
             print('task_summary:', task_summary)
             try:
                 logging.info('get: %s', task_summary)
-                await handler(msg)
+                await handler(msg, mode)
 
             except:
                 logging.info(f"error msg: {str(msg)}")
@@ -54,19 +58,26 @@ async def main_loop():
             # sys.exit()
 
 
-def run():
+def run(mode):
     loop = asyncio.get_event_loop()
     try:
-        loop.run_until_complete(main_loop())
+        loop.run_until_complete(main_loop(mode))
     finally:
         # loop.run_until_complete(loop.shutdown_asyncgens())
         loop.close()
 
 
 if __name__ == '__main__':
+    mode = 'online'
+    if len(sys.argv) == 2:
+        if sys.argv[1].lower() == 'test':
+            mode = 'test'
+        else:
+            raise Exception(f"run mode: {sys.argv[1].lower()} error, exit...")
+
     handle_process = []
-    for i in range(10):
-        p = multiprocessing.Process(target=run)
+    for i in range(10 if mode == 'online' else 1):
+        p = multiprocessing.Process(target=run, args=(mode,))
         handle_process.append(p)
     for p in handle_process:
         p.start()

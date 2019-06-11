@@ -10,6 +10,7 @@ from core.func import load_module
 from core.exceptions import *
 from core.asredis import AsRedis
 from bloom.connection import BFR as bfr
+from bloom.connection import TEST_BFR as tbfr
 from mongo_operate import mongo_ur
 from config import *
 
@@ -41,7 +42,7 @@ def cal_jx_resume_id(resume):
         return 0
 
 
-async def handler(msg: dict):
+async def handler(msg: dict, mode: str):
     # rabbitmq  消息格式：Str '{"site": "cccc", "type: 1, "content": "content.....", "curr_task": "yyyyy"}'
     l = logging
     site = msg['site']
@@ -62,10 +63,10 @@ async def handler(msg: dict):
             for one in detail_list:
                 l.info(f"site: {site} parse list one res: {str(one)} ")
                 hash_key = one.get("hashed_key", 0)
-                if site not in ['hr58']:
-                    if bfr.is_exists(str(hash_key)):  # todo 布隆list过滤
-                        l.info(f"site: {site} task has crawled before, skip. task: {str(one)}")
-                        continue
+                bloom = bfr if mode == 'online' else tbfr
+                if bloom.is_exists(str(hash_key)):  # todo 布隆list过滤
+                    l.info(f"site: {site} task has crawled before, skip. task: {str(one)}")
+                    continue
                 data = json.dumps({
                     'type': 2,
                     'site': site,
@@ -119,7 +120,7 @@ async def handler(msg: dict):
                 l.info(f"site: {site} parse resume None, has pushed to type5 queue, task: {str(_curr_task)}")
                 return
             detail['jx_resume_id'] = cal_jx_resume_id(detail)  # 15位整形的hash_id
-            mongo_ur(detail)
+            mongo_ur(detail, mode=mode)
 
         except Exception as e:
             _curr_task = msg['curr_task']

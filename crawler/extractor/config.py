@@ -5,7 +5,8 @@ SITE_SOURCE_MAP = {
     "lagou": 201,
     "dajie": 208,
     "hr58": 22,
-    "juzi": 209
+    "juzi": 209,
+    'yinguo':211
 }
 
 
@@ -16,6 +17,7 @@ RABBITMQ_USER = 'admin'
 RABBITMQ_PWD = 'admin'
 RABBITMQ_EXCHANGE = 'spider'
 QUEUE = 'company'
+TEST_QUEUE = 'test_queue'
 
 
 # redis

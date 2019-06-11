@@ -80,18 +80,20 @@ def hr58_update(resume):
     logging.info(f"hr58 update: {str(resume)}")
 
 
-def mongo_ur(resume: dict):
+def mongo_ur(resume: dict, mode:str):
     # print('*'*5, resume)
     # return
-    source = resume.get("source", None)
+    if mode == 'online':
+        source = resume.get("source", None)
 
-    if source in range(200, 300):
-        company_update_func(resume)
-    elif source == 22:
-        hr58_update(resume)
+        if source in range(200, 300):
+            company_update_func(resume)
+        elif source == 22:
+            hr58_update(resume)
+        else:
+            raise Exception(f"source num: {source} wrong: {resume}")
     else:
-        raise Exception(f"source num: {source} wrong: {resume}")
-
+        logging.info(f"mongo run mode: {mode}, resume: {str(resume)}")
 
 if __name__ == '__main__':
     mongo_ur('xxx')
