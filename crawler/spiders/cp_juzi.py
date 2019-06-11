@@ -20,7 +20,7 @@ def check(func):
                 break
             type, response = func(self, *args, **kwargs)
             if response.status_code == 200:
-                res = response.text.encode('utf-8').decode('unicode_escape').replace("\\", "")
+                res = response.text.encode('utf-8').decode('unicode_escape')
                 return res
             else:
                 self.l.info(f"site:{type} is false")
@@ -36,7 +36,7 @@ def check(func):
 class JuZi(SpiderBase, Base):
     name = 'juzi'
 
-    def __init__(self, logger=None):
+    def __init__(self, logger=None, st_flag=None):
         super(JuZi, self).__init__(logger, st_flag=None)
         self.token = ""
         self.login()
