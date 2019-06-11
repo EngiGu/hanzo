@@ -66,7 +66,7 @@ class HtmlToDict(BaseExtract, Base):
         if len(str(basic_info)) > 10:
             basic_dic = basic_info.get("data").get("basic", {})
             if len(str(basic_dic)):
-                found_time = basic_dic.get("basic_dic", "")  # "2009-11"
+                found_time = basic_dic.get("com_born_date", "")  # "2009-11"
                 self.found_time = self.set_unix_time(found_time) if found_time else 0
                 self.head_address = basic_dic.get("com_local", "")
                 office_cities = None  # 暂时没看到分布信息
