@@ -98,7 +98,7 @@ class YinGuo(SpiderBase, Base):
             conn = json.dumps(conn_json, ensure_ascii=False)
             l.info(f'{"*"*5} get list success, len:{len(conn)} {"*"*5}')
             print("*"*5, conn)
-            sys.exit()
+            # sys.exit()
             return conn
         return ''
 
