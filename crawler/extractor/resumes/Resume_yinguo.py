@@ -81,6 +81,11 @@ class HtmlToDict(BaseExtract, Base):
 
     # def shareholders_is_null(self, _str):
     #     return '' if _str == ''
+    def exclude_words(self, example, ex_list):
+        for i in ex_list:
+            if i in example:
+                return ''
+        return example
 
     # 2/14
     def resume_info(self):
@@ -92,7 +97,7 @@ class HtmlToDict(BaseExtract, Base):
         print(base_info)
         found_time = self.set_unix_time(base_info[9])
         full_name = base_info[1]
-        registered_phone = base_info[11]
+        registered_phone = self.exclude_words(base_info[11], ['暂无', '添加', '--'])
 
         short_name = tree.xpath('//h3[@class="mech_170525_nav_h3"]/text()')
         short_name = self.remove_xa0(first(short_name))
@@ -103,7 +108,9 @@ class HtmlToDict(BaseExtract, Base):
         # print(invest)
 
         labels = tree.xpath('//div[@id="tagsImg"]/span/a/text()')
-        head_address = base_info[5]
+        # head_address = base_info[5]
+        head_address = self.exclude_words(base_info[5], ['暂无', '添加', '--'])
+
         # print(head_address)
 
         introduce = tree.xpath('//div[@class="de_170822_d01_d02"]/p/text()')
@@ -175,8 +182,8 @@ class HtmlToDict(BaseExtract, Base):
         shareholders = [
             {
                 "name": self.remove_xa0(i.xpath('string(./td[1])')),
-                "money": self.remove_xa0(i.xpath('string(./td[2])')).replace('--', ''),
-                "prencent": self.remove_xa0(i.xpath('string(./td[3])')).replace('--', ''),
+                "money": self.exclude_words(self.remove_xa0(i.xpath('string(./td[2])')), ['--']),
+                "prencent": self.exclude_words(self.remove_xa0(i.xpath('string(./td[3])')), ['--']),
                 "type": "",
                 "create_time": 0,
                 "update_time": now_stmp
