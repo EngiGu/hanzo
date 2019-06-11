@@ -85,6 +85,7 @@ class YinGuo(SpiderBase, Base):
                 l.info(f'current query detail page failed, try another time...')
                 continue
             conn_json = res.json()
+            print('raw json:', conn_json)
             conn_json['index'] = int(page_to_go)
 
             # trans
