@@ -21,7 +21,7 @@ SPIDERS_MAPS = load_module('spiders', __file__, 'cp_')
 #
 
 class Run:
-    def __init__(self, site, st_flag=100):
+    def __init__(self, site, st_flag=100, mode='online'):
         self.site = site
 
         # self.logger = logging
@@ -31,6 +31,9 @@ class Run:
             os.makedirs(os.path.join(ROOT_PATH, f'logs/{site}'))  # 创建site日志目录
         self.logger = Logger(f'logs/{site}/run_{site}_{st_flag}')
         self.logger.info(f'loaded spiders: {str(SPIDERS_MAPS)}')
+
+        self.queue = QUEUE if mode == 'online' else TEST_QUEUE
+        self.logger.info(f"run mode: {mode}, rabbitmq queue: {self.queue}")
 
     def apply_task(self, action="get", site=None, task=None):
         '''
@@ -158,7 +161,7 @@ class Run:
             msg = {"site": site, "type": type, "content": content, "curr_task": curr_task}
             msg = json.dumps(msg, ensure_ascii=False)
             st = time.time()
-            self.mq.put(QUEUE, msg)
+            self.mq.put(self.queue, msg)
             self.logger.info(f"push crawl content(len: {len(content)}) to rabbitmq cost"
                              f" {(time.time() - st) * 1000:.3f} ms.")
 
@@ -247,10 +250,17 @@ if __name__ == '__main__':
     if site not in SPIDERS_MAPS:
         raise SpiderDoNotExists(f"no site's spider found!")
 
+    mode = 'online'
+    if len(sys.argv) == 3:
+        if sys.argv[2].lower() == 'test':
+            mode = 'test'
+        else:
+            raise Exception(f"run mode: {sys.argv[2].lower()} error, exit...")
+
     st_flag = 100
     p_list = []
     for i in range(NUM_PER_MACHINE):
-        p = Process(target=Run(site=site, st_flag=st_flag + i).run, name=f'Process-{site}-{st_flag+i}')
+        p = Process(target=Run(site=site, st_flag=st_flag + i, mode=mode).run, name=f'Process-{site}-{st_flag+i}')
         p.start()
         p_list.append(p)
         time.sleep(30)

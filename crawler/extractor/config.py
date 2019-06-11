@@ -17,6 +17,7 @@ RABBITMQ_USER = 'admin'
 RABBITMQ_PWD = 'admin'
 RABBITMQ_EXCHANGE = 'spider'
 QUEUE = 'company'
+TEST_QUEUE = 'test_queue'
 
 
 # redis
