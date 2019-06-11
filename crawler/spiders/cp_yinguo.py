@@ -35,7 +35,11 @@ class YinGuo(SpiderBase, Base):
         aes_cipher = AES.new(key, mode)
         b_plaintext = aes_cipher.decrypt(b_text)
         s_plaintext = b_plaintext.decode()
-        return s_plaintext.strip()
+        return self.remove_xa0(s_plaintext.strip())
+
+    def remove_xa0(self, _str):
+        move = dict.fromkeys((ord(c) for c in "\xa0\t\n\r"))
+        return _str.translate(move).strip()
 
     def query_list_page(self, key, page_to_go):
         # key 新疆+60+2010及以前+2015及以前
