@@ -80,7 +80,7 @@ class HtmlToDict(BaseExtract, Base):
         return _str.translate(move).strip()
 
     # def shareholders_is_null(self, _str):
-    #     return f
+    #     return '' if _str == ''
 
     # 2/14
     def resume_info(self):
@@ -175,8 +175,8 @@ class HtmlToDict(BaseExtract, Base):
         shareholders = [
             {
                 "name": self.remove_xa0(i.xpath('string(./td[1])')),
-                "money": self.remove_xa0(i.xpath('string(./td[2])')),
-                "prencent": self.remove_xa0(i.xpath('string(./td[3])')),
+                "money": self.remove_xa0(i.xpath('string(./td[2])')).replace('--', ''),
+                "prencent": self.remove_xa0(i.xpath('string(./td[3])')).replace('--', ''),
                 "type": "",
                 "create_time": 0,
                 "update_time": now_stmp
@@ -226,7 +226,7 @@ class HtmlToDict(BaseExtract, Base):
 
 
 def main():
-    with open('./tmp/yinguo_1.html', mode='r+', encoding="utf-8") as f:
+    with open('./tmp/yinguo_2.html', mode='r+', encoding="utf-8") as f:
         info = f.read()
     # print(info)
     h = HtmlToDict()
