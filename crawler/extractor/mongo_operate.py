@@ -14,7 +14,7 @@ cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
 def resume_develop(resume):
     hashed_key = hashlib.md5(
-        json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')).hexdigest()[8:-8]
+        json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')).hexdigest()[8:-10]
     hashed_id = int(hashed_key, 16)
     return hashed_id
 
@@ -57,7 +57,7 @@ def company_update_func(resume):
         logging.info(f"inserted jx_resume_id: {resume['jx_resume_id']}")
     else:
         develop_old = res.get("develops", [])
-        develop_new = resume.get("develops", [])  # 2019-6-5 修改develop的更新逻辑
+        develop_new = resume.get("develops", [])  # 2019-6-11 修改develop的更新逻辑
         all_develops = compare_develops(develop_old, develop_new)
         resume["develops"] = all_develops
         # deep_old = deepcopy(develop_old)[-1]

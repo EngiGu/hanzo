@@ -34,7 +34,7 @@ def cal_jx_resume_id(resume):
             if key in resume:
                 resume.pop(key)
         hashed_key = hashlib.md5(
-            json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')).hexdigest()[8:-8]
+            json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')).hexdigest()[8:-11]
         hashed_id = int(hashed_key, 16)
         return hashed_id
     else:
@@ -118,10 +118,8 @@ async def handler(msg: dict):
                 await ards.push('%s_5' % site, failed_type2_task)
                 l.info(f"site: {site} parse resume None, has pushed to type5 queue, task: {str(_curr_task)}")
                 return
-            # todo insert mongo
-            # resume计算去重
-            detail['jx_resume_id'] = str(cal_jx_resume_id(detail))
-            mongo_ur(detail)  # todo 测试一下
+            detail['jx_resume_id'] = cal_jx_resume_id(detail)  # 15位整形的hash_id
+            mongo_ur(detail)
 
         except Exception as e:
             _curr_task = msg['curr_task']
