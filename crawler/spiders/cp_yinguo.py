@@ -12,11 +12,11 @@ except:
 cookies_tmp = '_user_identify_=c1e888d3-e238-3c92-96a4-b8dd0053d928; uID=467464; sID=3da6663cb824e9e66dce9e36de47f8e6; JSESSIONID=aaaPnSZ9HmYDDhC0yv-Sw; Hm_lvt_37854ae85b75cf05012d4d71db2a355a=1559645557,1560135696; Hm_lvt_ddf0d99bc06024e29662071b7fc5044f=1559645557,1560135697; Hm_lpvt_ddf0d99bc06024e29662071b7fc5044f=1560158375; Hm_lpvt_37854ae85b75cf05012d4d71db2a355a=1560158375'
 
 
-class DaJie(SpiderBase, Base):
+class YinGuo(SpiderBase, Base):
     name = 'yinguo'
 
     def __init__(self, logger=None, *args):
-        super(DaJie, self).__init__(logger, st_flag=None)
+        super(YinGuo, self).__init__(logger, st_flag=None)
         self.proxy_request_delay = 3
         self.s.cookies = requests.utils.cookiejar_from_dict(
             {i.split('=')[0]: i.split('=')[1] for i in cookies_tmp.split('; ')}
