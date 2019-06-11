@@ -38,7 +38,7 @@ class YinGuo(SpiderBase, Base):
         return self.remove_xa0(s_plaintext.strip())
 
     def remove_xa0(self, _str):
-        move = dict.fromkeys((ord(c) for c in "\xa0\t\n\r"))
+        move = dict.fromkeys((ord(c) for c in "\x0f\x0e\x0d\x0c\x0b\x0a"))  #  去掉多于字符
         return _str.translate(move).strip()
 
     def query_list_page(self, key, page_to_go):
@@ -85,7 +85,6 @@ class YinGuo(SpiderBase, Base):
                 l.info(f'current query detail page failed, try another time...')
                 continue
             conn_json = res.json()
-            print('raw json:', conn_json)
             conn_json['index'] = int(page_to_go)
 
             # trans
