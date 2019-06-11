@@ -76,7 +76,7 @@ if __name__ == '__main__':
             raise Exception(f"run mode: {sys.argv[1].lower()} error, exit...")
 
     handle_process = []
-    for i in range(10):
+    for i in range(10 if mode == 'online' else 1):
         p = multiprocessing.Process(target=run, args=(mode,))
         handle_process.append(p)
     for p in handle_process:
