@@ -15,7 +15,7 @@ cookies_tmp = '_user_identify_=c1e888d3-e238-3c92-96a4-b8dd0053d928; uID=467464;
 class DaJie(SpiderBase, Base):
     name = 'yinguo'
 
-    def __init__(self, logger=None):
+    def __init__(self, logger=None, *args):
         super(DaJie, self).__init__(logger, st_flag=None)
         self.proxy_request_delay = 3
         self.s.cookies = requests.utils.cookiejar_from_dict(
