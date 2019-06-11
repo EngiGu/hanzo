@@ -1,5 +1,8 @@
+import base64
 import json
 import re
+
+from Crypto.Cipher import AES
 
 from core.base import Base
 
@@ -24,6 +27,15 @@ class YinGuo(SpiderBase, Base):
         self.s.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
         }
+
+    def decrypt(self, b_text): # 解密
+        key = b"innotree20180427"  # 加密和解密用同一个秘钥, 长度为 每块的长度
+        mode = AES.MODE_ECB  # ECB加密模式, 也是默认的模式, 创建AES加密对象时可以不写
+        b_text = base64.b64decode(b_text)
+        aes_cipher = AES.new(key, mode)
+        b_plaintext = aes_cipher.decrypt(b_text)
+        s_plaintext = bytes.decode(b_plaintext)
+        return s_plaintext
 
     def query_list_page(self, key, page_to_go):
         # key 新疆+60+2010及以前+2015及以前
@@ -70,6 +82,13 @@ class YinGuo(SpiderBase, Base):
                 continue
             conn_json = res.json()
             conn_json['index'] = int(page_to_go)
+
+            # trans
+            tmp = json.loads(conn_json['data'])
+            tmp['company']['count'] = self.decrypt(tmp['company']['count'])
+            tmp['inst']['count'] = self.decrypt(tmp['inst']['count'])
+            conn_json['data'] = json.dumps(tmp, ensure_ascii=False)
+
             conn = json.dumps(conn_json, ensure_ascii=False)
             l.info(f'{"*"*5} get list success, len:{len(conn)} {"*"*5}')
             sys.exit()
