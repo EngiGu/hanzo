@@ -40,7 +40,7 @@ def check(func):
                 self.login()
                 self.l.info(f"now retry counts :{retry_times}")
             time.sleep(5)
-        return False
+        return ""
     return wapper
 
 
