@@ -53,20 +53,20 @@ async def handler(msg: dict, mode: str, logger: logging):
         # list_parser = DISPATCH_KEY_MAP.get(site)['list_parser']
         list_parser = EXTRACT_LIST.get(site, None)
         if not list_parser:
-            raise ListParseDoNotExists(f'site: {site} has no corresponding list parser.')
+            raise ListParseDoNotExists(f'has no corresponding list parser.')
         try:
             detail = list_parser().parser(msg['content'])
             detail_list = detail['resume_list']
             if not detail['resume_list']:
-                l.info(f"site: {site} list parse resume_list is empty list.")
+                l.info(f"list parse resume_list is empty list.")
             current_page = detail['current_page']
             last_page = detail['last_page']
             for one in detail_list:
-                l.info(f"site: {site} parse list one res: {str(one)} ")
+                l.info(f"parse list one res: {str(one)} ")
                 hash_key = one.get("hashed_key", 0)
                 bloom = bfr if mode == 'online' else tbfr
                 if bloom.is_exists(str(hash_key)):  # todo 布隆list过滤
-                    l.info(f"site: {site} task has crawled before, skip. task: {str(one)}")
+                    l.info(f"task has crawled before, skip. task: {str(one)}")
                     continue
                 data = json.dumps({
                     'type': 2,
@@ -75,8 +75,8 @@ async def handler(msg: dict, mode: str, logger: logging):
                     'origin_task': msg['curr_task'],
                 }, ensure_ascii=False)
                 await ards.push('%s_2' % site, data)
-                l.info(f'site: {site} has generated new type2 task: {data}, pushed successfully.')
-            l.info(f"site: {site} page: {current_page} -> {last_page}")
+                l.info(f'has generated new type2 task: {data}, pushed successfully.')
+            l.info(f"page: {current_page} -> {last_page}")
             if last_page > current_page:
                 next_page_task = deepcopy(msg['curr_task'])
                 _curr_task = deepcopy(msg['curr_task'])
@@ -96,39 +96,39 @@ async def handler(msg: dict, mode: str, logger: logging):
                 if msg['type'] != 4:
                     # 这个条件主要是防止之前失败的任务一直重复生成新的翻页type1
                     await ards.push('%s_3' % site, task_data)
-                    l.info(f'site: {site} has generated new type1 queue. task: {next_page_task}, pushed successfully.')
+                    l.info(f'has generated new type1 queue. task: {next_page_task}, pushed successfully.')
         except Exception as e:
             _curr_task = msg['curr_task']
             _curr_task['type'] = 4
             failed_type1_task = json.dumps(_curr_task, ensure_ascii=False)
             await ards.push('%s_4' % site, failed_type1_task)
-            l.info(f'site: {site} parse list Error, has pushed to type4 queue. task: {failed_type1_task}, error: '
+            l.info(f'parse list Error, has pushed to type4 queue. task: {failed_type1_task}, error: '
                    f'{e.__context__}, tb: {traceback.format_exc()}')
 
     elif msg['type'] in [2, 5]:
         # detail_parser = DISPATCH_KEY_MAP.get(site)['resume_parser']
         detail_parser = EXTRACT_RESUME.get(site, None)
         if not detail_parser:
-            raise DetailParseDoNotExists(f'site: {site} has no corresponding detail parser.')
+            raise DetailParseDoNotExists(f'has no corresponding detail parser.')
         try:
             detail = detail_parser().auto_html_to_dict(_res)
-            l.info(f"site: {site} detail parse res: {str(detail)}")
+            l.info(f"detail parse res: {str(detail)}")
             if not detail:
                 _curr_task = msg['curr_task']
                 _curr_task['type'] = 5  # type2 解析失败放回失败队列
                 failed_type2_task = json.dumps(_curr_task, ensure_ascii=False)
                 await ards.push('%s_5' % site, failed_type2_task)
-                l.info(f"site: {site} parse resume None, has pushed to type5 queue, task: {str(_curr_task)}")
+                l.info(f"parse resume None, has pushed to type5 queue, task: {str(_curr_task)}")
                 return
             detail['jx_resume_id'] = cal_jx_resume_id(detail)  # 15位整形的hash_id
-            mongo_ur(detail, mode=mode)
+            mongo_ur(detail, mode=mode, logger=l)
 
         except Exception as e:
             _curr_task = msg['curr_task']
             _curr_task['type'] = 5  # type2 解析失败放回失败队列
             failed_type2_task = json.dumps(_curr_task, ensure_ascii=False)
             await ards.push('%s_5' % site, failed_type2_task)
-            l.error(f"site: {site} parse resume Error, has pushed to type5 queue, task: {str(_curr_task)}, "
+            l.error(f"parse resume Error, has pushed to type5 queue, task: {str(_curr_task)}, "
                     f"error: {e.__context__}, tb: {traceback.format_exc()}")
 
     else:

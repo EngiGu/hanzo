@@ -12,7 +12,7 @@ from config import *
 
 # print(QUEUE)
 
-fmt = logging.Formatter('[%(site)s]%(asctime)s-%(filename)s[%(funcName)s:%(lineno)d]-%(levelname)s: %(message)s')
+fmt = logging.Formatter('[%(site)s] %(asctime)s %(filename)s[%(funcName)s:%(lineno)d] %(levelname)s: %(message)s')
 h_console = logging.StreamHandler(sys.stdout)
 h_console.setFormatter(fmt)
 logger = logging.getLogger("extractor")
