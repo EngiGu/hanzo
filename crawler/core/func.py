@@ -7,6 +7,8 @@ import time
 
 import requests
 from .base import Base
+
+
 # from config import ROOT_PATH
 
 
@@ -57,21 +59,21 @@ def load_module(module_path, file_path, prefix):
     return {k: i for k, v in spiders_dicts.items() for i in v.values() if valid(i)}
 
 
-def time_count(func):
-    def wrapper(self, *args, **kwargs):
-        st = time.time()
-        res = func(self, *args, **kwargs)
-        logging.info(f'{func.__name__} time_count cost {(time.time() - st):.3f} s.')
-        return res
-
-    async def as_wrapper(self, *args, **kwargs):
-        st = time.time()
-        res = await func(self, *args, **kwargs)
-        logging.info(f'{func.__name__} time_count cost {(time.time() - st):.3f} s.')
-        return res
-
-    return as_wrapper if inspect.iscoroutinefunction(func) else wrapper
-
+# def time_count(func):
+#     def wrapper(*args, **kwargs):
+#         logger = for
+#         st = time.time()
+#         res = func(*args, **kwargs)
+#         logging.info(f'{func.__name__} time_count cost {(time.time() - st):.3f} s.')
+#         return res
+#
+#     async def as_wrapper(*args, **kwargs):
+#         st = time.time()
+#         res = await func(*args, **kwargs)
+#         logging.info(f'{func.__name__} time_count cost {(time.time() - st):.3f} s.')
+#         return res
+#
+#     return as_wrapper if inspect.iscoroutinefunction(func) else wrapper
 
 
 if __name__ == '__main__':
