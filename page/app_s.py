@@ -61,8 +61,10 @@ def gene_task_maps(source):
 
 
 app = Flask(__name__)
-r = NoAsRedis('s19.natfrp.org', 30694, 2)
-t = NoAsRedis('s19.natfrp.org', 30694, 1)
+# r = NoAsRedis('s19.natfrp.org', 30694, 2)
+# t = NoAsRedis('s19.natfrp.org', 30694, 1)
+r = NoAsRedis('10.0.0.48', 30694, 2)
+t = NoAsRedis('10.0.0.48', 30694, 1)
 
 
 @app.route('/')

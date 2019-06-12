@@ -280,8 +280,7 @@ if __name__ == '__main__':
     p_list = []
     for account in all_account:
         user_id = account['user_id']
-        p = Process(target=Run(site=site, account=account, mode=mode).run,
-                    name=f'Process-{site}-{user_id}')
+        p = Process(target=Run(site=site, account=account, mode=mode).run, name=f'Process-{site}-{user_id}')
         p.start()
         p_list.append(p)
         time.sleep(30)
