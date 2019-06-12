@@ -69,7 +69,7 @@ class JuZi(SpiderBase, Base):
             'Referer': 'https://www.itjuzi.com/login?url=%2Fcompany',
             'Connection': 'keep-alive',
         }
-        data = '{"account":"%s","password":"jianxun123"}' % self.account
+        data = '{"account":"%s","password":"jianxun123"}' % self.phone
         change_proxy = 0
         while True:
             if change_proxy >= 3:
@@ -116,6 +116,23 @@ class JuZi(SpiderBase, Base):
         move = dict.fromkeys((ord(c) for c in "\xa0"))
         return _str.translate(move).strip()
 
+    def reset_style(self, res):
+        """各种不同的jaon.loads报错"""
+        res = res.replace("\r\n", "").replace("\n\t", "").replace("\t", "").replace("\n", "")
+        res = re.sub(r'<.*?>', "", res)
+        res = self.remove_xa0(res)
+        res = re.sub(r'(\w)"(\w)', "\g<1>'\g<2>", res)
+        res_list = [res, res.replace("\\",""), re.sub(r'<.*?"', "", res)]
+        for i in res_list:
+            try:
+                res_new = json.loads(i)
+                return res_new
+            except Exception as e:
+                self.l.error(e)
+                self.l.error(res)
+        self.l.error("reset style failed with all style")
+        return {}
+
     def query_detail_page(self, url):
         l = self.l
         self.l.info(f"now is :https://www.itjuzi.com/company/{url}")
@@ -123,20 +140,8 @@ class JuZi(SpiderBase, Base):
         for type in ["basic", "contact", "person", "commerce"]:  # "basic", "contact", "person",
             time.sleep(random.randint(1,3)*0.01)
             res = self.get_info(url, type)
-            if res:
-                res = res.replace("\r\n", "").replace("\n\t", "").replace("\t", "").replace("\n", "")
-                new_res = re.sub(r'<.*?>', "", res)
-                try:
-                    result[type] = json.loads(self.remove_xa0(new_res))
-                except Exception as e:
-                    print(e)
-                    print(res)
-                    print("************")
-                    new_res = re.sub(r'<.*?"', "", new_res)
-                    print(new_res)
-                    result[type] = json.loads(new_res)
+            result[type] = self.reset_style(res)
         new_res = json.dumps(result, ensure_ascii=False)
-        # time.sleep(random.randint(1,3))
         return new_res
 
 
