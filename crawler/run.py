@@ -272,11 +272,10 @@ if __name__ == '__main__':
     ]
 
     if site in ACCOUNT_MAP:
-        # num_per_machine = [i for i in ACCOUNT_MAP[site][get_local_ip()].keys()]
-        all_account = ACCOUNT_MAP[site][get_local_ip()]
-        # num_per_machine = range(len(account_maps))  # int
-        # account = [{k: v} for k, v in account_maps.items()]
-        # use_account = True
+        local_ip = get_local_ip()
+        all_account = ACCOUNT_MAP[site].get(local_ip)
+        if not all_account:
+            raise Exception(f"current ip: {local_ip} has no account!! exit...")
 
     p_list = []
     for account in all_account:
