@@ -79,8 +79,10 @@ class JuZi(SpiderBase, Base):
             self.l.info(f"current proxy:{self.proxy}, real changed time:{self.change_proxy_times}")
             try:
                 response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data, timeout=15, proxies=self.proxy)
-                res = response.text.encode('utf-8').decode('unicode_escape')
-                break
+                if response.status_code == 200:
+                    res = response.text.encode('utf-8').decode('unicode_escape')
+                    break
+                continue
             except Exception as e:
                 time.sleep(2)
                 change_proxy += 1
