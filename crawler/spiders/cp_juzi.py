@@ -121,6 +121,7 @@ class JuZi(SpiderBase, Base):
         res = res.replace("\r\n", "").replace("\n\t", "").replace("\t", "").replace("\n", "")
         res = re.sub(r'<.*?>', "", res)
         res = self.remove_xa0(res)
+        res = re.sub(r'(\w)"(\w)', "\g<1>'\g<2>", res)
         res_list = [res, res.replace("\\",""), re.sub(r'<.*?"', "", res)]
         for i in res_list:
             try:
