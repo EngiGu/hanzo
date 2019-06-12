@@ -8,6 +8,7 @@ import logging
 from config import *
 from copy import deepcopy
 
+source_site_map = {v: k for k, v in SITE_SOURCE_MAP.items()}
 MT_cp = MongoDb("aizhaopin", "company_infos")
 cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
@@ -48,13 +49,14 @@ def compare_develops(old_develop, new_develop):
 
 
 def company_update_func(resume):
+    site = source_site_map.get(resume["source"], 'None')
     res = MT_cp.search({"jx_resume_id": resume["jx_resume_id"]})
     st = time.time()
     if not res:
         MT_cp.insert(resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
         cards.incr(f'{resume["source"]}_total')
-        logging.info(f"inserted jx_resume_id: {resume['jx_resume_id']}")
+        logging.info(f"site: {site}, inserted jx_resume_id: {resume['jx_resume_id']}")
     else:
         develop_old = res.get("develops", [])
         develop_new = resume.get("develops", [])  # 2019-6-11 修改develop的更新逻辑
@@ -71,8 +73,9 @@ def company_update_func(resume):
         #     resume["develops"] = develop_old
         MT_cp.update({"jx_resume_id": resume["jx_resume_id"]}, resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
-        logging.info(f"updated jx_resume_id: {resume['jx_resume_id']}")
-    logging.info(f"jx_resume_id: {resume['jx_resume_id']} mongo operate cost {(time.time() - st):.3f} s.")
+        logging.info(f"site: {site}, updated jx_resume_id: {resume['jx_resume_id']}")
+    logging.info(f"site: {site}, jx_resume_id: {resume['jx_resume_id']}, "
+                 f"mongo operate cost {(time.time() - st):.3f} s.")
 
 
 def hr58_update(resume):
@@ -80,7 +83,7 @@ def hr58_update(resume):
     logging.info(f"hr58 update: {str(resume)}")
 
 
-def mongo_ur(resume: dict, mode:str):
+def mongo_ur(resume: dict, mode: str):
     # print('*'*5, resume)
     # return
     if mode == 'online':
@@ -94,6 +97,7 @@ def mongo_ur(resume: dict, mode:str):
             raise Exception(f"source num: {source} wrong: {resume}")
     else:
         logging.info(f"mongo run mode: {mode}, resume: {str(resume)}")
+
 
 if __name__ == '__main__':
     mongo_ur('xxx')

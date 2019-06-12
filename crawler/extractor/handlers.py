@@ -27,19 +27,19 @@ def cal_jx_resume_id(resume):
             pop_list = ["id", "develops", "office_cities", "tag", "cxos", "productions", "introduce", "logo"]
         elif 90 < resume['source'] < 200:
             pop_list = ['id', 'introduce', 'create_time', 'update_time', 'tag']
-        elif resume['source'] == 22:
-            pop_list = ['id', 'introduce', 'create_time', 'update_time', 'tag']
         else:
             raise Exception('source: %r is invailed.' % resume['source'])
         for key in pop_list:
             if key in resume:
                 resume.pop(key)
         hashed_key = hashlib.md5(
-            json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')).hexdigest()[8:-11]
+            json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')
+        ).hexdigest()[8:-11]
         hashed_id = int(hashed_key, 16)
         return hashed_id
     else:
         return 0
+
 
 @time_count
 async def handler(msg: dict, mode: str):
