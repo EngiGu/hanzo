@@ -75,7 +75,7 @@ class SpiderBase():
             kwargs['proxies'] = proxies
             l.info(
                 f'{self.name} pid:{self.pid} -> retry: {_+1}, change: {self.change_proxy_times}, failed: {self.proxy_fa}, '
-                f'current: {proxies["http"]}, called: {called_func}(line: {lineno})')
+                f'current: {proxies["http"]}, called: {called_func}:{lineno}')
             try:
                 res = func(**kwargs)
                 self.proxy_fa = 0
