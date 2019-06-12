@@ -69,7 +69,7 @@ class JuZi(SpiderBase, Base):
             'Referer': 'https://www.itjuzi.com/login?url=%2Fcompany',
             'Connection': 'keep-alive',
         }
-        data = '{"account":"%s","password":"jianxun123"}' % self.account
+        data = '{"account":"%s","password":"jianxun123"}' % self.phone
         change_proxy = 0
         while True:
             if change_proxy >= 3:
