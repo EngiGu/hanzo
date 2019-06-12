@@ -50,12 +50,8 @@ class JuZi(SpiderBase, Base):
     def __init__(self, logger=None, st_flag=None):
         super(JuZi, self).__init__(logger, st_flag=None)
         self.token = ""
-        print(st_flag)
         self.account = st_flag.split("_")[-1]
-        print(self.account)
-        time.sleep(100)
         self.login()
-
 
     def query_list_page(self, key, page_to_go):
         pass
@@ -124,7 +120,7 @@ class JuZi(SpiderBase, Base):
         self.l.info(f"now is :https://www.itjuzi.com/company/{url}")
         result = {}
         for type in ["basic", "contact", "person", "commerce"]:  # "basic", "contact", "person",
-            time.sleep(random.randint(1,3)*0.1)
+            time.sleep(random.randint(1,3)*0.01)
             res = self.get_info(url, type)
             if res:
                 res = res.replace("\r\n", "").replace("\n\t", "").replace("\t", "").replace("\n", "")
@@ -139,7 +135,7 @@ class JuZi(SpiderBase, Base):
                     print(new_res)
                     result[type] = json.loads(new_res)
         new_res = json.dumps(result, ensure_ascii=False)
-        time.sleep(random.randint(1,3))
+        # time.sleep(random.randint(1,3))
         return new_res
 
 
