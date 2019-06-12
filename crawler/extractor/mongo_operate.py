@@ -8,7 +8,6 @@ import logging
 from config import *
 from copy import deepcopy
 
-source_site_map = {v: k for k, v in SITE_SOURCE_MAP.items()}
 MT_cp = MongoDb("aizhaopin", "company_infos")
 cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
@@ -48,15 +47,15 @@ def compare_develops(old_develop, new_develop):
     return res_list
 
 
-def company_update_func(resume):
-    site = source_site_map.get(resume["source"], 'None')
+def company_update_func(resume, logger):
+    l = logger
     res = MT_cp.search({"jx_resume_id": resume["jx_resume_id"]})
     st = time.time()
     if not res:
         MT_cp.insert(resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
         cards.incr(f'{resume["source"]}_total')
-        logging.info(f"site: {site}, inserted jx_resume_id: {resume['jx_resume_id']}")
+        l.info(f"inserted jx_resume_id: {resume['jx_resume_id']}")
     else:
         develop_old = res.get("develops", [])
         develop_new = resume.get("develops", [])  # 2019-6-11 修改develop的更新逻辑
@@ -73,30 +72,30 @@ def company_update_func(resume):
         #     resume["develops"] = develop_old
         MT_cp.update({"jx_resume_id": resume["jx_resume_id"]}, resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
-        logging.info(f"site: {site}, updated jx_resume_id: {resume['jx_resume_id']}")
-    logging.info(f"site: {site}, jx_resume_id: {resume['jx_resume_id']}, "
+        l.info(f"updated jx_resume_id: {resume['jx_resume_id']}")
+    l.info(f"jx_resume_id: {resume['jx_resume_id']}, "
                  f"mongo operate cost {(time.time() - st):.3f} s.")
 
 
-def hr58_update(resume):
-    resume['_id'] = resume['jx_resume_id']
-    logging.info(f"hr58 update: {str(resume)}")
+# def hr58_update(resume, logger=logger):
+#     resume['_id'] = resume['jx_resume_id']
+#     logging.info(f"hr58 update: {str(resume)}")
 
 
-def mongo_ur(resume: dict, mode: str):
+def mongo_ur(resume: dict, mode: str, logger: logging):
     # print('*'*5, resume)
     # return
     if mode == 'online':
         source = resume.get("source", None)
 
         if source in range(200, 300):
-            company_update_func(resume)
-        elif source == 22:
-            hr58_update(resume)
+            company_update_func(resume, logger=logger)
+        # elif source == 22:
+        #     hr58_update(resume, logger=logger)
         else:
             raise Exception(f"source num: {source} wrong: {resume}")
     else:
-        logging.info(f"mongo run mode: {mode}, resume: {str(resume)}")
+        logger.info(f"mongo run mode: {mode}, resume: {str(resume)}")
 
 
 if __name__ == '__main__':

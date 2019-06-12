@@ -12,10 +12,17 @@ from config import *
 
 # print(QUEUE)
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s'
-)
+fmt = logging.Formatter('[%(site)s] - %(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
+h_console = logging.StreamHandler(sys.stdout)
+h_console.setFormatter(fmt)
+logger = logging.getLogger("extractor")
+logger.setLevel(logging.INFO)
+logger.addHandler(h_console)
+
+# logging.basicConfig(
+#     level=logging.INFO,
+#     format='[%(site)s]%(asctime)s-%(filename)s[%(funcName)s:%(lineno)d]-%(levelname)s: %(message)s'
+# )
 
 
 async def main_loop(mode):
@@ -24,9 +31,10 @@ async def main_loop(mode):
     """
     async with AsMq(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE) as mq:
         queue = QUEUE if mode == 'online' else TEST_QUEUE
-        logging.info('*' * 20)
-        logging.info(f"run mode: {mode}, rabbitmq queue: {queue}")
-        logging.info('*' * 20)
+        l = logging.LoggerAdapter(logger, extra={'site': 'main_loop'})
+        l.info('*' * 20)
+        l.info(f"run mode: {mode}, rabbitmq queue: {queue}")
+        l.info('*' * 20)
         while True:
             tag, msg = await mq.get(queue)
             if isinstance(msg, bytes):
@@ -42,16 +50,16 @@ async def main_loop(mode):
             # print('msg:', msg)
             print('task_summary:', task_summary)
             try:
-                logging.info('get: %s', task_summary)
-                await handler(msg, mode)
+                l.info('get: %s', task_summary)
+                await handler(msg, mode, logger)
 
             except:
-                logging.info(f"error msg: {str(msg)}")
-                logging.warning('nack: %s', task_summary, exc_info=True, stack_info=True)
+                l.info(f"error msg: {str(msg)}")
+                l.warning('nack: %s', task_summary, exc_info=True, stack_info=True)
                 await mq.nack(tag, requeue=False)
 
             else:
-                logging.info('ack: %s', task_summary)
+                l.info('ack: %s', task_summary)
                 await mq.ack(tag)
 
             sys.stderr.flush()
