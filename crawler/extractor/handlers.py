@@ -6,7 +6,7 @@ from copy import deepcopy
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
 import logging
 
-from core.func import load_module
+from core.func import load_module, time_count
 from core.exceptions import *
 from core.asredis import AsRedis
 from bloom.connection import BFR as bfr
@@ -41,7 +41,7 @@ def cal_jx_resume_id(resume):
     else:
         return 0
 
-
+@time_count
 async def handler(msg: dict, mode: str):
     # rabbitmq  消息格式：Str '{"site": "cccc", "type: 1, "content": "content.....", "curr_task": "yyyyy"}'
     l = logging

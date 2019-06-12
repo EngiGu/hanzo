@@ -10,7 +10,8 @@ import json
 #
 SITE_SOURCE_MAP = {
     "lagou": 201,
-    "dajie": 208
+    "dajie": 208,
+    "yinguo": 211,
 }
 
 

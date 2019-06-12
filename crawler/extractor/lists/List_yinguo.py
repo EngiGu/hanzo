@@ -29,11 +29,14 @@ class ListToUrl(Base):
 
         res = json.loads(page)
         curr_page = res['index']  # 页面返回没有这个，spider从任务添加这字段
-        total_page = 1000 # 测试限制在1000页
-        total_page = int(total_page)
-        print(total_page, curr_page)
+        # total_page = 1000 # 测试限制在1000页
+        # total_page = int(total_page)
+        # print(total_page, curr_page)
         # sys.exit()
         result = json.loads(res['data'])['company']['infos']
+        total_page = json.loads(res['data'])['company']['count']
+        total_page = int(total_page) // 10 + 1
+        print(total_page, curr_page)
         resumes = []
         for one in result:
             resume = {}
