@@ -23,6 +23,7 @@ SPIDERS_MAPS = load_module('spiders', __file__, 'cp_')
 class Run:
     def __init__(self, site, st_flag=100, mode='online'):
         self.site = site
+        self.st_flag = st_flag
 
         # self.logger = logging
         self.mq = MqSession(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE)
@@ -176,7 +177,7 @@ class Run:
         #     k: SPIDERS_MAPS[k](self.logger) for k, v in SPIDERS_MAPS.items()
         # }
         #
-        c = SPIDERS_MAPS[self.site](self.logger, st_flag)
+        c = SPIDERS_MAPS[self.site](self.logger, self.st_flag)
 
         while True:
             try:
