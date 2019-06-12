@@ -42,7 +42,7 @@ class YinGuo(SpiderBase, Base):
 
     def check_is_expried(self, _str):
         conn = str(_str)
-        if '用户未登录' in conn:
+        if '用户未登录' in conn or '请登录' in conn:
             raise Exception(f"need relogin. content: {conn}")
 
     def query_list_page(self, key, page_to_go):
@@ -141,6 +141,9 @@ class YinGuo(SpiderBase, Base):
                 l.info(f'current query detail page failed, try another time...')
                 continue
             conn = res.content.decode()
+
+            self.check_is_expried(conn)
+
             view = self.__get_product(ncid)
             conn = f'{conn}+d8053f3eb827b6bc22006b7200ba2f5e+{view}'
             l.info(f'{"*"*5} get detail success, len:{len(conn)} {"*"*5}')
