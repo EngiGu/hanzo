@@ -51,6 +51,11 @@ class JuZi(SpiderBase, Base):
         super(JuZi, self).__init__(logger, st_flag=None)
         self.token = ""
         self.login()
+        print(st_flag)
+        self.account = st_flag.split("_")[-1]
+        print(self.account)
+        time.sleep(100)
+
 
     def query_list_page(self, key, page_to_go):
         pass
@@ -67,7 +72,7 @@ class JuZi(SpiderBase, Base):
             'Referer': 'https://www.itjuzi.com/login?url=%2Fcompany',
             'Connection': 'keep-alive',
         }
-        data = '{"account":"15948430604","password":"jianxun123"}'
+        data = '{"account":"%s","password":"jianxun123"}' % self.account
         change_proxy = 0
         while True:
             if change_proxy >= 3:
