@@ -47,10 +47,11 @@ def check(func):
 class JuZi(SpiderBase, Base):
     name = 'juzi'
 
-    def __init__(self, logger=None, st_flag=None):
-        super(JuZi, self).__init__(logger, st_flag=None)
+    def __init__(self, logger=None, *args):
+        super(JuZi, self).__init__(logger, *args)
         self.token = ""
-        self.account = st_flag.split("_")[-1]
+        #  {"user_id": "100", "user_name": "15948430604", "password": "pass"}
+        self.phone = self.account['user_name']
         self.login()
 
     def query_list_page(self, key, page_to_go):
