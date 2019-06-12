@@ -25,6 +25,7 @@ class TaskHandler(BaseHandler):
             return
 
         res = await model.get(site)
+        res = res.decode() if res else None
         logging.info('get %r task: %r' % (site, res))
 
         if not res:
@@ -38,7 +39,7 @@ class TaskHandler(BaseHandler):
         self.finish({
             'code': 0,
             'msg': 'success',
-            'task': str(res.decode()),
+            'task': res,
         })
 
     @arguments
