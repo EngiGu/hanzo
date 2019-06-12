@@ -50,11 +50,11 @@ class JuZi(SpiderBase, Base):
     def __init__(self, logger=None, st_flag=None):
         super(JuZi, self).__init__(logger, st_flag=None)
         self.token = ""
-        self.login()
         print(st_flag)
         self.account = st_flag.split("_")[-1]
         print(self.account)
         time.sleep(100)
+        self.login()
 
 
     def query_list_page(self, key, page_to_go):
