@@ -81,6 +81,7 @@ class JuZi(SpiderBase, Base):
                 break
             except Exception as e:
                 time.sleep(2)
+                change_proxy += 1
                 self.l.info(f"login error need change proxy : {e}")
         if res:
             res_t = json.loads(res)
