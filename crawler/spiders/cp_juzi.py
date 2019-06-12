@@ -10,7 +10,6 @@ try:
 except:
     from base import *
 
-
 def check(func):
     def wapper(self, *args, **kwargs):
         max_retry_times = 5  # 请求失败后重试次数
@@ -18,7 +17,13 @@ def check(func):
         while True:
             if max_retry_times <= retry_times:
                 break
-            type, response = func(self, *args, **kwargs)
+            try:
+                type, response = func(self, *args, **kwargs)
+            except Exception as e:
+                self.l.error(e)
+                time.sleep(5*60)
+                retry_times += 0.5
+                continue
             if response.status_code == 200:
                 res = response.text.encode('utf-8').decode('unicode_escape')
                 return res
@@ -28,7 +33,7 @@ def check(func):
                 retry_times += 1
                 self.login()
                 self.l.info(f"now retry counts :{retry_times}")
-            time.sleep(2)
+            time.sleep(5)
         return False
     return wapper
 
@@ -57,8 +62,16 @@ class JuZi(SpiderBase, Base):
             'Connection': 'keep-alive',
         }
         data = '{"account":"15948430604","password":"jianxun123"}'
-        response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data)
-        res = response.text.encode('utf-8').decode('unicode_escape')
+        for i in range(10):
+            try:
+                response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data)
+                res = response.text.encode('utf-8').decode('unicode_escape')
+                break
+            except Exception as e:
+                res = None
+                self.l.error(e)
+                time.sleep(5*60)  # 停5分钟
+                self.l.info("login error with 5 min sleep ~")
         if res:
             res_t = json.loads(res)
             self.token = res_t.get("data").get("token")

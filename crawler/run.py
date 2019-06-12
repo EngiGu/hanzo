@@ -259,10 +259,12 @@ if __name__ == '__main__':
         else:
             raise Exception(f"run mode: {sys.argv[2].lower()} error, exit...")
 
-    st_flag = 100
+    if site=="juzi":
+        NUM_PER_MACHINE = 1
+    st_flag = "100_"
     p_list = []
     for i in range(NUM_PER_MACHINE):
-        p = Process(target=Run(site=site, st_flag=st_flag + i, mode=mode).run, name=f'Process-{site}-{st_flag+i}')
+        p = Process(target=Run(site=site, st_flag=st_flag + str(i), mode=mode).run, name=f'Process-{site}-{st_flag+str(i)}')
         p.start()
         p_list.append(p)
         time.sleep(30)
