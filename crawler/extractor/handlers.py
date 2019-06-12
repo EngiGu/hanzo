@@ -96,7 +96,7 @@ async def handler(msg: dict, mode: str, logger: logging):
                 if msg['type'] != 4:
                     # 这个条件主要是防止之前失败的任务一直重复生成新的翻页type1
                     await ards.push('%s_3' % site, task_data)
-                    l.info(f'has generated new type1 queue. task: {next_page_task}, pushed successfully.')
+                    l.info(f'has generated new type1 task: {next_page_task}, pushed successfully.')
         except Exception as e:
             _curr_task = msg['curr_task']
             _curr_task['type'] = 4
