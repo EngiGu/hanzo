@@ -13,16 +13,22 @@ except:
 def check(func):
     def wapper(self, *args, **kwargs):
         max_retry_times = 5  # 请求失败后重试次数
+        change_proxy = 0  # 更换代理次数
         retry_times = 0
         while True:
             if max_retry_times <= retry_times:
                 break
             try:
+                if change_proxy >= 3:
+                    self.proxy = {}
+                    change_proxy = 0
+                self.get_proxy()
+                self.l.info(f"current proxy:{self.proxy}, real changed time:{self.change_proxy_times}")
                 type, response = func(self, *args, **kwargs)
             except Exception as e:
                 self.l.error(e)
-                time.sleep(5*60)
-                retry_times += 0.5
+                time.sleep(2)
+                change_proxy += 1
                 continue
             if response.status_code == 200:
                 res = response.text.encode('utf-8').decode('unicode_escape')
@@ -62,16 +68,20 @@ class JuZi(SpiderBase, Base):
             'Connection': 'keep-alive',
         }
         data = '{"account":"15948430604","password":"jianxun123"}'
-        for i in range(10):
+        change_proxy = 0
+        while True:
+            if change_proxy >= 3:
+                self.proxy = {}
+                change_proxy = 0
+            self.get_proxy()
+            self.l.info(f"current proxy:{self.proxy}, real changed time:{self.change_proxy_times}")
             try:
-                response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data)
+                response = requests.post('https://www.itjuzi.com/api/authorizations', headers=headers, data=data, timeout=15, proxies=self.proxy)
                 res = response.text.encode('utf-8').decode('unicode_escape')
                 break
             except Exception as e:
-                res = None
-                self.l.error(e)
-                time.sleep(5*60)  # 停5分钟
-                self.l.info("login error with 5 min sleep ~")
+                time.sleep(2)
+                self.l.info(f"login error need change proxy : {e}")
         if res:
             res_t = json.loads(res)
             self.token = res_t.get("data").get("token")
@@ -94,9 +104,9 @@ class JuZi(SpiderBase, Base):
         )
         if type_str == "commerce":
             headers["Authorization"] = self.token
-            response = requests.get(f'https://www.itjuzi.com/api/companies/{id}/commerce', headers=headers, timeout=20)
+            response = requests.get(f'https://www.itjuzi.com/api/companies/{id}/commerce', headers=headers, timeout=20, proxies=self.proxy)
         else:
-            response = requests.get(f'https://www.itjuzi.com/api/companies/{id}', headers=headers, params=params, timeout=20)
+            response = requests.get(f'https://www.itjuzi.com/api/companies/{id}', headers=headers, params=params, timeout=20, proxies=self.proxy)
         return type_str, response
 
     def remove_xa0(self, _str):
@@ -123,7 +133,7 @@ class JuZi(SpiderBase, Base):
                     print(new_res)
                     result[type] = json.loads(new_res)
         new_res = json.dumps(result, ensure_ascii=False)
-        time.sleep(random.randint(3,8))
+        time.sleep(random.randint(1,3))
         return new_res
 
 
