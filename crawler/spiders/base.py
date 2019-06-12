@@ -4,6 +4,7 @@ import sys
 import time
 import logging
 import requests
+import traceback
 
 from config import PROXY_URL
 
@@ -53,6 +54,7 @@ class SpiderBase():
             'get': self.s.get,
             'post': self.s.post
         }
+        es = traceback.extract_stack()
 
         method = method.lower()
         func = func_dict.get(method, None)
@@ -72,7 +74,7 @@ class SpiderBase():
             kwargs['proxies'] = proxies
             l.info(
                 f'{self.name} pid:{self.pid} -> retry: {_+1}, change: {self.change_proxy_times}, failed: {self.proxy_fa}, '
-                f'current: {proxies["http"]}')
+                f'current: {proxies["http"]}, called: {es[1].name}(line: {es[1].lineno})')
             try:
                 res = func(**kwargs)
                 self.proxy_fa = 0
