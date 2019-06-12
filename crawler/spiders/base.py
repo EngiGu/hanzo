@@ -12,10 +12,11 @@ class SpiderBase():
     selenium = False
     name = 'base'
 
-    def __init__(self, logger=None, st_flag=None):
+    def __init__(self, logger=None, account=None):
         # self.name = 'base'
         self.l = logger if logger else logging
         self.driver = None
+        self.account = account
         self.pid = os.getpid()
         self.s = requests.session()
         self.proxy = {}

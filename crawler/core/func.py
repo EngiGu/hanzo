@@ -28,6 +28,19 @@ def is_online_server(host):
     return False
 
 
+def get_local_ip():
+    local_ip = ""
+    try:
+        socket_objs = [socket.socket(socket.AF_INET, socket.SOCK_DGRAM)]
+        ip_from_ip_port = [(s.connect(("8.8.8.8", 53)), s.getsockname()[0], s.close()) for s in socket_objs][0][1]
+        ip_from_host_name = [ip for ip in socket.gethostbyname_ex(socket.gethostname())[2] if
+                             not ip.startswith("127.")][:1]
+        local_ip = [l for l in (ip_from_ip_port, ip_from_host_name) if l][0]
+    except Exception as e:
+        print("get_local_ip found exception : %s" % e)
+    return local_ip if ("" != local_ip and None != local_ip) else socket.gethostbyname(socket.gethostname())
+
+
 def load_module(module_path, file_path, prefix):
     """
     module_path: 模块路径    foo.boo
@@ -77,6 +90,7 @@ def load_module(module_path, file_path, prefix):
 
 
 if __name__ == '__main__':
-    host = 'sooko.ml'
-    print(SynResolve(host))
-    print(is_online_server(host))
+    # host = 'sooko.ml'
+    # print(SynResolve(host))
+    # print(is_online_server(host))
+    print(get_local_ip())

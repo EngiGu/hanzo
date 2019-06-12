@@ -6,7 +6,8 @@ import traceback
 import requests
 
 from config import *
-from core.func import load_module
+from account import *
+from core.func import load_module, get_local_ip
 from core.exceptions import *
 from core.rabbitmq import MqSession
 from core.logger import Logger
@@ -21,9 +22,10 @@ SPIDERS_MAPS = load_module('spiders', __file__, 'cp_')
 #
 
 class Run:
-    def __init__(self, site, st_flag=100, mode='online'):
+    def __init__(self, site, account, mode='online'):
         self.site = site
-        self.st_flag = st_flag
+        st_flag = account['user_id']
+        self.account = account
 
         # self.logger = logging
         self.mq = MqSession(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE)
@@ -177,7 +179,7 @@ class Run:
         #     k: SPIDERS_MAPS[k](self.logger) for k, v in SPIDERS_MAPS.items()
         # }
         #
-        c = SPIDERS_MAPS[self.site](self.logger, self.st_flag)
+        c = SPIDERS_MAPS[self.site](self.logger, self.account)
 
         while True:
             try:
@@ -260,12 +262,27 @@ if __name__ == '__main__':
         else:
             raise Exception(f"run mode: {sys.argv[2].lower()} error, exit...")
 
-    if site=="juzi":
-        NUM_PER_MACHINE = IT_Juzi_Accounts
-    st_flag = "100_"
+    # use_account = False
+    # num_per_machine = range(NUM_PER_MACHINE) # int
+    st_flag = 100
+    # account = None
+    all_account = [
+        {"user_id": str(st_flag + i), "user_name": "none", "password": "pass"}
+        for i in range(NUM_PER_MACHINE)
+    ]
+
+    if site in ACCOUNT_MAP:
+        # num_per_machine = [i for i in ACCOUNT_MAP[site][get_local_ip()].keys()]
+        all_account = ACCOUNT_MAP[site][get_local_ip()]
+        # num_per_machine = range(len(account_maps))  # int
+        # account = [{k: v} for k, v in account_maps.items()]
+        # use_account = True
+
     p_list = []
-    for i in NUM_PER_MACHINE:
-        p = Process(target=Run(site=site, st_flag=st_flag + str(i), mode=mode).run, name=f'Process-{site}-{st_flag+str(i)}')
+    for account in all_account:
+        user_id = account['user_id']
+        p = Process(target=Run(site=site, account=account, mode=mode).run,
+                    name=f'Process-{site}-{user_id}')
         p.start()
         p_list.append(p)
         time.sleep(30)

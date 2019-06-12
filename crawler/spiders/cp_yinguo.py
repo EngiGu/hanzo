@@ -18,7 +18,7 @@ class YinGuo(SpiderBase, Base):
     name = 'yinguo'
 
     def __init__(self, logger=None, *args):
-        super(YinGuo, self).__init__(logger, st_flag=None)
+        super(YinGuo, self).__init__(logger, *args)
         self.proxy_request_delay = 3
         self.s.cookies = requests.utils.cookiejar_from_dict(
             {i.split('=')[0]: i.split('=')[1] for i in cookies_tmp.split('; ')}
@@ -26,6 +26,7 @@ class YinGuo(SpiderBase, Base):
         self.s.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
         }
+        print('+'*20, self.account)
 
     def decrypt(self, b_text):  # 解密
         key = b"innotree20180427"  # 加密和解密用同一个秘钥, 长度为 每块的长度

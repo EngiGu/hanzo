@@ -20,8 +20,8 @@ except:
 class DaJie(SpiderBase, Base):
     name = 'dajie'
 
-    def __init__(self, logger=None):
-        super(DaJie, self).__init__(logger)
+    def __init__(self, logger=None, *args):
+        super(DaJie, self).__init__(logger, *args)
         self.proxy_request_delay = 3
 
     def query_list_page(self, key, page_to_go):
