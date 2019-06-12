@@ -42,11 +42,11 @@ def cal_jx_resume_id(resume):
 
 
 @time_count
-async def handler(msg: dict, mode: str):
+async def handler(msg: dict, mode: str, logger: logging):
     # rabbitmq  消息格式：Str '{"site": "cccc", "type: 1, "content": "content.....", "curr_task": "yyyyy"}'
     # l = logging
     site = msg['site']
-    l = logging.LoggerAdapter(logging, extra={'site': site})
+    l = logging.LoggerAdapter(logger, extra={'site': site})
     _res = {"site": site, "content": msg['content'], "curr_task": msg['curr_task']}
 
     if msg['type'] in [1, 3, 4]:
