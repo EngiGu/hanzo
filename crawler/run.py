@@ -26,6 +26,7 @@ class Run:
         self.site = site
         st_flag = account['user_id']
         self.account = account
+        self.redis_task_url = REDIS_TASK_URI
 
         # self.logger = logging
         self.mq = MqSession(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE)
@@ -56,7 +57,7 @@ class Run:
         if action.lower() == 'get':
             for _ in range(retry_times):
                 try:
-                    res = requests.get(REDIS_TASK_URI, params={'site': site}, timeout=10).json()
+                    res = requests.get(self.redis_task_url, params={'site': site}, timeout=10).json()
                     if res['code'] == 0:
                         return json.loads(res['task'])
                     return None
@@ -66,7 +67,7 @@ class Run:
         elif action.lower() == 'push':
             for _ in range(retry_times):
                 try:
-                    res = requests.post(REDIS_TASK_URI, data=task, timeout=10).json()
+                    res = requests.post(self.redis_task_url, data=task, timeout=10).json()
                     if res['code'] == 0:
                         l.info(f'push task: {str(task)} to queue success.')
                     return
