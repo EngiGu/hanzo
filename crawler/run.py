@@ -226,7 +226,7 @@ class Run:
                         raise ApplyTypeError(f'apply task type: {type} not in [1,2,3,4,5]!')
                 # sys.exit()
                 else:
-                    # 延时5s 是为了防止取太快爬虫挂掉
+                    # 延时5s 是为了防止取太快爬虫挂掉(取得太快，本机request消耗的资源来不及释放)
                     l.info(f'get task None, sleep 5s.')
                     time.sleep(5)
 
@@ -262,10 +262,7 @@ if __name__ == '__main__':
         else:
             raise Exception(f"run mode: {sys.argv[2].lower()} error, exit...")
 
-    # use_account = False
-    # num_per_machine = range(NUM_PER_MACHINE) # int
     st_flag = 100
-    # account = None
     all_account = [
         {"user_id": str(st_flag + i), "user_name": "none", "password": "pass"}
         for i in range(NUM_PER_MACHINE)
