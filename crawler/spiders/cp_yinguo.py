@@ -26,7 +26,7 @@ class YinGuo(SpiderBase, Base):
         self.s.headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.157 Safari/537.36',
         }
-        print('+'*20, self.account)
+        print('+' * 20, self.account)
 
     def decrypt(self, b_text):  # 解密
         key = b"innotree20180427"  # 加密和解密用同一个秘钥, 长度为 每块的长度
@@ -43,7 +43,16 @@ class YinGuo(SpiderBase, Base):
 
     def check_is_expried(self, _str):
         conn = str(_str)
-        if '用户未登录' in conn or '请登录' in conn:
+        need_re_login = False
+        if '用户未登录' in conn:
+            need_re_login = True
+
+        html_flag = re.findall(r'<title>(.*?)</title>', conn, re.S)
+        if html_flag:
+            if html_flag[0].strip() == '因果树':  # 登录页面的title
+                need_re_login = True
+
+        if need_re_login:
             raise Exception(f"need relogin. content: {conn}")
 
     def query_list_page(self, key, page_to_go):
