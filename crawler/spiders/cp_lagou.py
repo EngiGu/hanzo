@@ -10,8 +10,8 @@ class LaGou(SpiderBase, Base):
     name = 'lagou'
 
 
-    def __init__(self, logger=None):
-        super(LaGou, self).__init__(logger)
+    def __init__(self, logger=None,*args):
+        super(LaGou, self).__init__(logger, *args)
 
 
     def open_search_home(self):
