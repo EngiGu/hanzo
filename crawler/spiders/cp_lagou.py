@@ -154,6 +154,8 @@ class LaGou(SpiderBase, Base):
                     error_time += 1
                     time.sleep(2)
                     continue
+            elif (response.status_code == 303):
+                return ""
             else:
                 l.error(f"response status_code is wrong:{response.status_code}")
                 # 直接更换代理
