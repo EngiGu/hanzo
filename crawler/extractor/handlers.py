@@ -24,7 +24,7 @@ def cal_jx_resume_id(resume):
     resume = deepcopy(resume)
     if isinstance(resume, dict):
         if resume['source'] > 200:
-            pop_list = ["id", "develops", "office_cities", "tag", "cxos", "productions", "introduce", "logo"]
+            pop_list = ["id", "develops", "office_cities", "tag", "cxos", "productions", "introduce", "logo", "shareholders"]
         elif 90 < resume['source'] < 200:
             pop_list = ['id', 'introduce', 'create_time', 'update_time', 'tag']
         else:
