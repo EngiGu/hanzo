@@ -24,6 +24,8 @@ except:
     from base import *
     from yima_api import Yima
 
+from core.func import get_local_ip, send_ftqq_msg
+
 
 # logging.basicConfig(level=logging.INFO,
 #                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
@@ -365,6 +367,7 @@ class DaJie(SpiderBase, Base):
                 self.proxy = {}
                 self.need_login_times += 1
                 if self.need_login_times > 3:
+                    send_ftqq_msg(f'{get_local_ip()} cookies 过期', 'cookies 过期')
                     raise ('可能cookies过期，需要重新登录')
             return conn
             # print(conn)

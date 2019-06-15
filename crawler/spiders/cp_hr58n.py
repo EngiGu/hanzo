@@ -15,6 +15,7 @@ import re
 from fontTools.ttLib import TTFont
 
 from core.base import Base
+from core.func import send_ftqq_msg, get_local_ip
 from config import ROOT_PATH
 
 try:
@@ -343,7 +344,9 @@ class DaJie(SpiderBase, Base):
                 self.proxy = {}
                 self.need_login_times += 1
                 if self.need_login_times > 3:
-                    raise ('可能cookies过期，需要重新登录')
+                    send_ftqq_msg(f'{get_local_ip()} cookies 过期', 'cookies 过期')
+                    raise (f'{get_local_ip()} 可能cookies过期，需要重新登录')
+
             return conn
             # print(conn)
             # sys.exit(6666)

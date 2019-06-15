@@ -87,7 +87,17 @@ def load_module(module_path, file_path, prefix):
 #         return res
 #
 #     return as_wrapper if inspect.iscoroutinefunction(func) else wrapper
-
+def send_ftqq_msg(text, desp):
+    """
+    :param text: 消息标题，最长为256，必填。
+    :param desp: 消息内容，最长64Kb，可空，支持MarkDown。
+    :return:
+    """
+    url = 'https://sc.ftqq.com/SCU30620T7f7c14060cb17921326cbe6eb83344f25b70f4f1e24ab.send'
+    content = desp + '\n\nDate:  ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    r = requests.post(url, data={'text': text, 'desp': content})
+    print(r.json())
+    pass
 
 if __name__ == '__main__':
     # host = 'sooko.ml'
