@@ -340,6 +340,7 @@ class DaJie(SpiderBase, Base):
             l.info(f'{"*"*5} get detail success, len:{len(conn)} {"*"*5}')
             conn = self.resource_page(conn, self.raw)
             view = self.__get_view(resumeId)
+            l.info(f"view status: {view}")
             conn = f'{conn}+d135638806955c0ee9d255c64a952705+{view}'
             if '可能被删除、关闭或根本不存在' in conn:
                 l.info('简历可能被删除、关闭或根本不存在')
