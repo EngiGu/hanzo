@@ -78,9 +78,31 @@ def company_update_func(resume, logger):
 
 
 def hr58_update(resume, logger):
-    # resume['_id'] = resume['jx_resume_id']
+    resume['jx_resume_id'] = str(resume['jx_resume_id'])
     logger.info(f"hr58 update: {str(resume)}")
+    source = resume["resume_source"]["source"]
 
+    if source == 20:
+        update_day = resume['position_info']['position_update']
+    else:
+        update_day = resume['resume_source']['last_update']
+    update_day = time.strftime("%Y-%m-%d", time.localtime(update_day))
+    resume['update_day'] = update_day
+    today = time.strftime("%Y-%m-%d", time.localtime())
+    resume['is_today_update'] = 1 if today == update_day else 0
+
+    if today == update_day:
+        rds_key = '{}_{}'.format(source, today)
+        cards.incr(rds_key)
+        logger.info(f'{resume["jx_resume_id"]} is today update!')
+    else:
+        logger.info(f'{resume["jx_resume_id"]} is NOT today update!')
+
+    today_total_key = '{}_{}_{}'.format(source, today, 'total')
+    total_key = '{}_{}'.format(source, 'total')
+    cards.incr(today_total_key)
+    cards.incr(total_key)
+    MT_cp.insert(resume)
 
 def mongo_ur(resume: dict, mode: str, logger: logging):
     # print('*'*5, resume)
