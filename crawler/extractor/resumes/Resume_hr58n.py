@@ -85,7 +85,7 @@ class HtmlToDict(BaseExtract, Base):
         except:
             update_time_raw_str = time.time()
         return {
-            "source": 21,  # 来源，1=猎聘，2=51job，3=智联招聘, 4=400w,5=Boss直聘,...,8=大街,9=纷简历,10=招聘狗,11=人才啊, 21是job58简历
+            "source": 22,  # 来源，1=猎聘，2=51job，3=智联招聘, 4=400w,5=Boss直聘,...,8=大街,9=纷简历,10=招聘狗,11=人才啊, 21是job58简历
             "source_resume_id": resume_id,
             "source_resume_name": '',
             "last_update": round(update_time_raw_str)

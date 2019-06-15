@@ -3,6 +3,8 @@ import json
 import sys
 
 from lxml import etree
+from lxml.etree import HTML
+
 from core.base import Base
 
 
@@ -19,21 +21,30 @@ class ListToUrl(Base):
 
     def parser(self, page):
         """数据为html格式"""
+        tree = HTML(page)
+        current_page = tree.xpath('//div[@class="pager"]/strong/span/text()')
+        current_page = int(current_page[0])
+        # last_page = tree.xpath('//span[@class="selRes"]/span/text()')
+        # last_page = int(last_page[0]) // 35 + 1
+        # print(current_page, last_page)
+        # last_page =  60 if last_page > 60 else last_page
+        last_page = 60
+        print(current_page, last_page)
 
-        tree = json.loads(page)
         # base_url = 'http://www.rencaiaaa.com/rdetail/searchRencaiDetail.do?' \
         #              'ext={ext}&resumeType={resumetype}&rid={rid}' \
         #              '&updateDate={date}&updateDateFlag={flag}'
-        resume_list = tree["data"].get("resumeList", [])
-        current_page = int(tree.get("pageindex", "1"))
-        # last_page = round(int(tree["data"].get("count", "0")) / 50)
-        last_page = 30
+
+        resume_list = tree.xpath('//div[@id="infolist"]/dl')
+        print(len(resume_list))
+        # last_page = round(int(tree["data"].get("count", "0"))/50)
+        # last_page =  30 if last_page > 30 else last_page
 
         resumes = []
         for res in resume_list:
             resume = {}
-            resume['resume_id'] = res.get("resumeID", "")
-            resume['url'] = res.get("url", "")
+            resume['name'] = res.xpath('./dt[@class="w325"]/a/text()')[0]
+            resume['url'] = res.xpath('./dt[@class="w325"]/a/@href')[0]
             if len(resume['url']):
                 resume['url'] = "https:" + resume['url']
             resume["hashed_key"] = self.get_hashkey(resume)
@@ -44,7 +55,6 @@ class ListToUrl(Base):
             "last_page": last_page,
         }
         return result
-
 
 if __name__ == '__main__':
     a = ListToUrl()

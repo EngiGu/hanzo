@@ -4,7 +4,8 @@
 SITE_SOURCE_MAP = {
     "lagou": 201,
     "dajie": 208,
-    "hr58": 22,
+    "hr58": 21,
+    "hr58n": 22,
     "juzi": 209,
     'yinguo':211
 }
@@ -16,7 +17,7 @@ RABBITMQ_PORT = 5672
 RABBITMQ_USER = 'admin'
 RABBITMQ_PWD = 'admin'
 RABBITMQ_EXCHANGE = 'spider'
-QUEUE = 'company'
+QUEUE = 'tc58'
 TEST_QUEUE = 'test_queue'
 
 
@@ -28,7 +29,7 @@ REDIS_DB = 1
 # count_redis
 C_REDIS_HOST = '10.0.0.48'
 C_REDIS_PORT = 6379
-C_REDIS_DB = 2
+C_REDIS_DB = 5
 
 # mongo
 MONGODB_HOST = "mongodb://aizhaopin:aizhaopin%402017@dds-2ze05f9b880291d41.mongodb.rds.aliyuncs.com:3717, dds-2ze05f9b880291d42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-4570175"

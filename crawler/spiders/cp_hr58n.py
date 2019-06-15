@@ -30,7 +30,7 @@ except:
 
 
 class DaJie(SpiderBase, Base):
-    name = 'hr58'
+    name = 'hr58n'
     selenium = True
 
     def __init__(self, logger=None, st_flag=None):
@@ -65,7 +65,7 @@ class DaJie(SpiderBase, Base):
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9,it;q=0.8',
             'cache-control': 'no-cache',
-            'cookie': 'commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; sessionid=8a9675fa-4e41-423c-bf28-96eeecbb70d3; param8616=1; param8716kop=1; id58=e87rZl0EuzCoPyC3CISqAg==; 58tj_uuid=a22f6c49-35ff-4270-bb98-d2019ec09be9; new_uv=1; utm_source=; spm=; init_refer=; jl_list_left_banner=1; als=0; wmda_uuid=b6470035d30409766e3ee91a34134b88; wmda_new_uuid=1; wmda_session_id_1731916484865=1560591154559-d9fea39d-51e4-d60a; wmda_visited_projects=%3B1731916484865; xxzl_deviceid=OaoMjiA0nALhIk8zQgyEqqC3l8WbqPO7tnnsBGKfNsq48JuDusI4uvBUV2tTaT1r; PPU="UID=63814192696597&UN=xvhjzdghyhlg&TT=7de63ccc32a8e06f75c3e53d361f507b&PBODY=RBW5dnfz1XND4QF10hm9wBOmrFc22q_0pTJ1YZOLJlFocLYgeC5QLQuPr05KE7ZzWeo58JMSzD030OzjTl62MjUvFARQi0ucSQ-Gibgnl7lWVYYSqQHG60I4BCIceOkdUZFtwP1c-hziWZ_4iJ3BqPYfu2I-T9KrpKDTC7d6qRo&VER=1"; www58com="UserID=63814192696597&UserName=xvhjzdghyhlg"; 58cooper="userid=63814192696597&username=xvhjzdghyhlg"; 58uname=xvhjzdghyhlg; new_session=0; showPTTip=1; ljrzfc=1',
+            'cookie': 'commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; id58=c5/njVzAJMoIAfoXA3VlAg==; 58tj_uuid=329c9551-6862-43d4-9fbe-4cd1ed969770; als=0; xxzl_deviceid=cp3Mvh7aF0HWvoYmymkjF8hlRJrKFfKVoLB%2BJeerMqgmiahmSXbkf35ND%2BYmMc9Z; wmda_uuid=57aa741ccc8947f8344a4d1bd77f9113; wmda_new_uuid=1; gr_user_id=5d8d983a-96d9-431d-b81f-185f802c5695; mcity=wh; mcityName=%E6%AD%A6%E6%B1%89; nearCity=%5B%7B%22cityName%22%3A%22%E6%AD%A6%E6%B1%89%22%2C%22city%22%3A%22wh%22%7D%5D; Hm_lvt_5a7a7bfd6e7dfd9438b9023d5a6a4a96=1556098240; cookieuid1=mgjwFVzALL4ODHp9A1s4Ag==; sessionid=383656a6-92ab-4066-941b-099d2c6c4900; wmda_visited_projects=%3B1731916484865%3B6333604277682%3B2286118353409%3B3381039819650%3B4200524323842%3B4785068453378%3B7790950805815; showOrder=1; 58home=wh; city=wh; __utma=253535702.405960827.1559098468.1559098468.1559098468.1; __utmc=253535702; __utmz=253535702.1559098468.1.1.utmcsr=wh.58.com|utmccn=(referral)|utmcmd=referral|utmcct=/job/; hots=%5B%7B%22d%22%3A0%2C%22s1%22%3A%22%E6%AD%A6%E6%B1%89%E4%BA%BA%E7%91%9E%E4%BA%BA%E5%8A%9B%E8%B5%84%E6%BA%90%E6%9C%8D%E5%8A%A1%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8%EF%BC%88%E9%A6%99%E8%8D%89%E6%8B%9B%E8%81%98%EF%BC%89%22%2C%22s2%22%3A%22%22%2C%22n%22%3A%22sou%22%7D%5D; ppStore_fingerprint=860F18A32617495B64C24011EAA3E9CC3C5F76C9BF0DD291%EF%BC%BF1559715349682; xxzl_smartid=3ea03942f455c5e049f95aea1abd1d85; showStatus=headClick; show_zcm_banner=true; Hm_lvt_a3013634de7e7a5d307653e15a0584cf=1559718761; Hm_lpvt_a3013634de7e7a5d307653e15a0584cf=1559718761; param8616=1; param8716kop=1; showPTTip=1; ljrzfc=1; isSmartSortTipShowed=true; new_uv=51; utm_source=; spm=; init_refer=; PPU="UID=41113863915285&UN=w3xrm9&TT=c7a7042b3fb4d74d3f2c54d34ee417a1&PBODY=IufQA_5WIZW9TzuX5mtiCDssj7L_GzmrCxgoepOHacfFvYx3z3ixgSC0WNSVfGkGm7FXKxdg0nx42zTMZXvg568E--Ijfk6inzOI66rsfTMnqpfpV3pH6DqQW7Lr06t7mdlMVs9nnDPl9dYdbDSjnGRbvKb6mjYUg-VTZ1McM3A&VER=1"; www58com="UserID=41113863915285&UserName=w3xrm9"; 58cooper="userid=41113863915285&username=w3xrm9"; 58uname=w3xrm9; new_session=0; wmda_session_id_1731916484865=1559800982391-9fb804d6-5c10-c3e8',
             'pragma': 'no-cache',
             'referer': 'https://employer.58.com/resumesearch?PGTID=0d000000-0000-0f7d-5880-bbccd08216eb&ClickID=104',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
@@ -214,35 +214,14 @@ class DaJie(SpiderBase, Base):
         l = self.l
         l.info(str([keyword, page_to_go]))
 
-        cid = 158  # 158是武汉，暂时只是抓取武汉
-        aid, nid = keyword.strip().split('+')
-        nid = '-1'
-
-        jq = self.gene_jq_name()
-        search_url = f'https://employer.58.com/resume/searchresume'
-        params = {
-            'cid': cid,
-            'aid': aid,
-            'nid': nid,
-            'eduabove': '0',
-            'workabove': '0',
-            'pc': '0',
-            'mc': '0',
-            'pageindex': page_to_go,
-            'resumeSort': 'time',
-            'update24Hours': '1',
-            'keyword': '',
-            'pageSize': '70',
-            'callback': jq,
-            '_': str(int(time.time() * 1000)),
-        }
+        search_url = 'https://wh.58.com/{}/searchjob/pn{}/'.format(keyword, page_to_go)
 
         self.current_url = search_url
         retry_time = 15
         time.sleep(6)
         kwargs = {
             'url': search_url,
-            'params': params
+            # 'params': params
         }
 
         for _ in range(retry_time):
@@ -251,13 +230,12 @@ class DaJie(SpiderBase, Base):
                 l.info(f'current query list page failed, try another time...')
                 continue
             conn = res.content.decode()
-            conn = conn.replace(jq + '(', '')[:-1]
             if '频繁' in conn:
                 l.info(f'crawl too frequent, sleep 10~15s and change proxy...')
                 time.sleep(random.uniform(10, 15))
                 self.proxy = {}  # 换ip
                 continue
-            l.info(f'{"*"*5}  get job detail success, len:{len(conn)} {"*"*5}')
+            l.info(f'get job detail success, len:{len(conn)}')
             # print(conn)
             # sys.exit()
             return conn

@@ -15,7 +15,7 @@ RABBITMQ_PORT = 5672
 RABBITMQ_USER = 'admin'
 RABBITMQ_PWD = 'admin'
 RABBITMQ_EXCHANGE = 'spider'
-QUEUE = 'company'
+QUEUE = 'tc58'
 TEST_QUEUE = 'test_queue'
 
 
