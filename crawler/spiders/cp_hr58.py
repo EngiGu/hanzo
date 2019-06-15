@@ -1,7 +1,7 @@
 import base64
 import hashlib
 import io
-import json,sys
+import json, sys
 import os, time
 import random
 from selenium.webdriver import Chrome
@@ -81,7 +81,6 @@ class DaJie(SpiderBase, Base):
         self.need_login_times = 0
         # self.login()
 
-
     def check_is_login(self):
         url = 'https://employer.58.com/resumesearch'
         kwargs = {
@@ -92,10 +91,8 @@ class DaJie(SpiderBase, Base):
             return False
         return True
 
-
-
     def login(self):
-        l =  self.l
+        l = self.l
         self.call_login_times += 1
         if self.call_login_times > 10:
             l.info(f"login be called: {self.call_login_times}, exit...")
@@ -105,7 +102,7 @@ class DaJie(SpiderBase, Base):
         if not os.path.exists(cookies_path):
             os.makedirs(cookies_path)
 
-        cookies_name =  f'cookies_{self.uid}'
+        cookies_name = f'cookies_{self.uid}'
         # if not os.path.exists(cookies_name):
 
         if self.first:
@@ -121,8 +118,8 @@ class DaJie(SpiderBase, Base):
 
         # login with selenium
         for _ in range(10):
-            l.info(f"no cookies, starting {_+1}/10 login...")
-            cookie_str =  self._login()
+            l.info(f"no cookies, starting {_ + 1}/10 login...")
+            cookie_str = self._login()
             if cookie_str:
                 self.s.headers['cookie'] = cookie_str
                 # self.cookies = cookies
@@ -136,7 +133,6 @@ class DaJie(SpiderBase, Base):
                 pass
         l.error(f"after 10 retry, failed to login, exit....")
         sys.exit()
-
 
     def _login(self):
         l = self.l
@@ -259,7 +255,7 @@ class DaJie(SpiderBase, Base):
                 time.sleep(random.uniform(10, 15))
                 self.proxy = {}  # 换ip
                 continue
-            l.info(f'{"*"*5}  get job detail success, len:{len(conn)} {"*"*5}')
+            l.info(f'{"*" * 5}  get job detail success, len:{len(conn)} {"*" * 5}')
             # print(conn)
             # sys.exit()
             return conn
@@ -330,12 +326,17 @@ class DaJie(SpiderBase, Base):
         # self.session.headers['User-Agent'] = random_ua()
         # https://jianli.58.com/resumedetail/single/3_neyQ_EHunGZanGOpnvr5lEDkTvmQnem5nePknpsfTedYnGnsMG6vMGHplEOsnErsThsfTEdaTm**?sourcepath=pc-viplist-zhineng&followparam=%7B%22searchID%22%3A%2206ca2519d3974dcd98f42181239cc950%22%2C%22searchVersion%22%3A31103%2C%22searchAreaID%22%3A4554%2C%22searchFirstAreaID%22%3A158%2C%22searchPositionID%22%3A0%2C%22searchSecondPositionID%22%3A0%2C%22page%22%3A1%2C%22location%22%3A4%2C%22resumeType%22%3A1%2C%22platform%22%3A%22pc%22%2C%22sourcePage%22%3A%22pc-viplist-zhineng%22%2C%22operatePage%22%3A%22list%22%7D
 
+        url = url.replace('https:https://', 'https://')
         retry_time = 15
         time.sleep(6)
 
-        resumeId = re.findall('single/(.*?)\?', url)
+        resumeId = re.findall(r'single/(.*?)\?', url)
         if not resumeId:
-            raise Exception('invalid url...')
+            resumeId = re.findall(r'entinfo=(.*?)&', url)
+            if not resumeId:
+                raise Exception('invalid url...')
+            resumeId = [resumeId[0][:-2]]
+
         resumeId = resumeId[0]
         l.info(f'resumeId: {resumeId}')
 
@@ -354,7 +355,7 @@ class DaJie(SpiderBase, Base):
                 self.proxy = {}
                 continue
 
-            l.info(f'{"*"*5} get detail success, len:{len(conn)} {"*"*5}')
+            l.info(f'{"*" * 5} get detail success, len:{len(conn)} {"*" * 5}')
             conn = self.resource_page(conn, self.raw)
             view = self.__get_view(resumeId)
             conn = f'{conn}+d135638806955c0ee9d255c64a952705+{view}'

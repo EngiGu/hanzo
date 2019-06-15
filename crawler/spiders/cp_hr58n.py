@@ -307,12 +307,18 @@ class DaJie(SpiderBase, Base):
         # self.session.headers['User-Agent'] = random_ua()
         # https://jianli.58.com/resumedetail/single/3_neyQ_EHunGZanGOpnvr5lEDkTvmQnem5nePknpsfTedYnGnsMG6vMGHplEOsnErsThsfTEdaTm**?sourcepath=pc-viplist-zhineng&followparam=%7B%22searchID%22%3A%2206ca2519d3974dcd98f42181239cc950%22%2C%22searchVersion%22%3A31103%2C%22searchAreaID%22%3A4554%2C%22searchFirstAreaID%22%3A158%2C%22searchPositionID%22%3A0%2C%22searchSecondPositionID%22%3A0%2C%22page%22%3A1%2C%22location%22%3A4%2C%22resumeType%22%3A1%2C%22platform%22%3A%22pc%22%2C%22sourcePage%22%3A%22pc-viplist-zhineng%22%2C%22operatePage%22%3A%22list%22%7D
 
+        url = url.replace('https:https://', 'https://')
         retry_time = 15
         time.sleep(6)
 
-        resumeId = re.findall('single/(.*?)\?', url)
+
+        resumeId = re.findall(r'single/(.*?)\?', url)
         if not resumeId:
-            raise Exception('invalid url...')
+            resumeId = re.findall(r'entinfo=(.*?)&', url)
+            if not resumeId:
+                raise Exception('invalid url...')
+            resumeId = [resumeId[0][:-2]]
+
         resumeId = resumeId[0]
         l.info(f'resumeId: {resumeId}')
 
