@@ -319,7 +319,7 @@ class DaJie(SpiderBase, Base):
                 raise Exception('invalid url...')
             resumeId = [resumeId[0][:-2]]
 
-        resumeId = resumeId[0]
+        resumeId = resumeId[0].replace('/', '')
         l.info(f'resumeId: {resumeId}')
 
         kwargs = {
