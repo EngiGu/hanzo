@@ -78,8 +78,8 @@ def company_update_func(resume, logger):
 
 
 def hr58_update(resume, logger):
-    resume['_id'] = resume['jx_resume_id']
-    logging.info(f"hr58 update: {str(resume)}")
+    # resume['_id'] = resume['jx_resume_id']
+    logger.info(f"hr58 update: {str(resume)}")
 
 
 def mongo_ur(resume: dict, mode: str, logger: logging):
