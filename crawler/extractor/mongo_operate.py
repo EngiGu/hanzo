@@ -74,26 +74,29 @@ def company_update_func(resume, logger):
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
         l.info(f"updated jx_resume_id: {resume['jx_resume_id']}")
     l.info(f"jx_resume_id: {resume['jx_resume_id']}, "
-                 f"mongo operate cost {(time.time() - st):.3f} s.")
+           f"mongo operate cost {(time.time() - st):.3f} s.")
 
 
-# def hr58_update(resume, logger=logger):
-#     resume['_id'] = resume['jx_resume_id']
-#     logging.info(f"hr58 update: {str(resume)}")
+def hr58_update(resume, logger):
+    resume['_id'] = resume['jx_resume_id']
+    logging.info(f"hr58 update: {str(resume)}")
 
 
 def mongo_ur(resume: dict, mode: str, logger: logging):
     # print('*'*5, resume)
     # return
-    if mode == 'online':
-        source = resume.get("source", None)
 
-        if source in range(200, 300):
-            company_update_func(resume, logger=logger)
+    if mode == 'online':
+        hr58_update(resume, logger=logger)
+
+        # source = resume.get("source", None)
+        #
+        # if source in range(200, 300):
+        #     company_update_func(resume, logger=logger)
         # elif source == 22:
         #     hr58_update(resume, logger=logger)
-        else:
-            raise Exception(f"source num: {source} wrong: {resume}")
+        # else:
+        #     raise Exception(f"source num: {source} wrong: {resume}")
     else:
         logger.info(f"mongo run mode: {mode}, resume: {str(resume)}")
 

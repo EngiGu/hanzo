@@ -19,9 +19,43 @@ EXTRACT_RESUME = load_module("resumes", __file__, "Resume_")
 
 ards = AsRedis(REDIS_HOST, REDIS_PORT, REDIS_DB)
 
+def pop_58(resume):
+    source = resume['resume_source']['source']
+    for key in ['crawler', 'award_experience', 'expect_job', 'metadata_FFng', 'jx_status', 'last_job_experience',
+                'language_skill', 'additional_content', '_id', 'location', 'jx_resume_id', 'resume_source', '_yoda',
+                'professional_skill']:
+        if key in resume:
+            resume.pop(key)
+
+    if source == 20: # 58job
+        # resume['position_info'].pop('position_update')#  去掉58job的更新时间
+        pass
+    else:
+        for i in range(0, len(resume['job_experience'])):
+            resume['job_experience'][i].pop('responsibility')
+            resume['job_experience'][i].pop('achievement')
+            resume['job_experience'][i].pop('salary')
+            resume['job_experience'][i].pop('last_job')
+        for i in range(0, len(resume['project_experience'])):
+            resume['project_experience'][i].pop('description')
+            resume['project_experience'][i].pop('responsibility')
+        resume['profile'].pop('self_evaluation')
+        resume['profile'].pop('age')
+        if source in [21, 22]: # 两个简历页面
+            resume.pop('active_info')
+        else:
+            resume['profile'].pop('name')
+            print('has pop active_info')
+    print('--->>>resume', resume)
+    hashed_key = hashlib.md5(json.dumps(resume, sort_keys=True, ensure_ascii=False).encode('utf8')).hexdigest()[8:-8]
+    hashed_id = int(hashed_key, 16)
+    return hashed_id
+
 
 def cal_jx_resume_id(resume):
     resume = deepcopy(resume)
+    return pop_58(resume)
+
     if isinstance(resume, dict):
         if resume['source'] > 200:
             pop_list = ["id", "develops", "office_cities", "tag", "cxos", "productions", "introduce", "logo", "shareholders"]
@@ -64,10 +98,11 @@ async def handler(msg: dict, mode: str, logger: logging):
             for one in detail_list:
                 l.info(f"parse list one res: {str(one)} ")
                 hash_key = one.get("hashed_key", 0)
-                bloom = bfr if mode == 'online' else tbfr
-                if bloom.is_exists(str(hash_key)):  # todo 布隆list过滤
-                    l.info(f"task has crawled before, skip. task: {str(one)}")
-                    continue
+                # TODO 取消掉当日去重
+                # bloom = bfr if mode == 'online' else tbfr
+                # if bloom.is_exists(str(hash_key)):  # todo 布隆list过滤
+                #     l.info(f"task has crawled before, skip. task: {str(one)}")
+                #     continue
                 data = json.dumps({
                     'type': 2,
                     'site': site,
