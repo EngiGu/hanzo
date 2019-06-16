@@ -43,7 +43,7 @@ if __name__ == '__main__':
     #             tmp = line.strip().split(' ')
     #             yield tmp[0] + '+' + tmp[2]
     area = [159, 160, 161, 162, 163, 165, 166, 167, 168, 169, 170, 171, 1913, 8000, 15298]
-    area = [159]
+    # area = [159]
 
     def gene(to_fill):
         task = {'page': 1, 'site': site, 'type': 1, 'keyword': to_fill}
