@@ -25,7 +25,8 @@ class ListToUrl(Base):
         #              'ext={ext}&resumeType={resumetype}&rid={rid}' \
         #              '&updateDate={date}&updateDateFlag={flag}'
         resume_list = tree["data"].get("resumeList", [])
-        current_page = int(tree.get("pageindex", "1"))
+        # current_page = int(tree.get("pageindex", "1"))
+        current_page = int(tree['index'])
         # last_page = round(int(tree["data"].get("count", "0")) / 50)
         last_page = 30
 

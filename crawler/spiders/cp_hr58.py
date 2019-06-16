@@ -255,6 +255,9 @@ class DaJie(SpiderBase, Base):
                 time.sleep(random.uniform(10, 15))
                 self.proxy = {}  # 换ip
                 continue
+            tmp = json.loads(conn)
+            tmp['index'] = int(page_to_go)
+            conn = json.dumps(tmp, ensure_ascii=False)
             l.info(f'{"*" * 5}  get job detail success, len:{len(conn)} {"*" * 5}')
             # print(conn)
             # sys.exit()
