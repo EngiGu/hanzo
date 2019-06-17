@@ -105,6 +105,8 @@ class YinGuo(SpiderBase, Base):
             conn_json['index'] = int(page_to_go)
 
             # trans
+            if not conn_json.get('data', None):
+                l.info(f"No data!! content: {str(conn_json)}")
             tmp = json.loads(conn_json['data'])
             tmp['company']['count'] = self.decrypt(tmp['company']['count'])
             tmp['inst']['count'] = self.decrypt(tmp['inst']['count'])
