@@ -84,10 +84,13 @@ def save_photo(resume, logger):
     st = time.time()
     if not res:
         MT_photo.insert(resume)
+        cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
+        cards.incr(f'{resume["source"]}_total')
         l.info(f"inserted full_name: {full_name}")
     else:
         MT_photo.update({"full_name": full_name}, resume)
         l.info(f"update full_name: {full_name}")
+        cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
     l.info(f"full_name: {full_name}, "
            f"mongo operate cost {(time.time() - st):.3f} s.")
 
