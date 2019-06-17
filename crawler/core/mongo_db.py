@@ -14,11 +14,11 @@ class MongoDb():
         self.collection = self.db[collections]
         self.logger = logging
 
-    def __new__(cls, *args, **kwargs):
-        """单例模式"""
-        if not hasattr(cls, '_instance'):
-            cls._instance = super(MongoDb, cls).__new__(cls)
-        return cls._instance
+    # def __new__(cls, *args, **kwargs):
+    #     """单例模式"""
+    #     if not hasattr(cls, '_instance'):
+    #         cls._instance = super(MongoDb, cls).__new__(cls)
+    #     return cls._instance
 
     def search(self, query=None, type=1, count=500):
         """查询的结果是dict生成器"""
