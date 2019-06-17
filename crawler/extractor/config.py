@@ -6,7 +6,8 @@ SITE_SOURCE_MAP = {
     "dajie": 208,
     "hr58": 22,
     "juzi": 209,
-    'yinguo':211
+    'yinguo':211,
+    'baidu': 303
 }
 
 

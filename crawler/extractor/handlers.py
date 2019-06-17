@@ -27,6 +27,8 @@ def cal_jx_resume_id(resume):
             pop_list = ["id", "develops", "office_cities", "tag", "cxos", "productions", "introduce", "logo", "shareholders"]
         elif 90 < resume['source'] < 200:
             pop_list = ['id', 'introduce', 'create_time', 'update_time', 'tag']
+        elif resume['source'] == 303:
+            return 0
         else:
             raise Exception('source: %r is invailed.' % resume['source'])
         for key in pop_list:
@@ -120,7 +122,8 @@ async def handler(msg: dict, mode: str, logger: logging):
                 await ards.push('%s_5' % site, failed_type2_task)
                 l.info(f"parse resume None, has pushed to type5 queue, task: {str(_curr_task)}")
                 return
-            detail['jx_resume_id'] = cal_jx_resume_id(detail)  # 15位整形的hash_id
+            if cal_jx_resume_id(detail):  # 15位整形的hash_id
+                detail['jx_resume_id'] = cal_jx_resume_id(detail)
             mongo_ur(detail, mode=mode, logger=l)
 
         except Exception as e:

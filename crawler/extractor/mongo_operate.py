@@ -9,6 +9,7 @@ from config import *
 from copy import deepcopy
 
 MT_cp = MongoDb("aizhaopin", "company_infos")
+MT_photo = MongoDb("aizhaopin", "company_photos")
 cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
 
@@ -76,22 +77,29 @@ def company_update_func(resume, logger):
     l.info(f"jx_resume_id: {resume['jx_resume_id']}, "
                  f"mongo operate cost {(time.time() - st):.3f} s.")
 
-
-# def hr58_update(resume, logger=logger):
-#     resume['_id'] = resume['jx_resume_id']
-#     logging.info(f"hr58 update: {str(resume)}")
-
+def save_photo(resume, logger):
+    l = logger
+    full_name = resume.get("full_name")
+    res = MT_photo.search({"full_name": full_name})
+    st = time.time()
+    if not res:
+        MT_photo.insert(resume)
+        l.info(f"inserted full_name: {full_name}")
+    else:
+        MT_photo.update({"full_name": full_name}, resume)
+        l.info(f"update full_name: {full_name}")
+    l.info(f"full_name: {full_name}, "
+           f"mongo operate cost {(time.time() - st):.3f} s.")
 
 def mongo_ur(resume: dict, mode: str, logger: logging):
-    # print('*'*5, resume)
-    # return
+
     if mode == 'online':
         source = resume.get("source", None)
 
         if source in range(200, 300):
             company_update_func(resume, logger=logger)
-        # elif source == 22:
-        #     hr58_update(resume, logger=logger)
+        elif source == 303:  # company_photo
+            save_photo(resume, logger=logger)
         else:
             raise Exception(f"source num: {source} wrong: {resume}")
     else:
