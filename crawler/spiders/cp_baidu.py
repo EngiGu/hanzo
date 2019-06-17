@@ -25,23 +25,20 @@ class BaiDu(SpiderBase, Base):
         """
 
         html = "".join(html_s.split())
-        # print(html)
         res = re.findall(r"app.setData\('imgData',(.*?\})\);", html)[0]
-        res = res.replace("\\", "").replace("<strong>", "").replace("</strong>", "").replace("\n", "").replace("\'", "\"")
+        res = res.replace("\\", "").replace("<strong>", "").replace("</strong>", "").replace("\n", "").replace("\'",
+                                                                                                               "\"")
         res = re.sub(r'(\w)"(\w)', "\g<1>'\g<2>", res)
         res = res.replace("\".", "").replace("\"?", "")
-        res_dic = json.loads(res)
-        datas = res_dic.get("data")
+        res_list = re.findall(r'"middleURL":"(.*?jpg)".*?"fromPageTitle":"(.*?)",', res)
         res = {}
-        photo_url_list = []
         res["source"] = 303
         res["full_name"] = name
         res["update_time"] = int(time.time())
-        for photo_infos in datas:
-            photo_url = photo_infos.get("middleURL", "")
-            photo_desc = photo_infos.get("fromPageTitle", "")
-            if name in photo_desc:
-                photo_url_list.append(photo_url)
+        photo_url_list = []
+        for url, desc in res_list:
+            if name in desc:
+                photo_url_list.append(url)
         res["photo_urls"] = photo_url_list
         return res
 
