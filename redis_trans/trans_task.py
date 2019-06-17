@@ -31,7 +31,7 @@ if __name__ == '__main__':
     from model import session_scope, KaMi
 
     # rds = NoAsRedis('192.168.170.132', 6379, 3)
-    rds = NoAsRedis('127.0.0.1', 6379, 5)
+    rds = NoAsRedis('10.0.0.48', 6379, 5)
     keys = rds.redis_client.keys()
     all_data = {k.decode(): rds.get(k) for k in keys}
     print(all_data)
