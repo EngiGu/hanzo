@@ -9,7 +9,7 @@ from config import *
 from copy import deepcopy
 
 MT_cp = MongoDb("aizhaopin", "company_infos")
-MT_photo = MongoDb("aizhaopin", "company_photos")
+MT_photo = MongoDb("aizhaopin", "baidu_photos")
 cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
 
