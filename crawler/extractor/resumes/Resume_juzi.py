@@ -128,7 +128,7 @@ class HtmlToDict(BaseExtract, Base):
                 products_list = person_data.get("products", [])
                 for pro in products_list:
                     production = {}  # 置空
-                    production["desc"] = re.sub(r"<.*?>", "", pro.get("des", "")).replace("\n", "").strip()
+                    production["desc"] = re.sub(r"<.*?>", "", str(pro.get("des", ""))).replace("\n", "").strip()
                     production["desc"] = self.reset_style(production["desc"])
                     production["name"] = pro.get("name", "")
                     production["pic"] = pro.get("logo", "")
