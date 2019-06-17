@@ -8,7 +8,8 @@ import logging
 from config import *
 from copy import deepcopy
 
-MT_cp = MongoDb("aizhaopin", "tc58")
+# MT_cp = MongoDb("aizhaopin", "tc58")
+MT_cp = MongoDb("aizhaopin", "tongcheng_58")
 cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
 

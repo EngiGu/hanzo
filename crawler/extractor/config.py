@@ -32,6 +32,6 @@ C_REDIS_PORT = 6379
 C_REDIS_DB = 5
 
 # mongo
-# MONGODB_HOST = "mongodb://aizhaopin:aizhaopin%402017@dds-2ze05f9b880291d41.mongodb.rds.aliyuncs.com:3717, dds-2ze05f9b880291d42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-4570175"
-MONGODB_HOST = "127.0.0.1:27017"
+MONGODB_HOST = "mongodb://aizhaopin:aizhaopin%402017@dds-2ze05f9b880291d41.mongodb.rds.aliyuncs.com:3717, dds-2ze05f9b880291d42.mongodb.rds.aliyuncs.com:3717/admin?replicaSet=mgset-4570175"
+# MONGODB_HOST = "127.0.0.1:27017"
 
