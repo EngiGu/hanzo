@@ -36,6 +36,8 @@ class ListToUrl(Base):
         result = json.loads(res['data'])['company']['infos']
         total_page = json.loads(res['data'])['company']['count']
         total_page = int(total_page) // 10 + 1
+        if total_page > 1000:
+            total_page = 1000
         print(total_page, curr_page)
         resumes = []
         for one in result:
