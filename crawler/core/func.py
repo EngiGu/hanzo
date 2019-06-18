@@ -1,3 +1,4 @@
+import functools
 import importlib
 import inspect
 import logging
@@ -92,6 +93,7 @@ def load_module(module_path, file_path, prefix):
 def mongo_time_count(log_flag):
     # log_flag 是要输出日志的标记信息，例如：position.position_name
     def _time_count(func):
+        @functools.wraps(func)
         def wrapper(*args, **kwargs):
             logger = args[-1]
             resume = deepcopy(args[-2])

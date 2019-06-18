@@ -5,7 +5,7 @@ import json
 from core.mongo_db import MongoDb
 from core.func import mongo_time_count
 from core.asredis import NoAsRedis
-import logging
+# import logging
 from config import *
 from copy import deepcopy
 
@@ -104,7 +104,7 @@ def test_mode_mongo(resume, logger):
     logger.info(f"resume: {str(resume)}")
 
 
-def mongo_ur(resume: dict, mode: str, logger: logging):
+def mongo_ur(resume: dict, mode: str, logger):
     if mode == 'online':
         source = resume.get("source", None)
 

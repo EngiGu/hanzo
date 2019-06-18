@@ -44,7 +44,7 @@ def cal_jx_resume_id(resume):
 
 
 # @time_count
-async def handler(msg: dict, mode: str, logger: logging):
+async def handler(msg: dict, mode: str, logger):
     # rabbitmq  消息格式：Str '{"site": "cccc", "type: 1, "content": "content.....", "curr_task": "yyyyy"}'
     # l = logging
     site = msg['site']
