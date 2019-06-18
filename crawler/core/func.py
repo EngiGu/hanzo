@@ -101,8 +101,8 @@ def mongo_time_count(log_flag):
             res = func(*args, **kwargs)
             ex = time.time() - st
             for i in log_flag.split('.'):
-                resume = resume.get(i, None)
-                if not resume:
+                resume = resume.get(i, 'Not exists')
+                if resume == 'Not exists':
                     raise Exception(f'{log_flag} field error!!')
             logger.info(f'{func.__name__} mongo cost {ex:.3f} s. {log_flag}: {str(resume)}')
             return res
