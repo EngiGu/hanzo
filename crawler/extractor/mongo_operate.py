@@ -109,14 +109,14 @@ def mongo_ur(resume: dict, mode: str, logger: logging):
         source = resume.get("source", None)
 
         if source in range(200, 300):
-            company_update_func(resume, logger=logger)
+            company_update_func(resume, logger)
         elif source == 303:  # company_photo
-            save_photo(resume, logger=logger)
+            save_photo(resume, logger)
         else:
             raise Exception(f"source num: {source} wrong: {resume}")
     else:
         logger.info(f"mongo run mode: {mode}, resume: {str(resume)}")
-        test_mode_mongo(resume, logger=logger)
+        test_mode_mongo(resume, logger)
 
 
 if __name__ == '__main__':
