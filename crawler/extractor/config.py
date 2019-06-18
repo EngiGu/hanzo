@@ -10,6 +10,7 @@ SITE_SOURCE_MAP = {
     'baidu': 303
 }
 
+# don't need bloom filter site, eg: re import task, crawl again.
 DO_NOT_NEED_BLOOM = {
 
 }
