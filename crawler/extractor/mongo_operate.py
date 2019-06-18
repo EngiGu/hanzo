@@ -3,6 +3,7 @@ import time
 import hashlib
 import json
 from core.mongo_db import MongoDb
+from core.func import mongo_time_count
 from core.asredis import NoAsRedis
 import logging
 from config import *
@@ -48,10 +49,11 @@ def compare_develops(old_develop, new_develop):
     return res_list
 
 
+@mongo_time_count('jx_resume_id')
 def company_update_func(resume, logger):
     l = logger
     res = MT_cp.search({"jx_resume_id": resume["jx_resume_id"]})
-    st = time.time()
+    # st = time.time()
     if not res:
         MT_cp.insert(resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
@@ -74,14 +76,16 @@ def company_update_func(resume, logger):
         MT_cp.update({"jx_resume_id": resume["jx_resume_id"]}, resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
         l.info(f"updated jx_resume_id: {resume['jx_resume_id']}")
-    l.info(f"jx_resume_id: {resume['jx_resume_id']}, "
-                 f"mongo operate cost {(time.time() - st):.3f} s.")
+    # l.info(f"jx_resume_id: {resume['jx_resume_id']}, "
+    #        f"mongo operate cost {(time.time() - st):.3f} s.")
 
+
+@mongo_time_count('full_name')
 def save_photo(resume, logger):
     l = logger
     full_name = resume.get("full_name")
     res = MT_photo.search({"full_name": full_name})
-    st = time.time()
+    # st = time.time()
     if not res:
         MT_photo.insert(resume)
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
@@ -91,11 +95,11 @@ def save_photo(resume, logger):
         MT_photo.update({"full_name": full_name}, resume)
         l.info(f"update full_name: {full_name}")
         cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
-    l.info(f"full_name: {full_name}, "
-           f"mongo operate cost {(time.time() - st):.3f} s.")
+    # l.info(f"full_name: {full_name}, "
+    #        f"mongo operate cost {(time.time() - st):.3f} s.")
+
 
 def mongo_ur(resume: dict, mode: str, logger: logging):
-
     if mode == 'online':
         source = resume.get("source", None)
 

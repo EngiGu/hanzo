@@ -4,6 +4,7 @@ import logging
 import os
 import socket
 import time
+from copy import deepcopy
 
 import requests
 from .base import Base
@@ -87,6 +88,24 @@ def load_module(module_path, file_path, prefix):
 #         return res
 #
 #     return as_wrapper if inspect.iscoroutinefunction(func) else wrapper
+
+def mongo_time_count(log_flag):
+    # log_flag 是要输出日志的标记信息，例如：position.position_name
+    def _time_count(func):
+        def wrapper(*args, **kwargs):
+            logger = args[-1]
+            resume = deepcopy(args[-2])
+            st = time.time()
+            res = func(*args, **kwargs)
+            ex = time.time() - st
+            for i in log_flag.split('.'):
+                resume = resume.get(i, None)
+                if not resume:
+                    raise Exception(f'{log_flag} field error!!')
+            logger.info(f'{func.__name__} mongo cost {ex:.3f} s. {log_flag}: {str(resume)}')
+            return res
+        return wrapper
+    return _time_count
 
 
 if __name__ == '__main__':
