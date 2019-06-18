@@ -10,6 +10,9 @@ SITE_SOURCE_MAP = {
     'baidu': 303
 }
 
+DO_NOT_NEED_BLOOM = {
+
+}
 
 # rabbitmq
 RABBITMQ_HOST = '10.0.0.33'

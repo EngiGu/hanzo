@@ -66,10 +66,11 @@ async def handler(msg: dict, mode: str, logger):
             for one in detail_list:
                 l.info(f"parse list one res: {str(one)} ")
                 hash_key = one.get("hashed_key", 0)
-                bloom = bfr if mode == 'online' else tbfr
-                if bloom.is_exists(str(hash_key)):  # todo 布隆list过滤
-                    l.info(f"task has crawled before, skip. task: {str(one)}")
-                    continue
+                if site not in DO_NOT_NEED_BLOOM:
+                    bloom = bfr if mode == 'online' else tbfr
+                    if bloom.is_exists(str(hash_key)):  # todo 布隆list过滤
+                        l.info(f"task has crawled before, skip. task: {str(one)}")
+                        continue
                 data = json.dumps({
                     'type': 2,
                     'site': site,
