@@ -99,6 +99,11 @@ def save_photo(resume, logger):
     #        f"mongo operate cost {(time.time() - st):.3f} s.")
 
 
+@mongo_time_count('jx_resume_id')
+def test_mode_mongo(resume, logger):
+    logger.info(f"resume: {str(resume)}")
+
+
 def mongo_ur(resume: dict, mode: str, logger: logging):
     if mode == 'online':
         source = resume.get("source", None)
@@ -111,6 +116,7 @@ def mongo_ur(resume: dict, mode: str, logger: logging):
             raise Exception(f"source num: {source} wrong: {resume}")
     else:
         logger.info(f"mongo run mode: {mode}, resume: {str(resume)}")
+        test_mode_mongo(resume, logger=logger)
 
 
 if __name__ == '__main__':
