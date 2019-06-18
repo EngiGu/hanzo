@@ -64,7 +64,7 @@ async def main_loop(mode):
                     await mq.ack(tag)
 
                 sys.stderr.flush()
-            except InterruptedError:
+            except KeyboardInterrupt:
                 l.info(f"main loop ctrl+c, exit....")
             # sys.exit()
 
