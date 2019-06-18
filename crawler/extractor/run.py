@@ -36,33 +36,36 @@ async def main_loop(mode):
         l.info(f"run mode: {mode}, rabbitmq queue: {queue}")
         l.info('*' * 20)
         while True:
-            tag, msg = await mq.get(queue)
-            if isinstance(msg, bytes):
-                msg = msg.decode('utf8')
-            msg = json.loads(msg)
-
-            # msg['curr_task'] str
-            task_summary = json.dumps({
-                'site': msg['site'],
-                'type': msg['type'],
-                'curr_task': msg['curr_task'],
-            }, ensure_ascii=False)
-            # print('msg:', msg)
-            print('task_summary:', task_summary)
             try:
-                l.info('get: %s', task_summary)
-                await handler(msg, mode, logger)
+                tag, msg = await mq.get(queue)
+                if isinstance(msg, bytes):
+                    msg = msg.decode('utf8')
+                msg = json.loads(msg)
 
-            except:
-                l.info(f"error msg: {str(msg)}")
-                l.warning('nack: %s', task_summary, exc_info=True, stack_info=True)
-                await mq.nack(tag, requeue=False)
+                # msg['curr_task'] str
+                task_summary = json.dumps({
+                    'site': msg['site'],
+                    'type': msg['type'],
+                    'curr_task': msg['curr_task'],
+                }, ensure_ascii=False)
+                # print('msg:', msg)
+                print('task_summary:', task_summary)
+                try:
+                    l.info('get: %s', task_summary)
+                    await handler(msg, mode, logger)
 
-            else:
-                l.info('ack: %s', task_summary)
-                await mq.ack(tag)
+                except:
+                    l.info(f"error msg: {str(msg)}")
+                    l.warning('nack: %s', task_summary, exc_info=True, stack_info=True)
+                    await mq.nack(tag, requeue=False)
 
-            sys.stderr.flush()
+                else:
+                    l.info('ack: %s', task_summary)
+                    await mq.ack(tag)
+
+                sys.stderr.flush()
+            except InterruptedError:
+                l.info(f"main loop ctrl+c, exit....")
             # sys.exit()
 
 
