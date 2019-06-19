@@ -33,7 +33,7 @@ class Liepin(SpiderBase, Base):
             ('keywords', ''),
             ('dq', dq),
             ('industry', industry),
-            ('curPage', page_to_go),
+            ('curPage', int(page_to_go) - 1),
         )
         proxy_change_time = 0
         while True:
