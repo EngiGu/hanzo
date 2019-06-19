@@ -32,9 +32,9 @@ class ListToUrl(Base):
             "last_page": 1
         }
         curr_page_ele = tree.xpath('//span[@class="page-number page-current"]/a/text()')
-        curr_page = curr_page_ele[0] if curr_page_ele else 0
+        curr_page = curr_page_ele[0] if curr_page_ele else 1
         last_page_page_ele = tree.xpath('//span[@class="page-next"]/a[starts-with(text(),"末页")]/@href')
-        last_page = re.findall(r'curPage=(\d+)', last_page_page_ele[0])[0] if last_page_page_ele else curr_page
+        last_page = int(re.findall(r'curPage=(\d+)', last_page_page_ele[0])[0])+1 if last_page_page_ele else curr_page
         result = tree.xpath('//div[@class="jobs-list"]/dl')
         resumes = []
         for one in result:
@@ -47,7 +47,7 @@ class ListToUrl(Base):
         result = {
             "resume_list": resumes,
             "current_page": int(curr_page),
-            "last_page": int(last_page) + 1
+            "last_page": last_page
         }
         return result
 
