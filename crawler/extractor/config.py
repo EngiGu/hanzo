@@ -7,7 +7,8 @@ SITE_SOURCE_MAP = {
     "hr58": 22,
     "juzi": 209,
     'yinguo':211,
-    'baidu': 303
+    'baidu': 303,
+    'liepin': 202
 }
 
 # don't need bloom filter site, eg: re import task, crawl again.
