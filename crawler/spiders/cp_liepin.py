@@ -52,7 +52,7 @@ class Liepin(SpiderBase, Base):
                 continue
             if response.status_code == 200:
                 if "末页" in response.text:
-                    print("resume success!!!")
+                    print("search success!!!")
                     return response.text
                 elif "没有符合搜索条件的企业" in response.text:
                     l.info(f"没有符合搜索条件的企业:{key}")
