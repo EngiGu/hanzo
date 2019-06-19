@@ -31,7 +31,6 @@ class ListToUrl(Base):
             "current_page": 1,
             "last_page": 1
         }
-        logging.info(f"current page is : {page}")
         curr_page_ele = tree.xpath('//span[@class="page-number page-current"]/a/text()')
         curr_page = curr_page_ele[0] if curr_page_ele else 0
         last_page_page_ele = tree.xpath('//span[@class="page-next"]/a[starts-with(text(),"末页")]/@href')
@@ -48,7 +47,7 @@ class ListToUrl(Base):
         result = {
             "resume_list": resumes,
             "current_page": int(curr_page),
-            "last_page": int(last_page)
+            "last_page": int(last_page) + 1
         }
         return result
 

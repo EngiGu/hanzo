@@ -35,7 +35,6 @@ class Liepin(SpiderBase, Base):
             ('industry', industry),
             ('curPage', page_to_go),
         )
-        response = requests.get('https://www.liepin.com/company/so/', headers=headers, params=params, proxies=self.proxy, timeout=30)
         proxy_change_time = 0
         while True:
             if proxy_change_time >= 20:
@@ -44,7 +43,7 @@ class Liepin(SpiderBase, Base):
             try:
                 self.get_proxy()
                 proxy_change_time += 1
-                response = requests.get('https://www.liepin.com/zhaopin/', headers=headers, params=params,
+                response = requests.get('https://www.liepin.com/company/so/', headers=headers, params=params,
                                         proxies=self.proxy, timeout=30)
             except:
                 self.proxy_fa += 1  # 当代理不可用时计数加一
