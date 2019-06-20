@@ -239,6 +239,7 @@ class DaJie(SpiderBase, Base):
                 self.fr_times += 1
                 if self.fr_times > 50:
                     send_ftqq_msg(f'{get_local_ip()} 抓取频繁被封账号', '抓取频繁被封账号')
+                    raise Exception(f'抓取频繁被封账号, exit...')
                 continue
             l.info(f'get job detail success, len:{len(conn)}')
             # print(conn)
@@ -342,6 +343,7 @@ class DaJie(SpiderBase, Base):
                 self.fr_times += 1
                 if self.fr_times > 50:
                     send_ftqq_msg(f'{get_local_ip()} 抓取频繁被封账号', '抓取频繁被封账号')
+                    raise Exception(f'抓取频繁被封账号, exit...')
                 continue
 
             l.info(f'{"*"*5} get detail success, len:{len(conn)} {"*"*5}')
