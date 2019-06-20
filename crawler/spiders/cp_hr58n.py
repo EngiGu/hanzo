@@ -66,7 +66,7 @@ class DaJie(SpiderBase, Base):
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9,it;q=0.8',
             'cache-control': 'no-cache',
-            'cookie': 'commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; id58=Ch8BB10E1LA8MEPoY+gxAg==; 58tj_uuid=ae371b07-109c-4413-a222-748ddcb7911a; new_uv=1; utm_source=; spm=; init_refer=; als=0; _ga=GA1.2.273214915.1560597684; _gid=GA1.2.266977175.1560597684; new_session=0; __utma=253535702.273214915.1560597684.1560597689.1560597689.1; __utmc=253535702; __utmz=253535702.1560597689.1.1.utmcsr=g.58.com|utmccn=(referral)|utmcmd=referral|utmcct=/city; __utmt=1; __utmb=253535702.1.10.1560597689; 58home=gz; gz=2019615192130; city=gz; xxzl_deviceid=KOt9KjDYu2xcKdBkcXQMU2dv%2B5cdxBfsF8M9aSfXzmJ%2BMuksOGkltFJYbHZ7At9s; PPU="UID=63835416001039&UN=glfx1oh4s&TT=e23433e8cb9c60e845a7e6efafc8fd1e&PBODY=TusMVXHSI-QRVxX48odukxw2ThtrZNvkSt8BrNhn7VasgLB7EIh3bCBohLLa9G2NRJJVw6eLZBQCLBdoZ75tb-fJ5f37o1pJ3oFyWksAd7Xo70sP3V0tOMf27vM9sQWriAWi16YSkteb82KR4R8ziSyLCqbrgt1_wOxhumwsSK4&VER=1"; www58com="UserID=63835416001039&UserName=glfx1oh4s"; 58cooper="userid=63835416001039&username=glfx1oh4s"; 58uname=glfx1oh4s; sessionid=9f77083b-6b7c-4b61-97b2-32cc3b380925; param8616=1; param8716kop=1; jl_list_left_banner=1; wmda_uuid=0a068b8c9e98a2b0244ec9dc86978801; wmda_new_uuid=1; wmda_session_id_1731916484865=1560597775372-35da2319-cef6-e22b; wmda_visited_projects=%3B1731916484865; showPTTip=1; ljrzfc=1',
+            'cookie': 'commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; 58home=wh; id58=e87rZl0K62MmTxbLBbsvAg==; 58tj_uuid=b40bb7de-6ffc-45ea-b362-12f5d444fe70; new_uv=1; utm_source=; spm=; init_refer=; city=wh; als=0; xxzl_deviceid=HZc6Lp%2BKBnsrvL%2FtlAaaKh3Bl42uW8sOYKYHpgWAk78lNsoKmvPmlFhN%2BwohP3rc; PPU="UID=64396074133258&UN=lokjhfaf&TT=04ded704dd7f25b82a45feb80d8a6b20&PBODY=CjhUjK4cLiZ6yCjHeP029ttue3BKTrR5zTpmq3auakQlv_oOjrTk-0eDY6hefuawqpxVLXGHvdJg6mWoo8PCEnhqDdcixkZrgyAuEHPKKg1ZaJZSVzRyIWzvXtjegjUWUTT7v72_EGcL1BJWAofGtnEQLFT1p-aQ8aK_9wBDv60&VER=1"; www58com="UserID=64396074133258&UserName=lokjhfaf"; 58cooper="userid=64396074133258&username=lokjhfaf"; 58uname=lokjhfaf; new_session=0; showOrder=1; isShowYdPaychat=1; ljrzfc=1; wmda_uuid=3b684a9f953bf3882671167ba174b462; wmda_new_uuid=1; wmda_session_id_1731916484865=1560996789007-d237dad3-6c13-697a; wmda_visited_projects=%3B1731916484865; xxzl_smartid=91d3942d198af425fe14cc84ece4df2f',
             'pragma': 'no-cache',
             'referer': 'https://employer.58.com/resumesearch?PGTID=0d000000-0000-0f7d-5880-bbccd08216eb&ClickID=104',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
@@ -78,6 +78,7 @@ class DaJie(SpiderBase, Base):
         self.uid = st_flag
         self.first = True
         self.need_login_times = 0
+        self.fr_times = 0
         # self.login()
 
 
@@ -235,6 +236,9 @@ class DaJie(SpiderBase, Base):
                 l.info(f'crawl too frequent, sleep 10~15s and change proxy...')
                 time.sleep(random.uniform(10, 15))
                 self.proxy = {}  # 换ip
+                self.fr_times += 1
+                if self.fr_times > 50:
+                    send_ftqq_msg(f'{get_local_ip()} 抓取频繁被封账号', '抓取频繁被封账号')
                 continue
             l.info(f'get job detail success, len:{len(conn)}')
             # print(conn)
@@ -335,6 +339,9 @@ class DaJie(SpiderBase, Base):
                 l.info(f'crawl too frequent, sleep 10~15s and change proxy...')
                 time.sleep(random.uniform(10, 15))
                 self.proxy = {}
+                self.fr_times += 1
+                if self.fr_times > 50:
+                    send_ftqq_msg(f'{get_local_ip()} 抓取频繁被封账号', '抓取频繁被封账号')
                 continue
 
             l.info(f'{"*"*5} get detail success, len:{len(conn)} {"*"*5}')
