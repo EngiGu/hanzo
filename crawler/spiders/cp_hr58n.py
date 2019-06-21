@@ -79,6 +79,7 @@ class DaJie(SpiderBase, Base):
         self.first = True
         self.need_login_times = 0
         self.fr_times = 0
+        time.sleep(3 * 60)
         self.login()
 
     def check_is_login(self):
@@ -90,51 +91,6 @@ class DaJie(SpiderBase, Base):
         if '<title>用户登录-58同城</title>' in res.content.decode():
             return False
         return True
-
-    #
-    #
-    # def login(self):
-    #     l =  self.l
-    #     self.call_login_times += 1
-    #     if self.call_login_times > 10:
-    #         l.info(f"login be called: {self.call_login_times}, exit...")
-    #         sys.exit()
-    #
-    #     cookies_path = os.path.join(ROOT_PATH, 'cookies')
-    #     if not os.path.exists(cookies_path):
-    #         os.makedirs(cookies_path)
-    #
-    #     cookies_name =  f'cookies_{self.uid}'
-    #     # if not os.path.exists(cookies_name):
-    #
-    #     if self.first:
-    #         if os.path.exists(cookies_name):
-    #             self.first = False
-    #             with open(os.path.join(cookies_path, cookies_name), 'r') as f:
-    #                 cookies = f.read().strip()
-    #                 l.info(f'loaded local cookies: {cookies}')
-    #                 self.s.headers['cookie'] = cookies
-    #             if self.check_is_login():
-    #                 l.info(f'local cookies useful, login success...')
-    #                 return True
-    #
-    #     # login with selenium
-    #     for _ in range(10):
-    #         l.info(f"no cookies, starting {_+1}/10 login...")
-    #         cookie_str =  self._login()
-    #         if cookie_str:
-    #             self.s.headers['cookie'] = cookie_str
-    #             # self.cookies = cookies
-    #             # self.s.cookies = requests.utils.cookiejar_from_dict(cookies)
-    #             with open(os.path.join(cookies_path, cookies_name), 'w') as f:
-    #                 f.write(str(cookie_str))
-    #             return
-    #         try:
-    #             self.driver.quit()
-    #         except:
-    #             pass
-    #     l.error(f"after 10 retry, failed to login, exit....")
-    #     sys.exit()
 
     def check_is_exists(self, phone):
         l = self.l
@@ -186,7 +142,7 @@ class DaJie(SpiderBase, Base):
     def login(self):
         l = self.l
 
-        save_cookies  = self.read_or_save_cookies(read=True)
+        save_cookies = self.read_or_save_cookies(read=True)
         if save_cookies:
             self.s.headers['cookie'] = save_cookies
             if self.check_is_login():
