@@ -79,7 +79,7 @@ class DaJie(SpiderBase, Base):
         self.first = True
         self.need_login_times = 0
         self.fr_times = 0
-        # self.login()
+        self.login()
 
     def check_is_login(self):
         url = 'https://employer.58.com/resumesearch'
