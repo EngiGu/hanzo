@@ -29,13 +29,29 @@ except:
 # logging.basicConfig(level=logging.INFO,
 #                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
+def lock_single_selenium(func):
+    def wrapper(*args, **kwargs):
+        lock_path = './login.lock'
+        l = args[0].l
+        while True:
+            if os.path.exists(lock_path):
+                l.info('other spiders is logining, wait....')
+                time.sleep(3)
+                continue
+            with open(lock_path, 'w', encoding='utf-8') as f:
+                f.write('')  # 加锁
+            res = func(*args, **kwargs)
+            os.remove(lock_path)  # 移除锁文件
+            return res
+    return wrapper
 
-class DaJie(SpiderBase, Base):
+
+class Hr58n(SpiderBase, Base):
     name = 'hr58n'
     selenium = True
 
     def __init__(self, logger=None, st_flag=None):
-        super(DaJie, self).__init__(logger, st_flag)
+        super(Hr58n, self).__init__(logger, st_flag)
         self.proxy_request_delay = 3
         self.yima = Yima(username="fbfbfbfb", password="jianxun1302", project_id=159, project_name=u"58同城")
         self.raw = {'届': 'e04fd81cb8c88283509d5341a5239d27', '陈': 'a7cce2d2e218b52730631d09ec7e2ed9',
@@ -61,17 +77,21 @@ class DaJie(SpiderBase, Base):
                     '7': '8b704365dbeda76db5b5ccb61f6da11e', '6': '6e91626a6e9bdbedcb288e72022c512a',
                     '校': 'b3fe35de81075be87c90995ffb1a0ba6', '生': '9376dbdbb9f3cb9e17094bc1384e6d3c',
                     '周': 'd9a3ae3942f61fcf567a682c766076e0', 'x': '23629ab2fe153b1ef9ca6b2c935eec3a'}
+
+        cookies = 'commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; xxzl_deviceid=JEeqR%2FlvZb3nkMnYIyXnOu6jyZR7P5DCgLq7pAeTAPCQwlHFbAOuR2G1yHqWb5%2FV; PPU="UID=64419503664392&UN=s3ghmh70x&TT=8e91f95d03be12825195460da19adf76&PBODY=Z0Eu5T2DSidVsd_xfi2AdIXPcbqMygPCEsGkcHJdZ1FQYP3jVy9nkiy3UZIKYwPwXDtzZS_JvRMF4rcflohhYAoF2NyIFSCeBYDTxfcFD165wlH3vaEXdF3aa9TyLzEYZ7hx8RrqD3IAgRHxHzJu2jhpu7yZL02Tt_WpLin9Xss&VER=1"; www58com="UserID=64419503664392&UserName=s3ghmh70x"; 58cooper="userid=64419503664392&username=s3ghmh70x"; 58uname=s3ghmh70x; id58=c5/nn10MUR40y9dYOYYPAg==; 58tj_uuid=bfb34ef7-1022-4fa0-9e11-7909b2a86882; new_uv=1; utm_source=; spm=; init_refer=; new_session=0; als=0; showOrder=1; xxzl_smartid=91d3942d198af425fe14cc84ece4df2f; showPTTip=1; ljrzfc=1; wmda_uuid=0ea1bb90b58fb575349a29fb0f3717a3; wmda_new_uuid=1; wmda_session_id_1731916484865=1561088740962-50154453-d145-fcd3; wmda_visited_projects=%3B1731916484865; isShowYdPaychat=1'
         self.s.headers = {
-            'accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
+            # 'accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9,it;q=0.8',
             'cache-control': 'no-cache',
-            'cookie': '58home=wh; id58=e87rZl0LAVIbr1a6BjvUAg==; city=wh; 58tj_uuid=160c9e2e-b171-42b1-a53c-cee37edeb58c; new_uv=1; utm_source=; spm=; init_refer=; als=0; xxzl_deviceid=rPRNpW2sUeqvzHdYIHXhv2tbtSdMfxqhzu4RXa0ri2dhtcTHNF%2Fn4LnfcbyJHxwm; PPU="UID=64011881539092&UN=flgbregjkhlu&TT=5b33900dc69dd94a0e09f122f9cbe63c&PBODY=KhBlyujMyODPrZHdyBzSbnXbLtr36m62AnuWKL0Q_2f3SO6FXekMgWh3fLqot5j2xRq6MJFqQuwa8jzF7HZQwikWt1deZhK87WzkuD3xWg2ElZ-bbrvk636-_pSYPhs_MlaGsjb7Z-WlV6gA6UTVD318Lpev1R0Pnr9zsSfJkcE&VER=1"; www58com="UserID=64011881539092&UserName=flgbregjkhlu"; 58cooper="userid=64011881539092&username=flgbregjkhlu"; 58uname=flgbregjkhlu; new_session=0; commontopbar_new_city_info=1%7C%E5%8C%97%E4%BA%AC%7Cbj; showOrder=1; xxzl_smartid=91d3942d198af425fe14cc84ece4df2f',
+            'cookie': cookies,
             'pragma': 'no-cache',
             'referer': 'https://employer.58.com/resumesearch?PGTID=0d000000-0000-0f7d-5880-bbccd08216eb&ClickID=104',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
+            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.90 Safari/537.36',
             # 'x-requested-with': 'XMLHttpRequest',
         }
+        # cookies_ = {i.split('=')[0]: i.split('=')[1] for i in cookies.split('; ')}
+        # self.s.cookies = requests.utils.cookiejar_from_dict(cookies_)
         self.driver = None
         self.cookies = None
         self.call_login_times = 0
@@ -79,8 +99,8 @@ class DaJie(SpiderBase, Base):
         self.first = True
         self.need_login_times = 0
         self.fr_times = 0
-        time.sleep(3 * 60)
-        self.login()
+        # time.sleep(3 * 60)
+        # self.login()
 
     def check_is_login(self):
         url = 'https://employer.58.com/resumesearch'
@@ -139,6 +159,7 @@ class DaJie(SpiderBase, Base):
             with open(p, 'w', encoding='utf-8') as f:
                 return f.write(cookies)
 
+    @lock_single_selenium
     def login(self):
         l = self.l
 
