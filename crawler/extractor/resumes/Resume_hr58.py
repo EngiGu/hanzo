@@ -69,6 +69,7 @@ class HtmlToDict(BaseExtract, Base):
             return 2
         else:
             return 0
+
     def degree_str_to_digit(self, degree_str):
         # 学历的全集：初中|中技|高中|中专|大专|本科|硕士|MBA|EMBA|博士|其他
         if '大专' in degree_str:
@@ -100,6 +101,24 @@ class HtmlToDict(BaseExtract, Base):
                 print(('highest degree: _%s_' % degree_str))
             return 0
 
+    def salary_to_int(self, salary_str):
+        salary_str = salary_str.replace('元', '')
+        if "-" in salary_str:
+            salary_from = salary_str.split("-")[0]
+            salary_to = salary_str.split("-")[1]
+            salary_from, salary_to = int(salary_from), int(salary_to)
+        else:
+            salary_from = 0
+            salary_to = 0
+        return salary_from, salary_to
+
+    def workyear_to_int(self, work_str):
+        if "-" in work_str:
+            work_year_from, work_year_to = re.findall(r"(\d+)-(\d+)", work_str)[0]
+        else:
+            work_year_from = 0
+            work_year_to = re.findall(r"(\d+)年", work_str)[0] if re.findall(r"(\d+)年", work_str) else 0
+        return int(work_year_from), int(work_year_to)
 
     def resume_info(self):
         resumes = []
@@ -111,6 +130,9 @@ class HtmlToDict(BaseExtract, Base):
             age = int(one['ageText'])
             sex = self.tans_sex(one['sexText'])
             degree = self.degree_str_to_digit(one['education'])
+            salary_from, salary_to = self.salary_to_int(one['targetSalary'])
+            work_from, work_to = self.workyear_to_int(one['workYear'])
+
             # 时间处理
             pub_time = int(one['updateDateTimeStamp'][:-3])
             now = time.time()
@@ -118,6 +140,8 @@ class HtmlToDict(BaseExtract, Base):
                 'age': age,
                 'sex': sex,
                 'degree': degree,
+                'salary': {'from': salary_from, 'to': salary_to},
+                'work_experience': {'from': work_from, 'to': work_to},  # 工作年限
                 'pub_time': {
                     'stamp': pub_time, 'YmdHMS': self.time_stamp_format(pub_time, "%Y-%m-%d %H:%M:%S"),
                     'Ymd': self.time_stamp_format(pub_time, "%Y-%m-%d")

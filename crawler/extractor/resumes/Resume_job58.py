@@ -111,7 +111,7 @@ class HtmlToDict(BaseExtract, Base):
         else:
             work_year_from = 0
             work_year_to = re.findall(r"(\d+)年", work_str)[0] if re.findall(r"(\d+)年", work_str) else 0
-        return work_year_from, work_year_to
+        return int(work_year_from), int(work_year_to)
 
     @staticmethod
     def convert_update_time(t_str='2017-08-19'):
