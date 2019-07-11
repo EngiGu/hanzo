@@ -26,11 +26,11 @@ def load_config():
 
     # RabbitMQ 配置
     define("RABBIT_MQ_SERVER", default="127.0.0.1")
-    define("RABBIT_MQ_PORT", default=5672)
+    define("RABBIT_MQ_PORT", default=5673)
 
     # Redis 配置
-    define("REDIS_HOST", default="10.0.0.48")  # 胡正电脑的redis地址
-    define("REDIS_PORT", default=6379)
+    define("REDIS_HOST", default="127.0.0.1")  # 胡正电脑的redis地址
+    define("REDIS_PORT", default=6380)
     define("REDIS_DB", default=1)
     define("REDIS_NAMESPACE", default="task")
 

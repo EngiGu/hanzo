@@ -141,7 +141,7 @@ class HtmlToDict(BaseExtract, Base):
             work_from, work_to = self.workyear_to_int(one['workYear'])
 
             # 时间处理
-            pub_time = int(one['updateDateTimeStamp'][:-3])
+            pub_time = int(one['updateDateTimeStamp'][:-3]) # 去掉毫秒级的数字
             now = time.time()
             extra = {
                 'age': age,
