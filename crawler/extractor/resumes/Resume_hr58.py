@@ -120,6 +120,13 @@ class HtmlToDict(BaseExtract, Base):
             work_year_to = re.findall(r"(\d+)年", work_str)[0] if re.findall(r"(\d+)年", work_str) else 0
         return int(work_year_from), int(work_year_to)
 
+    def __return_format_time(self, t):
+        return {
+            'stamp': t,
+            'YmdHMS': self.time_stamp_format(t, "%Y-%m-%d %H:%M:%S"),
+            'Ymd': self.time_stamp_format(t, "%Y-%m-%d")
+        }
+
     def resume_info(self):
         resumes = []
         raw_json = self.raw_json
@@ -142,16 +149,9 @@ class HtmlToDict(BaseExtract, Base):
                 'degree': degree,
                 'salary': {'from': salary_from, 'to': salary_to},
                 'work_experience': {'from': work_from, 'to': work_to},  # 工作年限
-                'pub_time': {
-                    'stamp': pub_time, 'YmdHMS': self.time_stamp_format(pub_time, "%Y-%m-%d %H:%M:%S"),
-                    'Ymd': self.time_stamp_format(pub_time, "%Y-%m-%d")
-                },
+                'pub_time': self.__return_format_time(pub_time),
                 # 发布时间
-                'crawl_time': {
-                    'stamp': now, 'YmdHMS': self.time_stamp_format(now, "%Y-%m-%d %H:%M:%S"),
-                    'Ymd': self.time_stamp_format(pub_time, "%Y-%m-%d")
-
-                },  # 抓取时间
+                'crawl_time': self.__return_format_time(now),  # 抓取时间
             }
             # print(extra['pub_time']['YmdHMS'])
             resume = dict(one, **extra)

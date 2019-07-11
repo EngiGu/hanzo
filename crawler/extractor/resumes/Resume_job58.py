@@ -165,6 +165,13 @@ class HtmlToDict(BaseExtract, Base):
         # 1562831661.5719736
         return time.strftime(format, time.localtime(time_stamp))
 
+    def __return_format_time(self, t):
+        return {
+            'stamp': t,
+            'YmdHMS': self.time_stamp_format(t, "%Y-%m-%d %H:%M:%S"),
+            'Ymd': self.time_stamp_format(t, "%Y-%m-%d")
+        }
+
     # 2/14
     def resume_info(self):
         tree = self.tree
@@ -222,16 +229,9 @@ class HtmlToDict(BaseExtract, Base):
                 'position': position,  # 职位类型
                 'position_title': position_title,  # 职位标题
                 'put_type': put_type,  # 职位投放类型 精准 置顶还是什么
-                'pub_time': {
-                    'stamp': pub_time, 'YmdHMS': self.time_stamp_format(pub_time, "%Y-%m-%d %H:%M:%S"),
-                    'Ymd': self.time_stamp_format(pub_time, "%Y-%m-%d")
-                },
+                'pub_time': self.__return_format_time(pub_time),
                 # 发布时间
-                'crawl_time': {
-                    'stamp': now, 'YmdHMS': self.time_stamp_format(now, "%Y-%m-%d %H:%M:%S"),
-                    'Ymd': self.time_stamp_format(pub_time, "%Y-%m-%d")
-
-                },  # 抓取时间
+                'crawl_time': self.__return_format_time(now),  # 抓取时间
             }
             resumes.append(resume)
 
