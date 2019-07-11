@@ -79,3 +79,7 @@
     - `hashed_key` 和 `url` 是必须字段
 
 
+#  环境搭建
+rabbitmq  `docker pull rabbitmq:management` `docker run -d -p 6672:5672 -p 25672:15672 --name rabbitmq rabbitmq:management`
+redis     `docker pull redis` `docker run -d -p 66379:6379  --name redis redis`
+
