@@ -357,6 +357,7 @@ class HR58(SpiderBase, Base):
             base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', conn)
             self.font = base64_str
             self.font_key = re.findall(r'fontKey: "(.*?)",', conn, re.S)[0]
+            return ''
 
     def _query_cookies(self):
         # mysql 取cookies
