@@ -59,13 +59,13 @@ class DailyHrCrawl(Base):
 
 if __name__ == '__main__':
     from mysql import Session, engine,session_scope
-    #
-    # s = Session()
-    # # Base.metadata.create_all(engine)  # 创建表
-    # d = DailyHrCrawl(
-    #     jx_resume_id=14564564564564564,
-    #     position='厨师',
-    #     positions='厨师、配菜',
-    # )
-    # with session_scope() as s:
-    #     s.add(d)
+
+    s = Session()
+    # Base.metadata.create_all(engine)  # 创建表
+    d = DailyHrCrawl(
+        jx_resume_id=14564564564564564,
+        position='厨师',
+        positions='厨师、配菜',
+    )
+    with session_scope() as s:
+        s.add(d)

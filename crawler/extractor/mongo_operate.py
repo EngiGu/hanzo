@@ -4,7 +4,7 @@ import hashlib
 import json
 from core.mongo_db import MongoDb
 from core.asredis import NoAsRedis
-from core.mysql import scoped_session
+from core.mysql import session_scope
 from core.schema import DailyHrCrawl, DailyJobCrawl
 import logging
 from config import *
@@ -55,7 +55,7 @@ def hr58_update(resume, logger):
     else:
         raise Exception('insert mysql source error, jx_resume_id: {}'.format(resume['jx_resume_id']))
 
-    with scoped_session() as s:
+    with session_scope() as s:
         s.add(d)  # 插入mysql统计表
 
     MT_cp.insert(resume)
