@@ -353,7 +353,7 @@ class HR58(SpiderBase, Base):
         while True:
             cookies = self._query_cookies()
             if not cookies:
-                l.info('tag: {} has no cookies now, sleep 10s.')
+                l.info('tag: {} has no avail cookies now, sleep 10s.')
                 time.sleep(10)
                 continue
             l.info(f'get cookies {self.tag} from mysql: {cookies}')
@@ -409,7 +409,9 @@ class HR58(SpiderBase, Base):
             if '<title>用户登录-58同城</title>' in conn:
                 self._update_cookies_status(COOKIES_STATUS.broken)
                 l.info(f'cookies broken, has updated {self.tag} status -> {COOKIES_STATUS.broken}')
-
+                # 重新获取cookies
+                self.query_cookies_change_cookies()
+                return ''
             conn = conn.replace(jq + '(', '')[:-1]
             if '频繁' in conn:
                 l.info(f'crawl too frequent, sleep 10~15s and change proxy...')
