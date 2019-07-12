@@ -354,7 +354,7 @@ class HR58(SpiderBase, Base):
                 # 重新获取cookies
                 self.query_cookies_change_cookies()
                 return ''
-            base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
+            base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', conn)
             self.font = base64_str
             self.font_key = re.findall(r'fontKey: "(.*?)",', conn, re.S)[0]
 
