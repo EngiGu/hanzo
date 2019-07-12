@@ -42,7 +42,8 @@ def hr58_update(resume, logger):
     if source == SITE_SOURCE_MAP['job58']:
         d = DailyJobCrawl(
             jx_resume_id=resume['jx_resume_id'],
-            position=resume['position']
+            position=resume['position'],
+            is_today_update=is_today_update
         )
         logger.info(f"job58 update: {str(resume)}")
     elif source == SITE_SOURCE_MAP['hr58']:
@@ -50,6 +51,7 @@ def hr58_update(resume, logger):
             jx_resume_id=resume['jx_resume_id'],
             position=resume['targetPosition'],
             positions=resume['resumeTp'],
+            is_today_update=is_today_update
         )
         logger.info(f"hr58 update: {str(resume)}")
     else:
