@@ -152,6 +152,7 @@ class HtmlToDict(BaseExtract, Base):
                 'pub_time': self.__return_format_time(pub_time),
                 # 发布时间
                 'crawl_time': self.__return_format_time(now),  # 抓取时间
+                'source': self.source
             }
             # print(extra['pub_time']['YmdHMS'])
             resume = dict(one, **extra)

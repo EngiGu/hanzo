@@ -282,6 +282,8 @@ if __name__ == '__main__':
         p.start()
         p_list.append(p)
         time.sleep(30)
+        # if mode == 'test':
+        #     break
 
     for p in p_list:
         p.join()
