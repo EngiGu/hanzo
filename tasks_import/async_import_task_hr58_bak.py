@@ -46,14 +46,14 @@ if __name__ == '__main__':
     # area = [159]
 
     def gene(to_fill):
-        task = {'site': site, 'type': 2, 'url': to_fill}
+        task = {'page': 1, 'site': site, 'type': 1, 'keyword': to_fill}
         return json.dumps(task, ensure_ascii=False)
 
 
     loop = asyncio.get_event_loop()
     t = TaskModel().push
     semaphore = asyncio.Semaphore(500)
-    task = [asyncio.ensure_future(t(semaphore, site, type=2, value=gene('{}+{}'.format(i, j)))) for i in [159] for j in range(1,71)]
+    task = [asyncio.ensure_future(t(semaphore, site, type=1, value=gene(str(i) + '+0'))) for i in area]
     start = time.time()
     loop.run_until_complete(asyncio.wait(task))
     endtime = time.time() - start

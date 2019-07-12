@@ -45,7 +45,7 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     t = TaskModel().push
     semaphore = asyncio.Semaphore(500)
-    task = [asyncio.ensure_future(t(semaphore, site, type=2, value=gene(url.format(i)))) for i in range(70)]
+    task = [asyncio.ensure_future(t(semaphore, site, type=2, value=gene(url.format(i)))) for i in range(1,71)]
     start = time.time()
     loop.run_until_complete(asyncio.wait(task))
     endtime = time.time() - start

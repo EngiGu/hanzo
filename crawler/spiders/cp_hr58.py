@@ -31,12 +31,12 @@ from core.func import get_local_ip, send_ftqq_msg
 #                     format='%(asctime)s - %(filename)s[%(funcName)s:%(lineno)d] - %(levelname)s: %(message)s')
 
 
-class DaJie(SpiderBase, Base):
+class HR58(SpiderBase, Base):
     name = 'hr58'
     selenium = True
 
     def __init__(self, logger=None, st_flag=None):
-        super(DaJie, self).__init__(logger, st_flag)
+        super(HR58, self).__init__(logger, st_flag)
         self.proxy_request_delay = 3
         self.yima = Yima(username="fbfbfbfb", password="jianxun1302", project_id=159, project_name=u"58同城")
         self.raw = {'届': 'e04fd81cb8c88283509d5341a5239d27', '陈': 'a7cce2d2e218b52730631d09ec7e2ed9',
@@ -326,57 +326,59 @@ class DaJie(SpiderBase, Base):
         打开58job详情页面
         '''
         l = self.l
-        # self.session.headers['User-Agent'] = random_ua()
-        # https://jianli.58.com/resumedetail/single/3_neyQ_EHunGZanGOpnvr5lEDkTvmQnem5nePknpsfTedYnGnsMG6vMGHplEOsnErsThsfTEdaTm**?sourcepath=pc-viplist-zhineng&followparam=%7B%22searchID%22%3A%2206ca2519d3974dcd98f42181239cc950%22%2C%22searchVersion%22%3A31103%2C%22searchAreaID%22%3A4554%2C%22searchFirstAreaID%22%3A158%2C%22searchPositionID%22%3A0%2C%22searchSecondPositionID%22%3A0%2C%22page%22%3A1%2C%22location%22%3A4%2C%22resumeType%22%3A1%2C%22platform%22%3A%22pc%22%2C%22sourcePage%22%3A%22pc-viplist-zhineng%22%2C%22operatePage%22%3A%22list%22%7D
+        l.info('aid+page: {}'.format(url))
 
-        url = url.replace('https:https://', 'https://')
+        cid = 158  # 158是武汉，暂时只是抓取武汉
+        # aid, nid = keyword.strip().split('+')
+        aid, page_to_go = url.strip().split('+')
+        nid = '-1'
+
+        jq = self.gene_jq_name()
+        search_url = f'https://employer.58.com/resume/searchresume'
+        params = {
+            'cid': cid,
+            'aid': aid,
+            'nid': nid,
+            'eduabove': '0',
+            'workabove': '0',
+            'pc': '0',
+            'mc': '0',
+            'pageindex': page_to_go,
+            'resumeSort': 'time',
+            'update24Hours': '1',
+            'keyword': '',
+            'pageSize': '70',
+            'callback': jq,
+            '_': str(int(time.time() * 1000)),
+        }
+
+        self.current_url = search_url
         retry_time = 15
         time.sleep(6)
-
-        resumeId = re.findall(r'single/(.*?)\?', url)
-        if not resumeId:
-            resumeId = re.findall(r'entinfo=(.*?)&', url)
-            if not resumeId:
-                raise Exception('invalid url...')
-            resumeId = [resumeId[0][:-2]]
-
-        resumeId = resumeId[0].replace('/', '')
-        l.info(f'resumeId: {resumeId}')
-
         kwargs = {
-            'url': url
+            'url': search_url,
+            'params': params
         }
+
         for _ in range(retry_time):
             res = self.send_request(method='get', **kwargs)
             if res == '':
-                l.info(f'current query detail page failed, try another time...')
+                l.info(f'current query list page failed, try another time...')
                 continue
             conn = res.content.decode()
+            conn = conn.replace(jq + '(', '')[:-1]
             if '频繁' in conn:
                 l.info(f'crawl too frequent, sleep 10~15s and change proxy...')
                 time.sleep(random.uniform(10, 15))
-                self.proxy = {}
+                self.proxy = {}  # 换ip
                 continue
-
-            l.info(f'{"*" * 5} get detail success, len:{len(conn)} {"*" * 5}')
-            conn = self.resource_page(conn, self.raw)
-            view = self.__get_view(resumeId)
-            l.info(f"view status: {view}")
-            conn = f'{conn}+d135638806955c0ee9d255c64a952705+{view}'
-            if '可能被删除、关闭或根本不存在' in conn:
-                l.info('简历可能被删除、关闭或根本不存在')
-                return ''
-            if '<title>用户登录-58同城</title>' in conn:
-                l.info('可能cookies过期，需要重新登录')
-                # self.cookies = None
-                self.proxy = {}
-                self.need_login_times += 1
-                if self.need_login_times > 3:
-                    send_ftqq_msg(f'{get_local_ip()} cookies 过期', 'cookies 过期')
-                    raise ('可能cookies过期，需要重新登录')
-            return conn
+            tmp = json.loads(conn)
+            tmp['index'] = int(page_to_go)
+            conn = json.dumps(tmp, ensure_ascii=False)
+            l.info(f'{"*" * 5}  get job detail success, len:{len(conn)} {"*" * 5}')
             # print(conn)
-            # sys.exit(6666)
+            # sys.exit()
+            return conn
         return ''
 
 
