@@ -410,6 +410,7 @@ class HR58(SpiderBase, Base):
             tmp = json.loads(conn)
             tmp['index'] = int(page_to_go)
             conn = json.dumps(tmp, ensure_ascii=False)
+            conn = self.resource_page(conn, self.raw)
             l.info(f'{"*" * 5}  get job detail success, len:{len(conn)} {"*" * 5}')
             # print(conn)
             # sys.exit()
