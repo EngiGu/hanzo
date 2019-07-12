@@ -6,8 +6,8 @@ import redis
 import aredis
 
 redis_pool = aredis.ConnectionPool(
-    host='10.0.0.48',
-    port=6379,
+    host='192.168.11.191',
+    port=6380,
     db=1
 )
 
