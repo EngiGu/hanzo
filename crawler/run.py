@@ -37,9 +37,10 @@ class Run:
         self.logger.info(f'loaded spiders: {str(SPIDERS_MAPS)}')
 
         self.queue = QUEUE if mode == 'online' else TEST_QUEUE
-        self.logger.info('*' * 20)
-        self.logger.info(f"run mode: {mode}, rabbitmq queue: {self.queue}")
-        self.logger.info('*' * 20)
+        __info = f"run mode: {mode}, rabbitmq queue: {self.queue}"
+        self.logger.info('*' * len(__info))
+        self.logger.info(__info)
+        self.logger.info('*' * len(__info))
 
     def apply_task(self, action="get", site=None, task=None):
         '''
