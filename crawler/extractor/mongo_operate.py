@@ -55,7 +55,7 @@ def hr58_update(resume, logger):
     else:
         raise Exception('insert mysql source error, jx_resume_id: {}'.format(resume['jx_resume_id']))
 
-    with scoped_session as s:
+    with scoped_session() as s:
         s.add(d)  # 插入mysql统计表
 
     MT_cp.insert(resume)
