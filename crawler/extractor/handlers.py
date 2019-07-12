@@ -214,9 +214,14 @@ async def handler(msg: dict, mode: str, logger: logging):
                 await ards.push('%s_5' % site, failed_type2_task)
                 l.info(f"parse resume None, has pushed to type5 queue, task: {str(_curr_task)}")
                 return
-
-            detail['jx_resume_id'] = cal_jx_resume_id(detail)  # 15位整形的hash_id
-            mongo_ur(detail, mode=mode, logger=l)
+            ## 只是58爬取解析返回的是list,因为只是爬取list页面
+            if isinstance(detail, list):
+                for d in detail:
+                    d['jx_resume_id'] = cal_jx_resume_id(d)  # 15位整形的hash_id
+                    mongo_ur(d, mode=mode, logger=l)
+            else: # 解析返回的是dict
+                detail['jx_resume_id'] = cal_jx_resume_id(detail)  # 15位整形的hash_id
+                mongo_ur(detail, mode=mode, logger=l)
 
         except Exception as e:
             _curr_task = msg['curr_task']
