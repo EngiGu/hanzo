@@ -89,6 +89,8 @@ class HR58(SpiderBase, Base):
         self.need_login_times = 0
         self.tag = 'cookies_{}'.format(int(self.uid['user_id']) % NUM_PRE_COOKIES)
         self.query_cookies_change_cookies()
+        self.font = None
+        self.font_key = None
         # self.login()
 
     def check_is_login(self):
@@ -298,9 +300,10 @@ class HR58(SpiderBase, Base):
         xml_path = f'/tmp/font_{os.getpid()}.xml'
         to_replace = re.findall(r'&#x(\w+);', json_str)
         if not to_replace:  # 不需要替换字体
-            return json_str
-
-        base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
+            l.error('fontKey may has expired...')
+            return None
+        # base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
+        base64_str = self.font_key
         bin_data = ''
         if not base64_str:
             font_url = re.findall(r'@font-face {font-family:"customfont"; src:url\((.*?)\)', res, re.S)
@@ -332,6 +335,28 @@ class HR58(SpiderBase, Base):
             # print(font)
             json_str = json_str.replace('&#x{};'.format(i), font)
         return json_str
+
+    def get_font_and_font_key(self):
+        l = self.l
+        url = 'https://employer.58.com/resumesearch'
+        kwargs = {
+            'url': url
+        }
+        for i in range(10):
+            res = self.send_request(method='get', **kwargs)
+            if res == '':
+                l.info(f'current query list page failed, try another time...')
+                continue
+            conn = res.content.decode()
+            if '<title>用户登录-58同城</title>' in conn:
+                self._update_cookies_status(COOKIES_STATUS.broken)
+                l.info(f'cookies broken, has updated {self.tag} status -> {COOKIES_STATUS.broken}')
+                # 重新获取cookies
+                self.query_cookies_change_cookies()
+                return ''
+            base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
+            self.font = base64_str
+            self.font_key = re.findall(r'fontKey: "(.*?)",', conn, re.S)[0]
 
     def _query_cookies(self):
         # mysql 取cookies
@@ -372,6 +397,9 @@ class HR58(SpiderBase, Base):
         aid, page_to_go = url.strip().split('+')
         nid = '-1'
 
+        if not self.font_key:
+            self.get_font_and_font_key()
+
         jq = self.gene_jq_name()
         search_url = f'https://employer.58.com/resume/searchresume'
         params = {
@@ -387,7 +415,7 @@ class HR58(SpiderBase, Base):
             'update24Hours': '1',
             'keyword': '',
             'pageSize': '70',
-            'fontKey': '6d65c3941ab342cc8c5df0e6d20cc7cd',  # todo 对应的字体文件
+            'fontKey': self.font_key,  # todo 对应的字体文件
             'callback': jq,
             '_': str(int(time.time() * 1000)),
         }
@@ -422,6 +450,9 @@ class HR58(SpiderBase, Base):
             tmp['index'] = int(page_to_go)
             conn = json.dumps(tmp, ensure_ascii=False)
             conn = self.resource_page(conn, self.raw)
+            if not conn:
+                self.get_font_and_font_key()
+                return ''
             l.info(f'{"*" * 5}  get job detail success, len:{len(conn)} {"*" * 5}')
             # print(conn)
             # sys.exit()
