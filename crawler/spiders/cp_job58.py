@@ -43,6 +43,7 @@ def lock_single_selenium(func):
             res = func(*args, **kwargs)
             os.remove(lock_path)  # 移除锁文件
             return res
+
     return wrapper
 
 
@@ -109,26 +110,21 @@ class Job58(SpiderBase, Base):
         return 'jQuery' + _1 + '_' + _2
 
     def query_list_page(self, keyword, page_to_go):
+        pass
+
+    def query_detail_page(self, url):
+        '''
+           打开58job详情页面，把list页面作为详情页任务, 导入的任务全部是
+        '''
         l = self.l
-        l.info(str([keyword, page_to_go]))
-        # keyword 人力|行政|管理 人事/行政/后勤 renli
-        keyword = keyword.strip()
 
-        tmp = keyword.split('+')
-
-        if len(tmp) == 1:  # 旧版只有分类
-            url_key = tmp[0]
-            search_url = 'https://wh.58.com/{}/pn{}'.format(url_key, page_to_go)
-        elif len(tmp) == 2:  # 新版加入地区
-            url_key, area = tmp
-            search_url = 'https://wh.58.com/{}/{}/pn{}'.format(area, url_key, page_to_go)
-        else:
-            raise Exception(f'58job search job key: {keyword} error!!')
-
+        url = url.strip()
+        l.info(f"open: {url}")
+        search_url = url
         self.current_url = search_url
         retry_time = 15
 
-        time.sleep(6)
+        time.sleep(3)
         # https://wh.58.com/caiwujingli/pn2
         kwargs = {
             'url': search_url
@@ -146,80 +142,6 @@ class Job58(SpiderBase, Base):
                 self.proxy = {}  # 换ip
                 continue
             l.info(f'get job detail success, len:{len(conn)}')
-            return conn
-        return ''
-
-    def __get_view(self, info_id, url):
-        if not info_id:
-            return 0, 0
-
-        kwargs = {
-            'url': 'https://jst1.58.com/counter?infoid={}&userid=&uname=&sid=0&lid=0&px=0&cfpath='.format(info_id),
-            'headers': {'Referer': url}
-        }
-        res = self.send_request(method='get', **kwargs)
-        view = res.content.decode().split('Counter58.total=')[-1]
-        view = int(view) if view else 0
-        return view
-
-    def __get_apply(self, info_id, html):
-        # html =  html.replce(' ', '')
-        user_id = re.findall(r"'userid':'(\d+)'", html.replace(' ', ''), re.S)
-
-        if not user_id:
-            return 0
-
-        kwargs = {
-            'url': 'https://statisticszp.58.com/position/totalcount/?infoId={}&userId={}'.format(info_id, user_id[0])
-            # 'headers': {'Referer': url}
-        }
-        res = self.send_request(method='get', **kwargs)
-        apply = re.findall(r'"deliveryCount":(\d+),', res.content.decode())
-        apply = int(apply[0]) if apply else 0
-        return apply
-
-    def query_detail_page(self, url):
-        '''
-           打开58job详情页面
-           '''
-        l = self.l
-        # self.session.headers['User-Agent'] = random_ua()
-        # l.debug(f'Open a resume: request_url: {url}')
-        retry_time = 15
-        key_info = json.loads(key_info)
-        # print('+'*66, key_info['type'])
-        key_type = key_info['type']
-        # sys.exit(6666)
-        # time.sleep(6)
-        # https://wh.58.com/renli/34103568126897x.shtml?psid=127631613204014944925734117&entinfo=34103568126897_j&ytdzwdetaildj=0&finalCp=000001250000000000080000000000000000_127631613204014944925734117&tjfrom=pc_list_left_jp__127631613204014944925734117__21562518912925696__jp
-
-        info_id = re.findall('(\d+)x.shtml', url)
-        if not info_id:
-            info_id = re.findall('entinfo=(\d+)_', url)
-        if not info_id:
-            raise Exception('invalid url...')
-        info_id = info_id[0]
-
-        kwargs = {
-            'url': url
-        }
-        for _ in range(retry_time):
-            res = self.send_request(method='get', **kwargs)
-            if res == '':
-                l.info(f'current query detail page failed, try another time...')
-                continue
-            conn = res.content.decode()
-            if '频繁' in conn:
-                l.info(f'crawl too frequent, sleep 10~15s and change proxy...')
-                time.sleep(random.uniform(10, 15))
-                self.proxy = {}
-                continue
-
-            l.info(f'get job detail success, len:{len(conn)}')
-            view = self.__get_view(info_id, url)
-            apply = self.__get_apply(info_id, conn)
-            l.info(f'get view:{view}, apply: {apply}')
-            conn = f'{conn}+++{view}+++{apply}+++{key_type}'
             return conn
         return ''
 
