@@ -303,7 +303,7 @@ class HR58(SpiderBase, Base):
             l.error('fontKey may has expired...')
             return None
         # base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
-        base64_str = self.font_key
+        base64_str = self.font
         bin_data = ''
         if not base64_str:
             font_url = re.findall(r'@font-face {font-family:"customfont"; src:url\((.*?)\)', res, re.S)
