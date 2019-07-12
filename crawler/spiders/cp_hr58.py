@@ -87,7 +87,7 @@ class HR58(SpiderBase, Base):
         self.uid = st_flag
         self.first = True
         self.need_login_times = 0
-        self.tag = 'cookies_{}'.format(int(self.uid) % NUM_PRE_COOKIES)
+        self.tag = 'cookies_{}'.format(int(self.uid['user_id']) % NUM_PRE_COOKIES)
         self.query_cookies_change_cookies()
         # self.login()
 
