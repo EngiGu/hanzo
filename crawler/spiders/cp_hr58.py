@@ -298,7 +298,7 @@ class HR58(SpiderBase, Base):
         xml_path = f'/tmp/font_{os.getpid()}.xml'
         to_replace = re.findall(r'&#x(\w+);', json_str)
         if not to_replace:  # 不需要替换字体
-            return res
+            return json_str
 
         base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
         bin_data = ''
