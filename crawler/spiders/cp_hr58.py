@@ -343,6 +343,11 @@ class HR58(SpiderBase, Base):
                 return query.cookies
             return None
 
+    def _update_cookies_status(self, status):
+        # mysql 取cookies
+        with session_scope() as s:
+            s.query(CookieStore).filter(CookieStore.tag == self.tag).update({'status': status})
+
     def query_cookies_change_cookies(self):
         l = self.l
         while True:
@@ -401,6 +406,10 @@ class HR58(SpiderBase, Base):
                 l.info(f'current query list page failed, try another time...')
                 continue
             conn = res.content.decode()
+            if '<title>用户登录-58同城</title>' in conn:
+                self._update_cookies_status(COOKIES_STATUS.broken)
+                l.info(f'cookies broken, has updated {self.tag} status -> {COOKIES_STATUS.broken}')
+
             conn = conn.replace(jq + '(', '')[:-1]
             if '频繁' in conn:
                 l.info(f'crawl too frequent, sleep 10~15s and change proxy...')
