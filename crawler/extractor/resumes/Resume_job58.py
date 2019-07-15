@@ -223,7 +223,7 @@ class HtmlToDict(BaseExtract, Base):
             # print(put_type)
 
             # 发布时间
-            print(result.xpath('string(.)'))
+            # print(result.xpath('string(.)'))
             pub_str = result.xpath('.//span[@class="sign"]/text()')
             if not pub_str:
                 pub_str = result.xpath('.//a[@class="sign"]/text()')

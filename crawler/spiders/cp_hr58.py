@@ -391,12 +391,14 @@ class HR58(SpiderBase, Base):
         打开58job详情页面
         '''
         l = self.l
-        l.info('aid+page: {}'.format(url))
+        l.info('dsid+page: {}'.format(url))
 
         cid = 158  # 158是武汉，暂时只是抓取武汉
         # aid, nid = keyword.strip().split('+')
-        aid, page_to_go = url.strip().split('+')
+        dsid, page_to_go = url.strip().split('+')
+
         nid = '-1'
+        aid = '-1'
 
         if not self.font_key:
             self.get_font_and_font_key()
@@ -404,6 +406,7 @@ class HR58(SpiderBase, Base):
         jq = self.gene_jq_name()
         search_url = f'https://employer.58.com/resume/searchresume'
         params = {
+            'dsid': dsid,
             'cid': cid,
             'aid': aid,
             'nid': nid,
