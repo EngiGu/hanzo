@@ -63,6 +63,7 @@ def hr58_update(resume, logger):
 
     MT_cp.insert(resume)
     cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
+    cards.incr(f'{resume["source"]}_total')
 
 def mongo_ur(resume: dict, mode: str, logger: logging):
     # print('*'*5, resume)
