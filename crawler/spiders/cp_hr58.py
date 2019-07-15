@@ -331,7 +331,8 @@ class HR58(SpiderBase, Base):
             # print(hash_graph)
             font = raw.get(hash_graph, None)
             if not font:
-                raise Exception('get none from woff maps, maybe the web font file has changed...')
+                l.error('get none from woff maps, maybe the web font file has changed...')
+                return False  # 更换字体
             # print(font)
             json_str = json_str.replace('&#x{};'.format(i), font)
         return json_str
