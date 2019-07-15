@@ -14,7 +14,7 @@ from copy import deepcopy
 # MT_cp = MongoDb("aizhaopin", "tc58")
 MT_cp = MongoDb("aizhaopin", "tongcheng_58_new_test")   # TODO
 # MT_cp = MongoDb("aizhaopin", "tongcheng_58_new")
-# cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
+cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
 
 
@@ -62,6 +62,7 @@ def hr58_update(resume, logger):
         s.add(d)  # 插入mysql统计表
 
     MT_cp.insert(resume)
+    cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
 
 def mongo_ur(resume: dict, mode: str, logger: logging):
     # print('*'*5, resume)

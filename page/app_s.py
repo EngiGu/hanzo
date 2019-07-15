@@ -9,10 +9,10 @@ import json
 #
 #
 SITE_SOURCE_MAP = {
-    "lagou": 201,
-    "dajie": 208,
-    "yinguo": 211,
-    "juzi":209
+    "hr58": 24,
+    "job58": 23,
+    # "yinguo": 211,
+    # "juzi":209
 }
 
 
@@ -64,8 +64,8 @@ def gene_task_maps(source):
 app = Flask(__name__)
 # r = NoAsRedis('s19.natfrp.org', 30694, 2)
 # t = NoAsRedis('s19.natfrp.org', 30694, 1)
-r = NoAsRedis('10.0.0.48', 6379, 2)
-t = NoAsRedis('10.0.0.48', 6379, 1)
+r = NoAsRedis('192.168.11.191', 6379, 2)
+t = NoAsRedis('192.168.11.191', 6379, 1)
 
 
 @app.route('/')
