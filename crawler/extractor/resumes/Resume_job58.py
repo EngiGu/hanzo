@@ -196,14 +196,16 @@ class HtmlToDict(BaseExtract, Base):
             # print(company, url, position_title)
             # 职位类型 学历 年限提取
             _tmp = result.xpath('.//p[@class="job_require"]/span/text()')
-            print(_tmp)
+            # print(_tmp)
             position = _tmp[0]
             degree = self.degree_str_to_digit(_tmp[1])
             work_from, work_to = self.workyear_to_int(_tmp[2])
 
             # 薪资
             salary_str = result.xpath('.//p[@class="job_salary"]/text()')
-            salary_from, salary_to = self.salary_to_int(salary_str[0])
+            # print('salary_str',salary_str)
+            salary_str =  salary_str[0] if salary_str else ''
+            salary_from, salary_to = self.salary_to_int(salary_str)
 
             # 福利tag
             tag = result.xpath('.//div[@class="job_wel clearfix"]/span/text()')
@@ -219,7 +221,12 @@ class HtmlToDict(BaseExtract, Base):
             # print(put_type)
 
             # 发布时间
+            # print(result.xpath('string(.)'))
             pub_str = result.xpath('.//span[@class="sign"]/text()')
+            if not pub_str:
+                pub_str = result.xpath('.//a[@class="sign"]/text()')
+            # print('pub_str', pub_str)
+
             if put_type in ['置顶', '精准', '优选']:
                 pub_str = ['今天']  # 这个标签出现的话会把时间覆盖
             # print('pub_str', pub_str)
@@ -272,7 +279,7 @@ class HtmlToDict(BaseExtract, Base):
 
 
 def main():
-    with open('./tmp/job58_4.html', mode='r+', encoding="utf-8") as f:
+    with open('./tmp/job58_5.html', mode='r+', encoding="utf-8") as f:
         info = f.read()
     # print(info)
     h = HtmlToDict()

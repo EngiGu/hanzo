@@ -211,7 +211,7 @@ async def handler(msg: dict, mode: str, logger: logging):
                 if not detail:
                     # 当前翻页里的搜索结果为空
                     l.info(f"page is a empty page...continue...")
-                    return 
+                    return
             if not detail:
                 _curr_task = msg['curr_task']
                 _curr_task['type'] = 5  # type2 解析失败放回失败队列
