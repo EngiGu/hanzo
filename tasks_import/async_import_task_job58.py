@@ -85,6 +85,22 @@ if __name__ == '__main__':
            'https://wh.58.com/zpzhiyepeixun/pn{}/',
            'https://wh.58.com/zpxielei/pn{}/']
 
+    area = ['hongshan',
+            'wuchang',
+            'jiangan',
+            'jiangxia',
+            'hanyang',
+            'jianghan',
+            'qiaokou',
+            'dongxihu',
+            'huangpo',
+            'whtkfq',
+            'whqingshanqu',
+            'caidian',
+            'xinzhouqu',
+            'hannan',
+            'wuhan']
+
 
     # area = [159]
 
@@ -96,7 +112,10 @@ if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     t = TaskModel().push
     semaphore = asyncio.Semaphore(500)
-    task = [asyncio.ensure_future(t(semaphore, site, type=2, value=gene(i.format(j)))) for i in url for j in range(1, 71)]
+    task = [asyncio.ensure_future(
+        t(semaphore, site, type=2, value=gene(i.format(j).replace('https://wh.58.com', 'https://wh.58.com/' + k))))
+        for i in url
+        for j in range(1, 71) for k in area]
     start = time.time()
     loop.run_until_complete(asyncio.wait(task))
     endtime = time.time() - start
