@@ -1,7 +1,8 @@
-import time
+import time,sys,os
 
 import requests
 from yima_api import Yima
+sys.path.append(os.path.abspath('../core'))
 from core.schema import CookieStore
 from core.mysql import session_scope
 
