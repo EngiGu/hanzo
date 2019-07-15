@@ -3,6 +3,8 @@
 import hashlib
 from datetime import datetime
 
+from lxml import etree
+
 try:
     from .resume_base import BaseExtract
 except:
@@ -180,7 +182,7 @@ class HtmlToDict(BaseExtract, Base):
         print(len(results))
         for result in results:
             conn = result.xpath('string(.)')
-            conn =  ''.join(conn.split())
+            conn = ''.join(conn.split())
             # print(conn)
             if conn == '':
                 # 广告位置，跳过
@@ -204,7 +206,7 @@ class HtmlToDict(BaseExtract, Base):
             # 薪资
             salary_str = result.xpath('.//p[@class="job_salary"]/text()')
             # print('salary_str',salary_str)
-            salary_str =  salary_str[0] if salary_str else ''
+            salary_str = salary_str[0] if salary_str else ''
             salary_from, salary_to = self.salary_to_int(salary_str)
 
             # 福利tag
@@ -221,15 +223,20 @@ class HtmlToDict(BaseExtract, Base):
             # print(put_type)
 
             # 发布时间
-            # print(result.xpath('string(.)'))
+            print(result.xpath('string(.)'))
             pub_str = result.xpath('.//span[@class="sign"]/text()')
             if not pub_str:
                 pub_str = result.xpath('.//a[@class="sign"]/text()')
+                if not pub_str:
+                    conn = etree.tostring(result.xpath('.')[0], encoding='utf-8').decode()
+                    if 'icon-jizhao' in conn:
+                        # 广告急招时间位置会没有任何东西
+                        pub_str = ['今天']
             # print('pub_str', pub_str)
 
             if put_type in ['置顶', '精准', '优选']:
                 pub_str = ['今天']  # 这个标签出现的话会把时间覆盖
-            # print('pub_str', pub_str)
+            print('pub_str', pub_str)
             pub_time = self.trans_pub_time(pub_str[0])
             # print('pub_time', self.time_stamp_format(pub_time))
 
@@ -279,7 +286,7 @@ class HtmlToDict(BaseExtract, Base):
 
 
 def main():
-    with open('./tmp/job58_5.html', mode='r+', encoding="utf-8") as f:
+    with open('./tmp/job58_6.html', mode='r+', encoding="utf-8") as f:
         info = f.read()
     # print(info)
     h = HtmlToDict()
