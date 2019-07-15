@@ -1,6 +1,7 @@
 import hashlib
 import json
 import os, sys, traceback
+import time
 from copy import deepcopy
 
 sys.path.append(os.path.abspath(os.path.dirname(os.path.dirname(__file__))))
@@ -223,6 +224,12 @@ async def handler(msg: dict, mode: str, logger: logging):
             if isinstance(detail, list):
                 for d in detail:
                     d['jx_resume_id'] = cal_jx_resume_id(d)  # 15位整形的hash_id
+                    today = time.strftime("%Y-%m-%d", time.localtime())
+                    hash_key = f"{today}_{d['jx_resume_id']}"
+                    bloom = bfr if mode == 'online' else tbfr
+                    if bloom.is_exists(str(hash_key)):  # todo 布隆list过滤
+                        l.info(f"task has crawled before, skip. task: {str(d['jx_resume_id'])}")
+                        continue
                     mongo_ur(d, mode=mode, logger=l)
             else: # 解析返回的是dict
                 detail['jx_resume_id'] = cal_jx_resume_id(detail)  # 15位整形的hash_id
