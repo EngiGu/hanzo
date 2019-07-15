@@ -107,19 +107,33 @@ def get_cookies():
     return cookie_str
 
 
-def get_cookies_and_store_to_mysql():
-    _tag = 'cookies_{}'
-    for i in range(4):
-        tag = _tag.format(i)
-        cookies_str = get_cookies()
-        c = CookieStore(tag=tag, cookies=cookies_str)
-        with session_scope() as s:
-            s.add(c)
+class COOKIES_STATUS:
+    ok = 0  # 可以用
+    broken = 1  # 被封需要更换
+    updating = 2  # 正在更换
 
-        print('完成第', i, '个，等待10s')
-        time.sleep(10)
+
+def get_cookies_and_store_to_mysql(all_num):
+    _tag = 'cookies_{}'
+    for i in range(all_num):
+        with session_scope() as s:
+            tag = _tag.format(i)
+            q = s.query(CookieStore).filter(
+                CookieStore.tag == tag,
+                CookieStore.status == COOKIES_STATUS.broken
+            ).first()
+            if not q:
+                print(_tag, '没有失效')
+                continue
+
+            cookies_str = get_cookies()
+            # c = CookieStore(tag=tag, cookies=cookies_str)
+            # s.add(c)
+            q.update({'cookies': cookies_str})
+            print('完成第', i, '个，等待10s')
+            time.sleep(10)
 
 
 if __name__ == '__main__':
-    get_cookies_and_store_to_mysql()
-    pass
+    all_num = 4
+    get_cookies_and_store_to_mysql(all_num)
