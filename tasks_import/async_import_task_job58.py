@@ -95,11 +95,12 @@ if __name__ == '__main__':
             'dongxihu',
             'huangpo',
             'whtkfq',
-            'whqingshanqu',
-            'caidian',
-            'xinzhouqu',
-            'hannan',
-            'wuhan']
+            # 'whqingshanqu',
+            # 'caidian',
+            # 'xinzhouqu', # 数量太少去掉
+            # 'hannan',
+            # 'wuhan'
+            ]
 
 
     # area = [159]
