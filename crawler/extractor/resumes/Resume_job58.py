@@ -177,7 +177,14 @@ class HtmlToDict(BaseExtract, Base):
         tree = self.tree
         results = tree.xpath('//ul[@id="list_con"]/li')
         resumes = []
+        print(len(results))
         for result in results:
+            conn = result.xpath('string(.)')
+            conn =  ''.join(conn.split())
+            # print(conn)
+            if conn == '':
+                # 广告位置，跳过
+                continue
             company = result.xpath('.//div[@class="comp_name"]/a/@title')[0].strip() if result.xpath(
                 './/div[@class="comp_name"]/a/@title') else ''
             url = result.xpath('.//div[@class="job_name clearfix"]/a/@href')[0].strip() if result.xpath(
@@ -186,9 +193,10 @@ class HtmlToDict(BaseExtract, Base):
             position_title = result.xpath('.//span[@class="name"]/text()')[0].strip() if result.xpath(
                 './/span[@class="name"]/text()') else ''
 
+            # print(company, url, position_title)
             # 职位类型 学历 年限提取
             _tmp = result.xpath('.//p[@class="job_require"]/span/text()')
-            # print(_tmp)
+            print(_tmp)
             position = _tmp[0]
             degree = self.degree_str_to_digit(_tmp[1])
             work_from, work_to = self.workyear_to_int(_tmp[2])
@@ -264,7 +272,7 @@ class HtmlToDict(BaseExtract, Base):
 
 
 def main():
-    with open('./tmp/job58_2.html', mode='r+', encoding="utf-8") as f:
+    with open('./tmp/job58_3.html', mode='r+', encoding="utf-8") as f:
         info = f.read()
     # print(info)
     h = HtmlToDict()
