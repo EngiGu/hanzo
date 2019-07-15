@@ -2,7 +2,7 @@ import time,sys,os
 
 import requests
 from yima_api import Yima
-sys.path.append(os.path.abspath('../core'))
+sys.path.append(os.path.abspath('../'))
 from core.schema import CookieStore
 from core.mysql import session_scope
 
@@ -55,7 +55,7 @@ def main():
             query = s.query(CookieStore).filter(CookieStore.status == COOKIES_STATUS.ok).all()
             if not query:
                 print('暂时没有要更新的cookies')
-                time.sleep(10)
+                time.sleep(30)
                 continue
             notice = ''
             for q in query:
