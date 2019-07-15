@@ -32,9 +32,10 @@ async def main_loop(mode):
     async with AsMq(RABBITMQ_HOST, RABBITMQ_PORT, RABBITMQ_USER, RABBITMQ_PWD, RABBITMQ_EXCHANGE) as mq:
         queue = QUEUE if mode == 'online' else TEST_QUEUE
         l = logging.LoggerAdapter(logger, extra={'site': 'main_loop'})
-        l.info('*' * 20)
-        l.info(f"run mode: {mode}, rabbitmq queue: {queue}")
-        l.info('*' * 20)
+        __info = f"run mode: {mode}, rabbitmq queue: {queue}"
+        l.info('*' * len(__info))
+        l.info(__info)
+        l.info('*' * len(__info))
         while True:
             tag, msg = await mq.get(queue)
             if isinstance(msg, bytes):
