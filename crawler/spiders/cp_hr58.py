@@ -443,6 +443,7 @@ class HR58(SpiderBase, Base):
                 self._update_cookies_status(COOKIES_STATUS.broken)
                 l.info(f'cookies broken, has updated {self.tag} status -> {COOKIES_STATUS.broken}')
                 # 重新获取cookies
+                send_ftqq_msg(f'{self.tag} cookies 失效' ,'cookies 失效')
                 self.query_cookies_change_cookies()
                 return ''
             conn = conn.replace(jq + '(', '')[:-1]
