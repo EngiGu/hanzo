@@ -12,8 +12,8 @@ from copy import deepcopy
 
 
 # MT_cp = MongoDb("aizhaopin", "tc58")
-MT_cp = MongoDb("aizhaopin", "tongcheng_58_new_test")   # TODO
-# MT_cp = MongoDb("aizhaopin", "tongcheng_58_new")
+# MT_cp = MongoDb("aizhaopin", "tongcheng_58_new_test")   # TODO
+MT_cp = MongoDb("aizhaopin", "tongcheng_58_new")
 cards = NoAsRedis(C_REDIS_HOST, C_REDIS_PORT, C_REDIS_DB)
 
 
