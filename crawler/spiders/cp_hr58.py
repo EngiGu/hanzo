@@ -379,7 +379,7 @@ class HR58(SpiderBase, Base):
         while True:
             cookies = self._query_cookies()
             if not cookies:
-                l.info('tag: {} has no avail cookies now, sleep 10s.')
+                l.info('tag: {} has no avail cookies now, sleep 10s.'.format(self.tag))
                 time.sleep(10)
                 continue
             l.info(f'get cookies {self.tag} from mysql: {cookies}')
