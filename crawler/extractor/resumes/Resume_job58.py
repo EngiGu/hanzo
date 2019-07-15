@@ -272,7 +272,7 @@ class HtmlToDict(BaseExtract, Base):
 
 
 def main():
-    with open('./tmp/job58_3.html', mode='r+', encoding="utf-8") as f:
+    with open('./tmp/job58_4.html', mode='r+', encoding="utf-8") as f:
         info = f.read()
     # print(info)
     h = HtmlToDict()
