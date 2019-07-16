@@ -31,6 +31,7 @@ def del_all_tasks():
         for site in sites:
             if key.startswith(site):
                 r_cli.delete(key)  # 找到这个site开头的那就删掉
+                print('has deleted {}'.format(key))
 
 
 if __name__ == '__main__':
