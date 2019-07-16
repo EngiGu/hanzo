@@ -23,12 +23,12 @@ QUEUE = 'tc58'
 TEST_QUEUE = 'test_queue'
 
 
-# redis
+# task redis
 REDIS_HOST = '192.168.11.191'
 REDIS_PORT = 6380
 REDIS_DB = 1
 
-# count_redis
+# count redis
 C_REDIS_HOST = '192.168.11.191'
 C_REDIS_PORT = 6380
 C_REDIS_DB = 2
