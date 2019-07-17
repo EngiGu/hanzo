@@ -147,6 +147,7 @@ class CookiesCheck():
                 logging.info('all cookies is ok!')
 
             # raise SystemExit('exit')
+            logging.info('sleep 5min...')
             time.sleep(5 * 60)  # 正常的h话每5分钟检测一次
 
 
