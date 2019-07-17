@@ -41,9 +41,8 @@ class CookiesCheck():
 
     def __init__(self):
         self.cookies_url = COOKIES_UPDATE_URL
-
-    def check_cookies_is_ok(self, cookies):
-        headers = {
+        self.business_58_url = 'https://employer.58.com/resumesearch?PGTID=0d000000-0000-02bf-9f94-8c7003dc986f&ClickID=29'
+        self.headers = {
             'accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
             'accept-encoding': 'gzip, deflate, br',
             'accept-language': 'zh-CN,zh;q=0.9,it;q=0.8',
@@ -53,9 +52,10 @@ class CookiesCheck():
             'referer': 'https://employer.58.com/resumesearch?PGTID=0d000000-0000-0f7d-5880-bbccd08216eb&ClickID=104',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3683.103 Safari/537.36',
         }
-        headers['cookie'] = cookies
-        url = 'https://employer.58.com/resumesearch?PGTID=0d000000-0000-02bf-9f94-8c7003dc986f&ClickID=29'
-        r = requests.get(url=url, headers=headers).content.decode()
+
+    def check_cookies_is_ok(self, cookies):
+        self.headers['cookie'] = cookies
+        r = requests.get(url=self.business_58_url, headers=self.headers).content.decode()
         if '<title>用户登录-58同城</title>' in r:
             return False
         return True
@@ -147,7 +147,7 @@ class CookiesCheck():
                 logging.info('all cookies is ok!')
 
             # raise SystemExit('exit')
-            logging.info('sleep 5min...')
+            logging.info('main loop sleep 5min...')
             time.sleep(5 * 60)  # 正常的h话每5分钟检测一次
 
 
