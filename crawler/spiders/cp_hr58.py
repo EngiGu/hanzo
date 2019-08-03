@@ -22,9 +22,12 @@ from config import ROOT_PATH, NUM_PRE_COOKIES
 try:
     from .base import *
     from .yima_api import Yima
+    from .font_match import FontMatch
 except:
     from base import *
     from yima_api import Yima
+    from font_match import FontMatch
+
 
 from core.func import get_local_ip, send_ftqq_msg
 
@@ -46,30 +49,31 @@ class HR58(SpiderBase, Base):
     def __init__(self, logger=None, st_flag=None):
         super(HR58, self).__init__(logger, st_flag)
         self.proxy_request_delay = 3
+        self.font_match = FontMatch()
         self.yima = Yima(username="fbfbfbfb", password="jianxun1302", project_id=159, project_name=u"58同城")
-        self.raw = {'届': 'e04fd81cb8c88283509d5341a5239d27', '陈': 'a7cce2d2e218b52730631d09ec7e2ed9',
-                    'B': 'd8053f3eb827b6bc22006b7200ba2f5e', '验': '7a33cce93a04b4524c945fdd4863c692',
-                    '张': 'e44ea76315a9181253f7e39021a11901', '9': '88513b3b880318b2aefe1c35baaa7317',
-                    '黄': '4228c2b7c3c4edb4b069e96d908a8f15', 'M': 'b3ef7aacedb46a51123ba44ffc6e93f2',
-                    '大': 'c4c708edd777514f181bbc23cbc251c0', '5': '7b30bfaa410b31b8f622689785fec6ea',
-                    '经': '3567a87741d0cb1883dfd69cfd1e0f46', '硕': 'cb88eed2daeb561016eefe02ec301b08',
-                    '1': '00d61ac0c9b97bd51ce0def77708151d', '男': 'c5332bc0e32cf526c35d675000b86a1c',
-                    '李': 'a690e49089b65b3870e9f0323a2c9a0b', '本': '5e28508bb8c28f71b869a3bfbb7480a8',
-                    '无': '2919e0c17e85f2bfe86b5ce9b65c3eae', '以': 'd22a15a2f90ee09a6c0bf0823d079be5',
-                    '中': '44fc8a68e6c9df82bf852d3c66eaeb05', '应': '0cce8876190362b436b578dbed3f9246',
-                    '刘': '959c3f40e416c0781c76de0e107a5d87', '高': 'f191b64b86ebc5e83be80157e08837f7',
-                    '科': '78098b93944a5d4f80be0ae3ddde7cb3', '下': '78547b10ad2bed3d059999b8a96dd1b8',
-                    '士': 'd135638806955c0ee9d255c64a952705', '2': 'b3c4c3c3910b00cadde436b80f6a8f6b',
-                    'A': '74b827b8303f2ea048a46dbc9af94bb1', '杨': '92a3b6fce1f494c341e108a80663092e',
-                    '技': 'eaeeb3a7d33100f7111086ddc809f347', '3': 'b18fc63ce51133a669550d84582cb419',
-                    '王': '3f68d21b92136ffc805b4447ff36a51c', 'E': '91977ada50e982cee1ee1bc77af4ec14',
-                    '博': '0d93906202dbf2ef2f1ea3e62b8da9c7', '专': '838da47c476a8bd67657de21a39eb6c1',
-                    '女': 'b9112f6e0b8cfea98108fcd418258219', '赵': 'adf2316c9216071fc6fde848f30b29b2',
-                    '8': 'f37cd5eddb6767c4af2522dfe31bb9af', '4': '14e811bd38883308e8acd8b1c93626a9',
-                    '吴': '0b8c37528ba6265f4b2fbd6ae13da1bc', '0': '11017a39e2ec6133814e3b78fd9b65a5',
-                    '7': '8b704365dbeda76db5b5ccb61f6da11e', '6': '6e91626a6e9bdbedcb288e72022c512a',
-                    '校': 'b3fe35de81075be87c90995ffb1a0ba6', '生': '9376dbdbb9f3cb9e17094bc1384e6d3c',
-                    '周': 'd9a3ae3942f61fcf567a682c766076e0', 'x': '23629ab2fe153b1ef9ca6b2c935eec3a'}
+        # self.raw = {'届': 'e04fd81cb8c88283509d5341a5239d27', '陈': 'a7cce2d2e218b52730631d09ec7e2ed9',
+        #             'B': 'd8053f3eb827b6bc22006b7200ba2f5e', '验': '7a33cce93a04b4524c945fdd4863c692',
+        #             '张': 'e44ea76315a9181253f7e39021a11901', '9': '88513b3b880318b2aefe1c35baaa7317',
+        #             '黄': '4228c2b7c3c4edb4b069e96d908a8f15', 'M': 'b3ef7aacedb46a51123ba44ffc6e93f2',
+        #             '大': 'c4c708edd777514f181bbc23cbc251c0', '5': '7b30bfaa410b31b8f622689785fec6ea',
+        #             '经': '3567a87741d0cb1883dfd69cfd1e0f46', '硕': 'cb88eed2daeb561016eefe02ec301b08',
+        #             '1': '00d61ac0c9b97bd51ce0def77708151d', '男': 'c5332bc0e32cf526c35d675000b86a1c',
+        #             '李': 'a690e49089b65b3870e9f0323a2c9a0b', '本': '5e28508bb8c28f71b869a3bfbb7480a8',
+        #             '无': '2919e0c17e85f2bfe86b5ce9b65c3eae', '以': 'd22a15a2f90ee09a6c0bf0823d079be5',
+        #             '中': '44fc8a68e6c9df82bf852d3c66eaeb05', '应': '0cce8876190362b436b578dbed3f9246',
+        #             '刘': '959c3f40e416c0781c76de0e107a5d87', '高': 'f191b64b86ebc5e83be80157e08837f7',
+        #             '科': '78098b93944a5d4f80be0ae3ddde7cb3', '下': '78547b10ad2bed3d059999b8a96dd1b8',
+        #             '士': 'd135638806955c0ee9d255c64a952705', '2': 'b3c4c3c3910b00cadde436b80f6a8f6b',
+        #             'A': '74b827b8303f2ea048a46dbc9af94bb1', '杨': '92a3b6fce1f494c341e108a80663092e',
+        #             '技': 'eaeeb3a7d33100f7111086ddc809f347', '3': 'b18fc63ce51133a669550d84582cb419',
+        #             '王': '3f68d21b92136ffc805b4447ff36a51c', 'E': '91977ada50e982cee1ee1bc77af4ec14',
+        #             '博': '0d93906202dbf2ef2f1ea3e62b8da9c7', '专': '838da47c476a8bd67657de21a39eb6c1',
+        #             '女': 'b9112f6e0b8cfea98108fcd418258219', '赵': 'adf2316c9216071fc6fde848f30b29b2',
+        #             '8': 'f37cd5eddb6767c4af2522dfe31bb9af', '4': '14e811bd38883308e8acd8b1c93626a9',
+        #             '吴': '0b8c37528ba6265f4b2fbd6ae13da1bc', '0': '11017a39e2ec6133814e3b78fd9b65a5',
+        #             '7': '8b704365dbeda76db5b5ccb61f6da11e', '6': '6e91626a6e9bdbedcb288e72022c512a',
+        #             '校': 'b3fe35de81075be87c90995ffb1a0ba6', '生': '9376dbdbb9f3cb9e17094bc1384e6d3c',
+        #             '周': 'd9a3ae3942f61fcf567a682c766076e0', 'x': '23629ab2fe153b1ef9ca6b2c935eec3a'}
         self.s.headers = {
             'accept': 'text/javascript, application/javascript, application/ecmascript, application/x-ecmascript, */*; q=0.01',
             'accept-encoding': 'gzip, deflate, br',
@@ -294,48 +298,51 @@ class HR58(SpiderBase, Base):
         res = re.findall(r'<TTGlyph name="(.*?)" (.*?)</TTGlyph>', xml, re.S)
         return {i[0]: hashlib.md5(''.join(i[1].split()).encode()).hexdigest() for i in res[:]}
 
-    def resource_page(self, json_str, raw):
-        l = self.l
-        res = """ @font-face{font-family:"customfont"; src:url(data:application/font-woff;charset=utf-8;base64,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)  format("woff");}"""
-        xml_path = f'/tmp/font_{os.getpid()}.xml'
-        to_replace = re.findall(r'&#x(\w+);', json_str)
-        if not to_replace:  # 不需要替换字体
-            l.error('fontKey may has expired...')
-            return None
-        # base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
-        base64_str = self.font
-        bin_data = ''
-        if not base64_str:
-            font_url = re.findall(r'@font-face {font-family:"customfont"; src:url\((.*?)\)', res, re.S)
-            if font_url:
-                font_url = 'https:' + font_url[0]
-                l.info(f'font url: {font_url}')
-                kwargs = {
-                    'url': font_url,
-                }
-                font_res = self.send_request(method='get', **kwargs)
-                bin_data = io.BytesIO(font_res.content)
-        else:
-            bin_data = base64.b64decode(base64_str[0])
-            bin_data = io.BytesIO(bin_data)
-        if not bin_data:
-            raise Exception('get font Bytes error...')
-        fonts = TTFont(bin_data)
-        fonts.saveXML(xml_path)
-        maps = self.xml_to_unimap(xml_path)
-        # print(maps)
-        raw = {v: k for k, v in raw.items()}
-        for i in to_replace:
-            new = 'uni' + i.upper()
-            hash_graph = maps.get(new)
-            # print(hash_graph)
-            font = raw.get(hash_graph, None)
-            if not font:
-                l.error('get none from woff maps, maybe the web font file has changed...')
-                return False  # 更换字体
-            # print(font)
-            json_str = json_str.replace('&#x{};'.format(i), font)
-        return json_str
+    # def resource_page(self, json_str, raw):
+    #     l = self.l
+    #     res = """ @font-face{font-family:"customfont"; src:url(data:application/font-woff;charset=utf-8;base64,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)  format("woff");}"""
+    #     xml_path = f'/tmp/font_{os.getpid()}.xml'
+    #     to_replace = re.findall(r'&#x(\w+);', json_str)
+    #     if not to_replace:  # 不需要替换字体
+    #         l.error('fontKey may has expired...')
+    #         return None
+    #     # base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', res)
+    #     base64_str = self.font
+    #     bin_data = ''
+    #     if not base64_str:
+    #         font_url = re.findall(r'@font-face {font-family:"customfont"; src:url\((.*?)\)', res, re.S)
+    #         if font_url:
+    #             font_url = 'https:' + font_url[0]
+    #             l.info(f'font url: {font_url}')
+    #             kwargs = {
+    #                 'url': font_url,
+    #             }
+    #             font_res = self.send_request(method='get', **kwargs)
+    #             bin_data = io.BytesIO(font_res.content)
+    #     else:
+    #         bin_data = base64.b64decode(base64_str[0])
+    #         bin_data = io.BytesIO(bin_data)
+    #     if not bin_data:
+    #         raise Exception('get font Bytes error...')
+    #     fonts = TTFont(bin_data)
+    #     fonts.saveXML(xml_path)
+    #     maps = self.xml_to_unimap(xml_path)
+    #     # print(maps)
+    #     raw = {v: k for k, v in raw.items()}
+    #     for i in to_replace:
+    #         new = 'uni' + i.upper()
+    #         hash_graph = maps.get(new)
+    #         # print(hash_graph)
+    #         font = raw.get(hash_graph, None)
+    #         if not font:
+    #             l.error('get none from woff maps, maybe the web font file has changed...')
+    #             return False  # 更换字体
+    #         # print(font)
+    #         json_str = json_str.replace('&#x{};'.format(i), font)
+    #     return json_str
+
+    def resource_page(self, json_str):
+        return self.font_match.translate_text_with_base64_font(base64_font=self.font, raw=json_str)
 
     def get_font_and_font_key(self):
         l = self.l
@@ -355,8 +362,8 @@ class HR58(SpiderBase, Base):
                 # 重新获取cookies
                 self.query_cookies_change_cookies()
                 return ''
-            base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', conn)
-            self.font = base64_str
+            # base64_str = re.findall('data:application/font-woff;charset=utf-8;base64,(.*)format', conn)
+            self.font = conn
             self.font_key = re.findall(r'fontKey: "(.*?)",', conn, re.S)[0]
             return ''
 
@@ -455,7 +462,8 @@ class HR58(SpiderBase, Base):
             tmp = json.loads(conn)
             tmp['index'] = int(page_to_go)
             conn = json.dumps(tmp, ensure_ascii=False)
-            conn = self.resource_page(conn, self.raw)
+            # conn = self.resource_page(conn, self.raw)
+            conn = self.resource_page(conn)
             if not conn:
                 self.get_font_and_font_key()
                 return ''
