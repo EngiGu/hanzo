@@ -4,6 +4,8 @@ import io
 import json, sys
 import os, time
 import random
+import traceback
+
 from selenium.webdriver import Chrome
 from selenium.webdriver import ChromeOptions
 from core.mysql import session_scope
@@ -342,7 +344,13 @@ class HR58(SpiderBase, Base):
     #     return json_str
 
     def resource_page(self, json_str):
-        return self.font_match.translate_text_with_base64_font(base64_font=self.font, raw=json_str)
+        try:
+            return self.font_match.translate_text_with_base64_font(base64_font=self.font, raw=json_str)
+        except Exception as e:
+            self.l.error(traceback.format_exc())
+            self.l.info(f'failed str: {str(json_str)}')
+            self.l.info(f'failed font: {str(self.font)}')
+            raise SystemExit('font error, exit...')
 
     def get_font_and_font_key(self):
         l = self.l

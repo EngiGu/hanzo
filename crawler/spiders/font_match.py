@@ -76,8 +76,8 @@ class FontMatch:
         # 都不满足就报错
         for index in range(len(list(self.base_map.values())[0])):  # 次数为base_map的x,y组数
             match_map = {
-                k: self.calculate_rect_dist_qual(rect_1=maps[nrc][index], rect_2=v[index]) for k, v in
-                self.base_map.items()
+                k: self.calculate_rect_dist_qual(rect_1=maps[nrc][index], rect_2=v[index])
+                for k, v in self.base_map.items()
             }
             match_key = self.find_value_is_True(match_map)  # list
             if len(match_key) == 1:
