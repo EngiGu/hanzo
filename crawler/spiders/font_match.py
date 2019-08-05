@@ -75,13 +75,13 @@ class FontMatch:
     def find_value_is_True(self, res_dict):
         return [k for k, v in res_dict.items() if v]
 
-    def _match(self, maps, nrc):
+    def _match(self, maps, ncr):
         # 原则是根据每个字形的前两组x,y坐标进行匹配
         # 先匹配第一组x，y，如果第一组不满足，在加上第二组进行校验
         # 都不满足就报错
         for index in range(len(list(self.base_map.values())[0])):  # 次数为base_map的x,y组数
             match_map = {
-                k: self.calculate_rect_dist_qual(rect_1=maps[nrc][index], rect_2=v[index])
+                k: self.calculate_rect_dist_qual(rect_1=maps[ncr][index], rect_2=v[index])
                 for k, v in self.base_map.items()
             }
             match_key = self.find_value_is_True(match_map)  # list
@@ -90,20 +90,20 @@ class FontMatch:
                 return match_key
         return []
 
-    def match(self, maps, nrc):
+    def match(self, maps, ncr):
         """
         :return [] 为空匹配失败， 正常返回单个元素的list
         """
         # 可能有不是自定义的字符，是通用字符
-        if nrc in self.general_maps:
-            return self.general_maps[nrc]
+        if ncr in self.general_maps:
+            return self.general_maps[ncr]
         # 自定义字符集
-        return self._match(maps, nrc)
+        return self._match(maps, ncr)
 
-    def test_math(self, font_xml_path, nrc):
+    def test_math(self, font_xml_path, ncr):
         """测试匹配函数"""
         maps = self.extract_font_glyph(font_xml_path)
-        return self._match(maps, nrc)
+        return self._match(maps, ncr)
 
     def translate_text(self, font_xml_path, raw):
         """
