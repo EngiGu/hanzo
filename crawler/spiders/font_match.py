@@ -1,6 +1,7 @@
 # 根据字体只是少部分变化，目前只是根据x轴数字来进行计算
 # encoding:utf-8
 import base64
+import html
 import io
 import os
 import re
@@ -42,7 +43,8 @@ class FontMatch:
             '科': [('74', '329'), ('302', '635')], 'x': [('20', '20'), ('50', '20')]
         }  # 58的自定义maps
         self.general_maps = {
-            'uni2F': '/'
+            'uni2F': '/',
+            'uni27': "'"
         }  # 通用字符集maps
 
     def extract_font_glyph(self, font_xml_path):
@@ -95,8 +97,13 @@ class FontMatch:
         :return [] 为空匹配失败， 正常返回单个元素的list
         """
         # 可能有不是自定义的字符，是通用字符
-        if ncr in self.general_maps:
-            return self.general_maps[ncr]
+        # if ncr in self.general_maps:
+        #     return self.general_maps[ncr]
+        general_c = html.unescape(ncr.replace('uni', '&#x'))
+        if '\\u' not in repr(general_c):
+            # 是通用集
+            return general_c
+
         # 自定义字符集
         return self._match(maps, ncr)
 
