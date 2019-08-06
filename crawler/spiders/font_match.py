@@ -101,7 +101,7 @@ class FontMatch:
         #     return self.general_maps[ncr]
         general_c = html.unescape(ncr.replace('uni', '&#x'))
         if '\\u' not in repr(general_c):
-            # 是通用集
+            # 是通用集(一般是标点符，虽然也有ncr中文字符, 但是58一般只会用标点符号的通用集合)
             return general_c
 
         # 自定义字符集
