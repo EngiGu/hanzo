@@ -166,6 +166,7 @@ class Run:
                 break  # 成功就会跳出
             except:
                 # 连不上mq
+                self.logger.info(f"push to mq error, retry after 1 sec...")
                 time.sleep(1)
 
     def _push_to_rabbitmq(self, site, type, curr_task, content):
