@@ -158,8 +158,17 @@ class Run:
     #             self.apply_task(action='push', task=data)
     #             l.info(f"has pushed site: {site} to type5 queue, task: {str(_curr_task)}")
     #             l.warning(f'parse detail task error: {e.__context__}, tb: {traceback.format_exc()}')
-
+    #
     def push_to_rabbitmq(self, site, type, curr_task, content):
+        while True:
+            try:
+                self._push_to_rabbitmq(site, type, curr_task, content)
+                break  # 成功就会跳出
+            except:
+                # 连不上mq
+                time.sleep(1)
+
+    def _push_to_rabbitmq(self, site, type, curr_task, content):
         if isinstance(content, bytes):
             content = content.decode('utf-8')
         elif isinstance(content, dict):
