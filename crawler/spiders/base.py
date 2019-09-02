@@ -36,7 +36,8 @@ class SpiderBase():
             try:
                 l.info(f"start get proxy...")
                 ret_ip = requests.get(self.proxy_api, timeout=10)
-                IP = ret_ip.text.strip()
+                # IP = ret_ip.text.strip()
+                IP = ret_ip.json()['proxy']
                 proxies = {"http": "http://%s" % IP, "https": "https://%s" % IP}
                 self.proxy = proxies
                 self.proxy_fa = 0
