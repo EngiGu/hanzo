@@ -42,6 +42,15 @@ class Run:
         self.logger.info(__info)
         self.logger.info('*' * len(__info))
 
+    def close_redis_bgsave(self):
+        # docker 重启之后redis会 config 无法保存， 尝试使用shell关闭
+        # 临时解决方案
+        try:
+            os.system('redis-cli -h 192.168.11.191 -p 6380 config set stop-writes-on-bgsave-error no')
+            self.logger.info(f"try to disable stop-writes-on-bgsave-error...")
+        except:
+            pass
+
     def apply_task(self, action="get", site=None, task=None):
         '''
         {
@@ -63,6 +72,7 @@ class Run:
                         return json.loads(res['task'])
                     return None
                 except Exception as e:
+                    self.close_redis_bgsave()
                     l.warning(f'apply task error: {e.__context__}, tb: {traceback.format_exc()}')
             raise ApplyRequestError('apply task request error.')
         elif action.lower() == 'push':
@@ -73,6 +83,7 @@ class Run:
                         l.info(f'push task: {str(task)} to queue success.')
                     return
                 except Exception as e:
+                    self.close_redis_bgsave()
                     l.warning(f'push task error: {e.__context__}, tb: {traceback.format_exc()}')
             raise ApplyRequestError('push task request error.')
         else:

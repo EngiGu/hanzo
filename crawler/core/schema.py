@@ -60,8 +60,31 @@ class DailyHrCrawl(Base):
 if __name__ == '__main__':
     from mysql import Session, engine, session_scope
 
-    s = Session()
-    Base.metadata.create_all(engine)  # 创建表
+    # s = Session()
+    # Base.metadata.create_all(engine)  # 创建表
+
+    lod = '2019-07-15'
+    to = '2019-08-13'
+
+    with session_scope() as s:
+        q = s.query(DailyHrCrawl).filter(
+            DailyHrCrawl.created >= f'{lod} 00:00:00',
+            DailyHrCrawl.created <= f'{lod} 23:59:59'
+        ).all()
+        j = 0
+        for i in q:
+            b = DailyHrCrawl(
+                jx_resume_id=i.jx_resume_id,
+                position=i.position,
+                positions=i.positions,
+                is_today_update=i.is_today_update,
+                created=i.created.strftime('%Y-%m-%d %H:%M:%S').replace(lod, to),
+            )
+            j += 1
+            s.add(b)
+            # s.commit()
+            print(j)
+
     # d = DailyHrCrawl(
     #     jx_resume_id=14564564564564564,
     #     position='厨师',
