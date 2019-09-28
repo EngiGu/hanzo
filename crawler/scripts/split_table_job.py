@@ -96,13 +96,13 @@ class TD:
         for day in days:
             to_total = self.get_old_record(day)
             # print(r2d)
-            steps = 10000
+            steps = 5000
             for i in range(0, to_total, steps):
                 print(day, to_total, i, i + steps)
                 r2d = self.session.query(DailyHrCrawl).filter(
                     DailyHrCrawl.created >= '{} 00:00:00'.format(day),
                     DailyHrCrawl.created <= '{} 23:59:59'.format(day),
-                ).offset(i + steps).limit(steps).yield_per(1000)
+                ).offset(i).limit(steps).yield_per(1000)
                 # 拆分处理
                 r_list = self.extract_position_list(r2d)
                 r_list = self.rebuild_list(r_list)
