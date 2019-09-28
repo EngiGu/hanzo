@@ -57,6 +57,34 @@ class DailyHrCrawl(Base):
     modified = Column(TIMESTAMP, nullable=False, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
 
 
+class DailyHrCrawlNew(Base):
+    """58job每日job抓取"""
+    __tablename__ = 'daily_crawl_hr_58_record'
+    id = Column(Integer(), primary_key=True, autoincrement=True)
+
+    jx_resume_id = Column(BIGINT, nullable=False)  # cookies tag 爬虫会根据这个来取出cookies
+    tag_id = Column(Integer(), nullable=False)
+    # position = Column(String(512), nullable=False, default='', server_default=text("''"))  # api的指定职位
+    # positions = Column(String(512), nullable=False, default='', server_default=text("''"))  # 多个期望职位
+
+    is_today_update = Column(TINYINT, nullable=False, server_default=text("0"))  # 0 不是 1 是
+
+    status = Column(TINYINT, nullable=False, server_default=text("0"))
+    created = Column(TIMESTAMP, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+    modified = Column(TIMESTAMP, nullable=False, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+
+
+class PositionTag(Base):
+    """58job每日job抓取职位分类表"""
+    __tablename__ = 'position_tag'
+    id = Column(Integer(), primary_key=True, autoincrement=True)
+    position = Column(String(512), nullable=False)  # cookies tag 爬虫会根据这个来取出cookies
+
+    status = Column(TINYINT, nullable=False, server_default=text("0"))
+    created = Column(TIMESTAMP, nullable=False, server_default=text("CURRENT_TIMESTAMP"))
+    modified = Column(TIMESTAMP, nullable=False, server_default=text("CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"))
+
+
 if __name__ == '__main__':
     from mysql import Session, engine, session_scope
 
