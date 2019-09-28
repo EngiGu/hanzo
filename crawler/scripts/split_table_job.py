@@ -19,11 +19,16 @@ class TD:
     def get_old_record(self, offset, limit):
         query = self.session.query(DailyHrCrawl)
         for i in query.offset(offset).limit(limit).yield_per(1000):
-            print(row2dict(i))
+            r2d = row2dict(i)
+            return r2d
 
+    def extract_position_list(self, result_dict):
+    
+        return
 
     def run(self):
-        self.get_old_record(1, 1000)
+        r2d = self.get_old_record(1, 1000)
+
         pass
 
 
