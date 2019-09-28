@@ -66,7 +66,7 @@ class DailyHrCrawlNew(Base):
     tag_id = Column(Integer(), nullable=False)
     # position = Column(String(512), nullable=False, default='', server_default=text("''"))  # api的指定职位
     # positions = Column(String(512), nullable=False, default='', server_default=text("''"))  # 多个期望职位
-
+    is_excepted = Column(TINYINT, nullable=False, server_default=text("0"))  # 是否是最期待的职位
     is_today_update = Column(TINYINT, nullable=False, server_default=text("0"))  # 0 不是 1 是
 
     status = Column(TINYINT, nullable=False, server_default=text("0"))
