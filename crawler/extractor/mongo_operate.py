@@ -62,6 +62,15 @@ def hr58_update(resume, logger):
     with session_scope() as s:
         s.add(d)  # 插入mysql统计表
 
+    # 将mongo resumeTp存为数组
+    if 'resumeTp' in resume:
+        resumeTp = resume['resumeTp']
+        if not resumeTp:
+            to_replace = []
+        else:
+            to_replace = resumeTp.split('、')
+        resume['resumeTp'] = to_replace
+
     MT_cp.insert(resume)
     cards.incr(f'{resume["source"]}_{time.strftime("%Y-%m-%d", time.localtime())}')
     cards.incr(f'{resume["source"]}_total')
