@@ -21,6 +21,15 @@ class TD:
     def get_old_record(self, offset, limit):
         return self.session.query(DailyHrCrawl).offset(offset).limit(limit).yield_per(1000)
 
+    def get_position_tag(self, tag):
+        query = self.session.query(PositionTag.id).filter(PositionTag.position == tag).first()
+        if not bool(query):
+            position_tag = PositionTag(position=tag)
+            self.session.add(position_tag)
+            self.session.commit()
+            return position_tag.id
+        return query.id
+
     def update_position_tag(self, tag_list):
         # self.position_set.update(tag_list)
         for tag in tag_list:
