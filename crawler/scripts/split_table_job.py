@@ -30,6 +30,10 @@ class TD:
             return position_tag.id
         return query.id
 
+    def save_crawled_record(self, r_list):
+        self.session.bulk_insert_mappings(DailyHrCrawlNew, r_list)
+        self.session.commit()
+
     @jit
     def update_position_tag(self, tag_list):
         # self.position_set.update(tag_list)
@@ -63,19 +67,24 @@ class TD:
     @jit
     def rebuild_list(self, r_list):
         tmp = []
-        for i  in r_list:
+        for i in r_list:
             i['tag_id'] = self.position_map[i['__position__']]
             i.pop('__position__')
             tmp.append(i)
         return tmp
 
     def run(self):
+        # 获取旧的简历
         r2d = self.get_old_record(1, 1000)
         # print(r2d)
+        # 拆分处理
         r_list = self.extract_position_list(r2d)
         r_list = self.rebuild_list(r_list)
-        print(r_list)
+
+        # print(r_list)
         print(self.position_map)
+        # 插入新的数据表
+        self.save_crawled_record(r_list)
 
         pass
 
