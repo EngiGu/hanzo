@@ -21,7 +21,7 @@ class TD:
     def get_old_record(self, offset, limit):
         return self.session.query(DailyHrCrawl).offset(offset).limit(limit).yield_per(1000)
 
-    def get_position_tag(self, tag):
+    def get_position_tag_id(self, tag):
         query = self.session.query(PositionTag.id).filter(PositionTag.position == tag).first()
         if not bool(query):
             position_tag = PositionTag(position=tag)
@@ -30,11 +30,12 @@ class TD:
             return position_tag.id
         return query.id
 
+    @jit
     def update_position_tag(self, tag_list):
         # self.position_set.update(tag_list)
         for tag in tag_list:
             if tag not in self.position_map:
-
+                self.position_map[tag] = self.get_position_tag_id(tag)
         return
 
     def extract_position_list(self, result_query):
@@ -61,7 +62,10 @@ class TD:
     def run(self):
         r2d = self.get_old_record(1, 1000)
         # print(r2d)
-        self.extract_position_list(r2d)
+        r_list = self.extract_position_list(r2d)
+        print(r_list)
+        print(self.position_map)
+
         pass
 
 
