@@ -38,6 +38,7 @@ class TD:
                 self.position_map[tag] = self.get_position_tag_id(tag)
         return
 
+    @jit
     def extract_position_list(self, result_query):
         new_record = []
         for r in result_query:
@@ -59,10 +60,20 @@ class TD:
                     )
         return new_record
 
+    @jit
+    def rebuild_list(self, r_list):
+        tmp = []
+        for i  in r_list:
+            i['tag_id'] = self.position_map[i['__position__']]
+            i.pop('__position__')
+            tmp.append(i)
+        return tmp
+
     def run(self):
         r2d = self.get_old_record(1, 1000)
         # print(r2d)
         r_list = self.extract_position_list(r2d)
+        r_list = self.rebuild_list(r_list)
         print(r_list)
         print(self.position_map)
 
