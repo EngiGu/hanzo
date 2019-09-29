@@ -22,19 +22,20 @@ class TD:
         self.position_map = {}
         self.position_set = set()
 
-    def get_old_record(self, day):
+    def get_total(self, day):
         # return self.session.query(DailyHrCrawl).offset(offset).limit(limit).yield_per(1000)
         total = self.session.query(func.count(DailyHrCrawl.id)).filter(
             DailyHrCrawl.created >= '{} 00:00:00'.format(day),
             DailyHrCrawl.created <= '{} 23:59:59'.format(day),
         ).scalar()
         return total
-        # print(total)
-        # raise SystemExit
+
+    def get_old_record(self, day, offset, limit):
         return self.session.query(DailyHrCrawl).filter(
             DailyHrCrawl.created >= '{} 00:00:00'.format(day),
             DailyHrCrawl.created <= '{} 23:59:59'.format(day),
-        ).offset(0).limit(total).yield_per(1000)
+            # ).offset(offset).limit(limit).yield_per(1000)
+        ).offset(offset).limit(limit)
 
     def get_position_tag_id(self, tag):
         query = self.session.query(PositionTag.id).filter(PositionTag.position == tag).first()
@@ -109,16 +110,17 @@ class TD:
         ]
         days = ['2019-09-28']
         for day in days:
-            to_total = self.get_old_record(day)
+            to_total = self.get_total(day)
             # print(r2d)
             steps = 5000
             for i in range(0, to_total, steps):
                 print(day, to_total, i, i + steps)
-                r2d = self.session.query(DailyHrCrawl).filter(
-                    DailyHrCrawl.created >= '{} 00:00:00'.format(day),
-                    DailyHrCrawl.created <= '{} 23:59:59'.format(day),
-                    # ).offset(i).limit(steps).yield_per(1000)
-                ).offset(i).limit(steps)
+                # r2d = self.session.query(DailyHrCrawl).filter(
+                #     DailyHrCrawl.created >= '{} 00:00:00'.format(day),
+                #     DailyHrCrawl.created <= '{} 23:59:59'.format(day),
+                #     # ).offset(i).limit(steps).yield_per(1000)
+                # ).offset(i).limit(steps)
+                r2d = self.get_old_record(day, offset=i, limit=steps)
                 # 拆分处理
                 r_list = self.extract_position_list(r2d)
                 r_list = self.rebuild_list(r_list)
