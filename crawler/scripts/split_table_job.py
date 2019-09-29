@@ -1,3 +1,6 @@
+import time, sys, os
+
+sys.path.append(os.path.abspath('../'))
 from core.schema import *
 from core.mysql import Session, engine, session_scope
 from numba import jit
@@ -42,16 +45,16 @@ class TD:
             return position_tag.id
         return query.id
 
-    @jit
+    # @jit
     def save_crawled_record(self, r_list):
-        i = 0
+        all_to_insert = len(r_list)
         step = 2000
-        for i in range(0, len(r_list), step):
-            print('saving', i, i + step)
+        for i in range(0, all_to_insert, step):
+            print('saving', i, i + step, 'all:', all_to_insert)
             self.session.bulk_insert_mappings(DailyHrCrawlNew, r_list[i:i + step])
             self.session.commit()
 
-    @jit
+    # @jit
     def update_position_tag(self, tag_list):
         # self.position_set.update(tag_list)
         for tag in tag_list:
@@ -59,26 +62,27 @@ class TD:
                 self.position_map[tag] = self.get_position_tag_id(tag)
         return
 
-    @jit
+    # @jit
     def extract_position_list(self, result_query):
         new_record = []
         for r in result_query:
             # print(row2dict(r))
             positions = r.positions
-            if positions:
-                tag_list = positions.split('、')
-                # self.position_set.update(tag_list)
-                self.update_position_tag(tag_list)
-                for i in tag_list:
-                    # print(i)
-                    new_record.append(
-                        {
-                            'jx_resume_id': r.jx_resume_id, 'tag_id': '',
-                            'is_excepted': 1 if i == r.position else 0,
-                            'is_today_update': r.is_today_update, 'status': r.status, 'created': r.created,
-                            'modified': r.modified, '__position__': i
-                        }
-                    )
+            # if positions:
+            tag_list = positions.split('、')
+            # self.position_set.update(tag_list)
+            # print(tag_list)
+            self.update_position_tag(tag_list)
+            for i in tag_list:
+                # print(i)
+                new_record.append(
+                    {
+                        'jx_resume_id': r.jx_resume_id, 'tag_id': '',
+                        'is_excepted': 1 if i == r.position else 0,
+                        'is_today_update': r.is_today_update, 'status': r.status, 'created': r.created,
+                        'modified': r.modified, '__position__': i
+                    }
+                )
         return new_record
 
     @jit
@@ -92,7 +96,18 @@ class TD:
 
     def run(self):
         # 获取旧的简历
-        days = ['2019-09-27']
+        days = [
+            '2019-09-19',
+            '2019-09-20',
+            '2019-09-21',
+            '2019-09-22',
+            '2019-09-23',
+            '2019-09-24',
+            '2019-09-25',
+            '2019-09-26',
+            # '2019-09-27'
+        ]
+        days = ['2019-09-28']
         for day in days:
             to_total = self.get_old_record(day)
             # print(r2d)
@@ -102,7 +117,8 @@ class TD:
                 r2d = self.session.query(DailyHrCrawl).filter(
                     DailyHrCrawl.created >= '{} 00:00:00'.format(day),
                     DailyHrCrawl.created <= '{} 23:59:59'.format(day),
-                ).offset(i).limit(steps).yield_per(1000)
+                    # ).offset(i).limit(steps).yield_per(1000)
+                ).offset(i).limit(steps)
                 # 拆分处理
                 r_list = self.extract_position_list(r2d)
                 r_list = self.rebuild_list(r_list)
