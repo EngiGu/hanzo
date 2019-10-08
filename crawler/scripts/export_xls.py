@@ -18,6 +18,7 @@ def row2dict(row):
 
 
 class TD:
+    # 将拆分表每日数据导出成xls
 
     def __init__(self, raw):
         self.session = Session()

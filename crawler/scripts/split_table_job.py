@@ -16,6 +16,8 @@ def row2dict(row):
 
 
 class TD:
+    # 脚本主要作用是将原有的爬取数据表记录职位分类(`positions`字段)拆分成多行， 方便进行统计
+    # 原表daily_crawl_hr_58 -> 拆分表 daily_crawl_hr_58_record
 
     def __init__(self):
         self.session = Session()
