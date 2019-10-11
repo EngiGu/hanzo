@@ -30,11 +30,9 @@ def send_ftqq_msg(text, desp):
     :param desp: 消息内容，最长64Kb，可空，支持MarkDown。
     :return:
     """
-    url = 'http://sc.ftqq.com/SCU30620T7f7c14060cb17921326cbe6eb83344f25b70f4f1e24ab.send'
-    content = desp + '\n\nDate:  ' + time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-    r = requests.post(url, data={'text': text, 'desp': content})
-    print(r.content.decode())
-    pass
+    server_url = 'http://sooko.tk:8888/notice'
+    data = {'title': text, 'content': desp, 'way': 'ServerChan'}
+    return requests.post(url=server_url, data=data).content.decode()
 
 
 class CookiesCheck():
