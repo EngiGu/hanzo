@@ -30,7 +30,7 @@ def send_ftqq_msg(text, desp):
     :param desp: 消息内容，最长64Kb，可空，支持MarkDown。
     :return:
     """
-    server_url = 'http://sooko.club:8888/notice'
+    server_url = 'http://notice.sooko.club:8890/notice'
     data = {'title': text, 'content': desp, 'way': 'ServerChan', 'key': 'spider_c:TFvkD9enEkvkVUyMVJUYmN'}
     return requests.post(url=server_url, data=data).content.decode()
 
